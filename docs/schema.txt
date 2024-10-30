@@ -1,0 +1,94 @@
+Table users {
+  id int [primary key]
+  email varchar
+  password varchar
+  role enum('admin','staff','user')
+}
+
+Table meta_item_categories {
+  id int [primary key]
+  category_name varchar
+}
+
+Table meta_item_subcategories {
+  id int [primary key]
+  category_id int
+  subcategory_name varchar
+}
+Ref: meta_item_subcategories.category_id > meta_item_categories.id
+
+Table meta_item_attributes {
+  id int [primary key]
+  attribute_name varchar
+  subcategory_id int
+}
+Ref: meta_item_attributes.subcategory_id > meta_item_subcategories.id
+
+Table items {
+  id int [primary key]
+  name varchar
+  category_id int
+  subcategory_id int
+}
+Ref: items.category_id > meta_item_categories.id
+Ref: items.subcategory_id > meta_item_subcategories.id
+
+Table item_attributes {
+  item_id int
+  attribute_id int
+  attribute_value varchar
+}
+Ref: item_attributes.item_id > items.id
+Ref: item_attributes.attribute_id > meta_item_attributes.id
+
+Table auctions {
+  id int [primary key]
+  item_id int
+  seller_id int
+  initial_price real
+  min_increment real
+  min_price real
+  opening_time timestamp
+  closing_time timestamp
+  status enum('Open', 'Sold', 'Expired')
+}
+Ref: auctions.item_id > items.id
+Ref: auctions.seller_id > users.id
+
+Table bids {
+  id int [primary key]
+  auction_id int
+  users_id int  // References users.id directly
+  bid_value real
+  bid_active bool
+}
+Ref: bids.auction_id > auctions.id
+Ref: bids.users_id > users.id
+
+Table user_questions {
+  id int [primary key]
+  auction_id int  // References auctions.id
+  asker_id int
+  replier_id int
+  question_text varchar
+  is_open bool
+}
+Ref: user_questions.auction_id > auctions.id
+Ref: user_questions.asker_id > users.id
+
+Table user_answers {
+  id int [primary key]
+  question_id int
+  replier_id int
+  reply_text varchar
+}
+Ref: user_answers.question_id > user_questions.id
+Ref: user_answers.replier_id > users.id
+
+Table alerts {
+  id int [primary key]
+  item_id int  // References items.id
+  user_id int
+}
+Ref: alerts.user_id > users.id
+Ref: alerts.item_id > items.id
