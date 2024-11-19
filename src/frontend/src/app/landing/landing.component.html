@@ -32,6 +32,9 @@
         <span *ngIf="login.controls?.['password']?.errors?.['required']">{{
           IS_REQUIRED
         }}</span>
+        <span *ngIf="login.controls?.['password']?.errors?.['incorrect']">{{
+          INCORRECT_TRY_AGAIN
+        }}</span>
       </div>
       <input
         type="submit"
@@ -64,7 +67,7 @@
         <span *ngIf="signUp.controls?.['uname']?.errors?.['minlength']">{{
           MIN_LEN
         }}</span>
-        <span *ngIf="login.controls?.['email']?.errors?.['incorrect']">{{
+        <span *ngIf="signUp.controls?.['uname']?.errors?.['incorrect']">{{
           DUP_TRY_AGAIN
         }}</span>
       </div>
@@ -82,7 +85,7 @@
         <span *ngIf="signUp.controls?.['email']?.errors?.['email']">{{
           NOT_EMAIL
         }}</span>
-        <span *ngIf="login.controls?.['email']?.errors?.['incorrect']">{{
+        <span *ngIf="signUp.controls?.['email']?.errors?.['incorrect']">{{
           DUP_TRY_AGAIN
         }}</span>
       </div>

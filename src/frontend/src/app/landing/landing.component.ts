@@ -1,6 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { FormControl, FormGroup } from "@angular/forms";
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ValidatorFn,
+} from "@angular/forms";
 import { ReactiveFormsModule, Validators } from "@angular/forms";
 import { ElementRef } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
@@ -11,6 +16,23 @@ import {
   MIN_LEN,
   NOT_EMAIL,
 } from "../constants";
+
+function dup_entry_found(self: LandingComponent): ValidatorFn {
+  return (c: AbstractControl): { [key: string]: boolean } | null => {
+    const fg = c.parent;
+    const keys = ["uname", "email", "password"];
+    for (const key of keys) {
+      if (
+        c?.value === fg?.get(key)?.value &&
+        c?.value === self.dup_entry[key]
+      ) {
+        self.dup_entry[key] = "";
+        return { incorrect: true };
+      }
+    }
+    return null;
+  };
+}
 
 @Component({
   selector: "app-landing",
@@ -26,6 +48,7 @@ export class LandingComponent implements OnInit {
   NOT_MATCHING = "Passwords don't match";
   DUP_TRY_AGAIN = "Email or User already present";
   INCORRECT_TRY_AGAIN = "Incorrect email/password";
+  dup_entry: { [key: string]: any } = { uname: "", email: "", password: "" };
 
   constructor(
     private elRef: ElementRef<HTMLElement>,
@@ -37,8 +60,13 @@ export class LandingComponent implements OnInit {
       uname: new FormControl("", [
         Validators.required,
         Validators.minLength(5),
+        dup_entry_found(this),
       ]),
-      email: new FormControl("", [Validators.required, Validators.email]),
+      email: new FormControl("", [
+        Validators.required,
+        Validators.email,
+        dup_entry_found(this),
+      ]),
       password: new FormControl("", [
         Validators.required,
         Validators.minLength(5),
@@ -52,8 +80,12 @@ export class LandingComponent implements OnInit {
   );
 
   login = new FormGroup({
-    email: new FormControl("", [Validators.required, Validators.email]),
-    password: new FormControl("", Validators.required),
+    email: new FormControl("", [
+      Validators.required,
+      Validators.email,
+      dup_entry_found(this),
+    ]),
+    password: new FormControl("", [Validators.required, dup_entry_found(this)]),
   });
 
   passwordMatchValidator(g: FormGroup | any) {
@@ -73,17 +105,23 @@ export class LandingComponent implements OnInit {
       .post(SERVER_URLS.login, this.login.value, { responseType: "json" })
       .subscribe((response: any) => {
         if (response.status === RESPONSE_STATUS.SUCCESS) {
+          // perform some more oprs...
           console.log(response);
-          // } else {
-          // // handle this better...
-          //   self.login.controls["email"].setErrors({ incorrect: true });
+        } else {
+          this.dup_entry = {
+            uname: "",
+            email: this.login.get("email")?.value!,
+            password: this.login.get("password")?.value!,
+          };
+          self.login.get("email")?.updateValueAndValidity();
+          self.login.get("password")?.updateValueAndValidity();
         }
       });
-    // perform some more oprs...
   }
 
   signupUsr() {
     const signUp = this.signUp;
+    console.log(signUp.get("uname"));
     if (
       signUp.get("uname")?.errors != null ||
       signUp.get("email")?.errors != null ||
@@ -92,7 +130,6 @@ export class LandingComponent implements OnInit {
     ) {
       return;
     }
-    // const self = this;
     this.http
       .post(SERVER_URLS.signup, signUp.value, { responseType: "json" })
       .subscribe((response: any) => {
@@ -101,10 +138,14 @@ export class LandingComponent implements OnInit {
             "login_now",
           ) as HTMLElement;
           element.click();
-          // } else {
-          // // handle validation better...
-          //   signUp.controls["uname"].setErrors({ incorrect: true });
-          //   signUp.controls["email"].setErrors({ incorrect: true });
+        } else {
+          this.dup_entry = {
+            uname: signUp.get("uname")?.value!,
+            email: signUp.get("email")?.value!,
+            password: "",
+          };
+          signUp.get("uname")?.updateValueAndValidity();
+          signUp.get("email")?.updateValueAndValidity();
         }
       });
   }
