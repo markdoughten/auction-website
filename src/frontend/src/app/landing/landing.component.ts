@@ -19,16 +19,9 @@ import {
 
 function dup_entry_found(self: LandingComponent): ValidatorFn {
   return (c: AbstractControl): { [key: string]: boolean } | null => {
-    const fg = c.parent;
-    const keys = ["uname", "email", "password"];
-    for (const key of keys) {
-      if (
-        c?.value === fg?.get(key)?.value &&
-        c?.value === self.dup_entry[key]
-      ) {
-        self.dup_entry[key] = "";
-        return { incorrect: true };
-      }
+    if (self.dup_entry > 0) {
+      self.dup_entry--;
+      return { incorrect: true };
     }
     return null;
   };
@@ -48,7 +41,7 @@ export class LandingComponent implements OnInit {
   NOT_MATCHING = "Passwords don't match";
   DUP_TRY_AGAIN = "Email or User already present";
   INCORRECT_TRY_AGAIN = "Incorrect email/password";
-  dup_entry: { [key: string]: any } = { uname: "", email: "", password: "" };
+  dup_entry = 0;
 
   constructor(
     private elRef: ElementRef<HTMLElement>,
@@ -100,6 +93,18 @@ export class LandingComponent implements OnInit {
   ngOnInit(): void {}
 
   loginUsr() {
+    const login = this.login;
+    let is_invalid = false;
+    Object.keys(login.controls).forEach((field) => {
+      if (login.get(field)?.errors != null) {
+        is_invalid = true;
+        return;
+      }
+    });
+    if (is_invalid) {
+      login.markAllAsTouched();
+      return;
+    }
     const self = this;
     this.http
       .post(SERVER_URLS.login, this.login.value, { responseType: "json" })
@@ -108,11 +113,7 @@ export class LandingComponent implements OnInit {
           // perform some more oprs...
           console.log(response);
         } else {
-          this.dup_entry = {
-            uname: "",
-            email: this.login.get("email")?.value!,
-            password: this.login.get("password")?.value!,
-          };
+          this.dup_entry = 2;
           self.login.get("email")?.updateValueAndValidity();
           self.login.get("password")?.updateValueAndValidity();
         }
@@ -121,13 +122,15 @@ export class LandingComponent implements OnInit {
 
   signupUsr() {
     const signUp = this.signUp;
-    console.log(signUp.get("uname"));
-    if (
-      signUp.get("uname")?.errors != null ||
-      signUp.get("email")?.errors != null ||
-      signUp.get("password")?.errors != null ||
-      signUp.get("passwordConfirm")?.errors != null
-    ) {
+    let is_invalid = false;
+    Object.keys(signUp.controls).forEach((field) => {
+      if (signUp.get(field)?.errors != null) {
+        is_invalid = true;
+        return;
+      }
+    });
+    if (is_invalid) {
+      signUp.markAllAsTouched();
       return;
     }
     this.http
@@ -139,11 +142,7 @@ export class LandingComponent implements OnInit {
           ) as HTMLElement;
           element.click();
         } else {
-          this.dup_entry = {
-            uname: signUp.get("uname")?.value!,
-            email: signUp.get("email")?.value!,
-            password: "",
-          };
+          this.dup_entry = 2;
           signUp.get("uname")?.updateValueAndValidity();
           signUp.get("email")?.updateValueAndValidity();
         }
