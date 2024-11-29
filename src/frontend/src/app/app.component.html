@@ -1,1 +1,2 @@
-<app-landing></app-landing>
+<app-landing *ngIf="!(authService.isLoggedIn | async)"></app-landing>
+<app-dashboard *ngIf="authService.isLoggedIn | async"></app-dashboard>
