@@ -1,15 +1,16 @@
 CREATE TABLE `users` (
   `id` int PRIMARY KEY,
+  `username` varchar(128),
   `email` varchar(255),
-  `password` varchar(255),
-  `role` enum(admin,staff,user)
+  `password` varchar(128),
+  `role` enum('Admin', 'Staff', 'User')
 );
 
 CREATE TABLE `notification` (
   `id` int PRIMARY KEY,
   `uid` int,
-  `title` string,
-  `description` string
+  `title` varchar(255),
+  `description` varchar(255)
 );
 
 CREATE TABLE `meta_item_categories` (
@@ -51,7 +52,7 @@ CREATE TABLE `auctions` (
   `min_price` real,
   `opening_time` timestamp,
   `closing_time` timestamp,
-  `status` enum(Open,Sold,Expired)
+  `status` enum('Open', 'Sold', 'Expired')
 );
 
 CREATE TABLE `bids` (
@@ -85,35 +86,19 @@ CREATE TABLE `alerts` (
 );
 
 ALTER TABLE `notification` ADD FOREIGN KEY (`uid`) REFERENCES `users` (`id`);
-
 ALTER TABLE `meta_item_subcategories` ADD FOREIGN KEY (`category_id`) REFERENCES `meta_item_categories` (`id`);
-
 ALTER TABLE `meta_item_attributes` ADD FOREIGN KEY (`subcategory_id`) REFERENCES `meta_item_subcategories` (`id`);
-
 ALTER TABLE `items` ADD FOREIGN KEY (`category_id`) REFERENCES `meta_item_categories` (`id`);
-
 ALTER TABLE `items` ADD FOREIGN KEY (`subcategory_id`) REFERENCES `meta_item_subcategories` (`id`);
-
 ALTER TABLE `item_attributes` ADD FOREIGN KEY (`item_id`) REFERENCES `items` (`id`);
-
 ALTER TABLE `item_attributes` ADD FOREIGN KEY (`attribute_id`) REFERENCES `meta_item_attributes` (`id`);
-
 ALTER TABLE `auctions` ADD FOREIGN KEY (`item_id`) REFERENCES `items` (`id`);
-
 ALTER TABLE `auctions` ADD FOREIGN KEY (`seller_id`) REFERENCES `users` (`id`);
-
 ALTER TABLE `bids` ADD FOREIGN KEY (`auction_id`) REFERENCES `auctions` (`id`);
-
 ALTER TABLE `bids` ADD FOREIGN KEY (`users_id`) REFERENCES `users` (`id`);
-
 ALTER TABLE `user_questions` ADD FOREIGN KEY (`auction_id`) REFERENCES `auctions` (`id`);
-
 ALTER TABLE `user_questions` ADD FOREIGN KEY (`asker_id`) REFERENCES `users` (`id`);
-
 ALTER TABLE `user_answers` ADD FOREIGN KEY (`question_id`) REFERENCES `user_questions` (`id`);
-
 ALTER TABLE `user_answers` ADD FOREIGN KEY (`replier_id`) REFERENCES `users` (`id`);
-
 ALTER TABLE `alerts` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
-
 ALTER TABLE `alerts` ADD FOREIGN KEY (`item_id`) REFERENCES `items` (`id`);

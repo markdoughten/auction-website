@@ -4,7 +4,6 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from datetime import datetime
 from os import path, getcwd
 from hashlib import sha512
-
 from backend import app
 from backend import db
 
@@ -13,6 +12,7 @@ def get_hash(data):
     return sha512(final_pass.encode('utf-8')).hexdigest()
 
 class User(db.Model):
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -23,25 +23,35 @@ class User(db.Model):
         self.email = email
         self.password = password
 
-    def __repr__(self) -> str:
-        return '<id %r, Name %r, Email %r, Password %r>' % (self.id, self.username, self.email, self.password)
+    def __repr__(self):
+        return f"<User {self.id}, Name {self.username}, Email {self.email}>"
 
-with app.app_context():
-    # exec first time temp data...
-    instance_dir = path.abspath(path.join(getcwd(), "..", "instance", "project.db"))
-    if not path.isfile(instance_dir):
-        db.create_all()
+class Auction(db.Model):
+    __tablename__ = 'auctions'
+    id = db.Column(db.Integer, primary_key=True)
+    item_id = db.Column(db.Integer, nullable=False)
+    seller_id = db.Column(db.Integer, nullable=False)
+    initial_price = db.Column(db.Float, nullable=False)
+    min_increment = db.Column(db.Float, nullable=False)
+    min_price = db.Column(db.Float, nullable=False)
+    opening_time = db.Column(db.DateTime, nullable=False)
+    closing_time = db.Column(db.DateTime, nullable=False)
+    status = db.Column(db.Enum('Open', 'Sold', 'Expired', name='status_enum'), nullable=False)
 
-        db.session.add(User('admin', 'admin@example.com', get_hash('mypass')))
-        db.session.add(User('guest', 'guest@example.com', get_hash('mypass')))
-        db.session.commit()
-
-    users = User.query.all()
-    print(users)
+    def __repr__(self):
+        return f"<Auction {self.id}, Item {self.item_id}, Seller {self.seller_id}, Status {self.status}>"
 
 @app.route('/')
 def index():
-    return '<h1>hello world!</h1>'
+    with db.session() as session:
+        auctions = session.query(Auction).all()
+    
+    html_content = '<h1>Auctions</h1><table border="1">'
+    html_content += '<tr><th>ID</th><th>Item Name</th><th>Starting Bid</th><th>Status</th></tr>'
+    for auction in auctions:
+        html_content += f'<tr><td>{auction.id}</td><td>{auction.item_name}</td><td>{auction.starting_bid}</td><td>{auction.status}</td></tr>'
+    html_content += '</table>'
+    return html_content
 
 @app.route('/item/<string:name>')
 def item(name):
@@ -74,7 +84,6 @@ def signup():
             output['errmsg'] = "some error occurred"
 
     return output
-
 
 @app.route('/login', methods=["POST"])
 def login():
