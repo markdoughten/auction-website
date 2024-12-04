@@ -22,7 +22,7 @@ run ``ng s`` when developing.
 python venv -m .venv
 source .venv/bin/activate
 python3 -m pip install -r requirements.txt
-source .venv/bin/deactivate
+deactivate
 ```
 
 run `serve.sh` when developing (or create the windows equivalent)

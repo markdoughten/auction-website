@@ -1,1 +1,6 @@
-<app-landing></app-landing>
+@if (authService.isLoggedIn | async) {
+  <app-navbar></app-navbar>
+  <app-dashboard></app-dashboard>
+} @else {
+  <app-landing></app-landing>
+}
