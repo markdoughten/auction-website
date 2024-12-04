@@ -62,7 +62,7 @@ CREATE TABLE `bids` (
     `auction_id` int,
     `users_id` int,
     `bid_value` real,
-    `bid_active` bool
+    `bid_active` bool DEFAULT true
 );
 
 CREATE TABLE `user_questions` (

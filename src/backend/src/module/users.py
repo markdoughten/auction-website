@@ -2,7 +2,6 @@ import backend.constants.constants as constants
 from backend import db
 from hashlib import sha512
 
-
 def get_hash(data):
     final_pass = data + "including a random salt";
     return sha512(final_pass.encode('utf-8')).hexdigest()
@@ -24,3 +23,13 @@ class User(db.Model):
 
     def __repr__(self):
         return f"<User {self.id}, Name {self.username}, Email {self.email}, Role {self.role}>"
+
+
+def add_new(email, username, password, role=constants.USER_ROLE.USER):
+    user = User.query.filter((User.email==email) | (User.username==username)).first()
+    if (user is None) and email and username and password:
+        db.session.add(User(username, email, get_hash(password)))
+        db.session.commit()
+        return True
+
+    return False
