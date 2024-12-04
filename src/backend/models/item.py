@@ -1,10 +1,10 @@
-from backend import db
+from .. import db
 
 """
     Add all item related classes here?
 """
 
-class Items(db.Model):
+class Item(db.Model):
     __tablename__ = 'items'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=True, nullable=False)

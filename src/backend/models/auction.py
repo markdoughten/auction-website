@@ -1,4 +1,4 @@
-from backend import db
+from .. import db
 
 """
 Add auction and bid here?

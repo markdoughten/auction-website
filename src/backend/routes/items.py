@@ -1,7 +1,7 @@
-from backend.constants import constants
-from backend.src.module.auction import Auctions
+from ..utils import constants
+from ..models.auction import Auctions
 from flask import request, jsonify
-from backend import app
+from flask import current_app as app
 from flask_jwt_extended import jwt_required
 
 @app.route('/get_items', methods=["POST"])
