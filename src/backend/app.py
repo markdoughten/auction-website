@@ -1,103 +1,84 @@
-from flask import Flask, request, redirect, render_template, session, url_for, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from flask import Flask, request, jsonify, render_template
+from flask_cors import CORS
+from models import db, User, Auction, Bid  # Import models and db from models.py
 from datetime import datetime
-from os import path, getcwd
-from hashlib import sha512
-from backend import app
-from backend import db
 
-def get_hash(data):
-    final_pass = data + "including a random salt";
-    return sha512(final_pass.encode('utf-8')).hexdigest()
+# Initialize Flask app
+app = Flask(__name__, template_folder="src/backend/templates")
+CORS(app)
 
-class User(db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(128), nullable=False)
+# Configure SQLAlchemy
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:@localhost/auction"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False  # Suppress warnings about deprecated features
 
-    def __init__(self, username, email, password):
-        self.username = username
-        self.email = email
-        self.password = password
+# Bind the app to the database
+db.init_app(app)
 
-    def __repr__(self):
-        return f"<User {self.id}, Name {self.username}, Email {self.email}>"
-
-class Auction(db.Model):
-    __tablename__ = 'auctions'
-    id = db.Column(db.Integer, primary_key=True)
-    item_id = db.Column(db.Integer, nullable=False)
-    seller_id = db.Column(db.Integer, nullable=False)
-    initial_price = db.Column(db.Float, nullable=False)
-    min_increment = db.Column(db.Float, nullable=False)
-    min_price = db.Column(db.Float, nullable=False)
-    opening_time = db.Column(db.DateTime, nullable=False)
-    closing_time = db.Column(db.DateTime, nullable=False)
-    status = db.Column(db.Enum('Open', 'Sold', 'Expired', name='status_enum'), nullable=False)
-
-    def __repr__(self):
-        return f"<Auction {self.id}, Item {self.item_id}, Seller {self.seller_id}, Status {self.status}>"
-
-@app.route('/')
+# Routes
+@app.route("/")
 def index():
-    with db.session() as session:
-        auctions = session.query(Auction).all()
-    
-    html_content = '<h1>Auctions</h1><table border="1">'
-    html_content += '<tr><th>ID</th><th>Item Name</th><th>Starting Bid</th><th>Status</th></tr>'
-    for auction in auctions:
-        html_content += f'<tr><td>{auction.id}</td><td>{auction.item_name}</td><td>{auction.starting_bid}</td><td>{auction.status}</td></tr>'
-    html_content += '</table>'
-    return html_content
+    return render_template("index.html")  # Render an HTML file (create index.html in the templates folder)
 
-@app.route('/item/<string:name>')
-def item(name):
-    return '<h2>hello world! {}</h2>'.format(name)
+@app.route("/users", methods=["POST"])
+def create_user():
+    data = request.json
+    new_user = User(
+        username=data["username"],
+        email=data["email"],
+        password=data["password"],
+        role=data["role"]
+    )
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify({"message": "User created successfully!"}), 201
 
-@app.errorhandler(404)
-def page_not_found(e):
-    return '<h1>Error page not found...</h1>'
+@app.route("/auctions", methods=["POST"])
+def create_auction():
+    data = request.json
+    new_auction = Auction(
+        item_id=data["item_id"],
+        seller_id=data["seller_id"],
+        initial_price=data["initial_price"],
+        min_increment=data["min_increment"],
+        min_price=data["min_price"],
+        opening_time=datetime.fromisoformat(data["opening_time"]),
+        closing_time=datetime.fromisoformat(data["closing_time"]),
+        status="Open"
+    )
+    db.session.add(new_auction)
+    db.session.commit()
+    return jsonify({"message": "Auction created successfully!"}), 201
 
-@app.errorhandler(500)
-def internal_server_error(e):
-    return '<h1>Internal server error...</h1>'
+@app.route("/bids", methods=["POST"])
+def place_bid():
+    data = request.json
+    new_bid = Bid(
+        auction_id=data["auction_id"],
+        users_id=data["users_id"],
+        bid_value=data["bid_value"],
+        bid_active=True
+    )
+    db.session.add(new_bid)
+    db.session.commit()
+    return jsonify({"message": "Bid placed successfully!"}), 201
 
-@app.route('/signup', methods=["POST"])
-def signup():
-    output = {'status': '-1'}
-    if request.method == 'POST':
-        jsonData = request.json
-        email = jsonData.get('email')
-        username = jsonData.get('uname')
-        password = jsonData.get('password')
-        user = User.query.filter((User.email==email) | (User.username==username)).first()
-        print(email, username, password, user)
-        if email and username and password and (user is None):
-            db.session.add(User(username, email, get_hash(password)))
-            db.session.commit()
-            print("Added succesfully...")
-            output['status'] = '0'
-        else:
-            output['errmsg'] = "some error occurred"
+@app.route("/auctions/<int:auction_id>/bids", methods=["GET"])
+def get_bids(auction_id):
+    bids = Bid.query.filter_by(auction_id=auction_id).all()
+    return jsonify([{
+        "id": bid.id,
+        "auction_id": bid.auction_id,
+        "users_id": bid.users_id,
+        "bid_value": bid.bid_value,
+        "bid_active": bid.bid_active
+    } for bid in bids])
 
-    return output
+# Initialize the database
+@app.before_request 
+def setup():
+    db.create_all()
 
-@app.route('/login', methods=["POST"])
-def login():
-    output = {'status': '-1'}
-    if request.method == 'POST':
-        jsonData = request.json
-        email = jsonData.get('email')
-        password = jsonData.get('password')
-        print(email, password)
-        if email and password:
-            user = User.query.filter((User.email==email) & (User.password==get_hash(password))).first()
-            print(user)
-            if user:
-                output['id'] = str(user.id)
-                output['status']= '0'
+# Run the application
+if __name__ == "__main__":
+    app.run(debug=True)
 
-    return output
