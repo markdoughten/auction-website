@@ -4,11 +4,18 @@ import { RouterOutlet } from "@angular/router";
 import { LandingComponent } from "./landing/landing.component";
 import { AuthService } from "./auth.service";
 import { DashboardComponent } from "./dashboard/dashboard.component";
+import { NavbarComponent } from "./navbar/navbar.component";
 
 @Component({
   selector: "app-root",
   standalone: true,
-  imports: [CommonModule, RouterOutlet, LandingComponent, DashboardComponent],
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    LandingComponent,
+    DashboardComponent,
+    NavbarComponent,
+  ],
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.css",
 })
