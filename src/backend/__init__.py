@@ -24,6 +24,6 @@ def create_app():
         from . import routes
         try:
             db.create_all()  # Create sql tables for our data models
-        except:
-            print("Error creating tables")
+        except Exception as e:
+            print("Error creating tables: ",e)
         return app

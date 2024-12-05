@@ -5,6 +5,8 @@ STATUS: str = "status"
 MESSAGE: str = "message"
 SUCCESS_MSG: str = "Operation was a success"
 FAILURE_MSG: str = "Unknown error occurred"
+INVALID_REQ: str = "Invalid Request"
+NOT_FOUND: str = "Not found"
 
 class STATUS_RESPONSE(Enum):
     SUCCESS = 0
