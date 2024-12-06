@@ -22,6 +22,9 @@ def create_app():
 
     with app.app_context():
         from . import routes
+        if conf.POPULATE_VALUES:
+            from . import tools
+
         try:
             db.create_all()  # Create sql tables for our data models
         except Exception as e:
