@@ -1,15 +1,12 @@
-import backend.constants.constants as constants
-from backend import db
-from hashlib import sha512
+from .. import db
+from ..utils import constants
+from ..utils.misc import get_hash
 
-def get_hash(data):
-    final_pass = data + "including a random salt";
-    return sha512(final_pass.encode('utf-8')).hexdigest()
 
 
 class User(db.Model):
     __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
@@ -23,6 +20,7 @@ class User(db.Model):
 
     def __repr__(self):
         return f"<User {self.id}, Name {self.username}, Email {self.email}, Role {self.role}>"
+    
 
 
 def add_new(email, username, password, role=constants.USER_ROLE.USER):
