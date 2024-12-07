@@ -7,15 +7,10 @@ import {
   ValidatorFn,
 } from "@angular/forms";
 import { ReactiveFormsModule, Validators } from "@angular/forms";
-import { ElementRef } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import {
-  SERVER_URLS,
-  RESPONSE_STATUS,
-  IS_REQUIRED,
-  MIN_LEN,
-  NOT_EMAIL,
-} from "../constants";
+import { RESPONSE_STATUS, IS_REQUIRED, MIN_LEN, NOT_EMAIL } from "../constants";
+import { AuthService } from "../auth.service";
+import { Router } from "@angular/router";
+import { R_ADMIN } from "../model/usermodel";
 
 function dup_entry_found(self: LandingComponent): ValidatorFn {
   return (c: AbstractControl): { [key: string]: boolean } | null => {
@@ -44,8 +39,8 @@ export class LandingComponent implements OnInit {
   dup_entry = 0;
 
   constructor(
-    private elRef: ElementRef<HTMLElement>,
-    private http: HttpClient,
+    private auth: AuthService,
+    private router: Router,
   ) {}
 
   signUp = new FormGroup(
@@ -90,9 +85,18 @@ export class LandingComponent implements OnInit {
     return g;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.auth.isLoggedIn) {
+      let path = "/dashboard";
+      if (this.auth.user.role === R_ADMIN) {
+        path = "/admin";
+      }
+      this.router.navigate([path]);
+    }
+  }
 
   loginUsr() {
+    this.signUp.reset();
     const login = this.login;
     let is_invalid = false;
     Object.keys(login.controls).forEach((field) => {
@@ -106,21 +110,24 @@ export class LandingComponent implements OnInit {
       return;
     }
     const self = this;
-    this.http
-      .post(SERVER_URLS.login, this.login.value, { responseType: "json" })
-      .subscribe((response: any) => {
-        if (response.status === RESPONSE_STATUS.SUCCESS) {
-          // perform some more oprs...
-          console.log(response);
+
+    this.auth.login(this.login).subscribe((response: any) => {
+      if (response.status === RESPONSE_STATUS.SUCCESS) {
+        if (self.auth.user.role === R_ADMIN) {
+          self.router.navigate(["admin"]);
         } else {
-          this.dup_entry = 2;
-          self.login.get("email")?.updateValueAndValidity();
-          self.login.get("password")?.updateValueAndValidity();
+          self.router.navigate(["dashboard"]);
         }
-      });
+      } else {
+        self.dup_entry = 2;
+        self.login.get("email")?.updateValueAndValidity();
+        self.login.get("password")?.updateValueAndValidity();
+      }
+    });
   }
 
   signupUsr() {
+    this.login.reset();
     const signUp = this.signUp;
     let is_invalid = false;
     Object.keys(signUp.controls).forEach((field) => {
@@ -133,19 +140,18 @@ export class LandingComponent implements OnInit {
       signUp.markAllAsTouched();
       return;
     }
-    this.http
-      .post(SERVER_URLS.signup, signUp.value, { responseType: "json" })
-      .subscribe((response: any) => {
-        if (response.status === RESPONSE_STATUS.SUCCESS) {
-          let element: HTMLElement = document.getElementById(
-            "login_now",
-          ) as HTMLElement;
-          element.click();
-        } else {
-          this.dup_entry = 2;
-          signUp.get("uname")?.updateValueAndValidity();
-          signUp.get("email")?.updateValueAndValidity();
-        }
-      });
+
+    this.auth.signup(this.signUp).subscribe((response: any) => {
+      if (response.status === RESPONSE_STATUS.SUCCESS) {
+        let element: HTMLElement = document.getElementById(
+          "login_now",
+        ) as HTMLElement;
+        element.click();
+      } else {
+        this.dup_entry = 2;
+        signUp.get("uname")?.updateValueAndValidity();
+        signUp.get("email")?.updateValueAndValidity();
+      }
+    });
   }
 }
