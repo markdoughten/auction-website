@@ -1,10 +1,6 @@
 from dataclasses import dataclass
 from .. import db
 
-"""
-Add auction and bid here?
-"""
-
 @dataclass
 class Auctions(db.Model):
     __tablename__ = 'auctions'

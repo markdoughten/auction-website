@@ -19,13 +19,13 @@ run ``ng s`` when developing.
 [backend](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/):
 
 ```
-python venv -m .venv
+python -m venv .venv
 source .venv/bin/activate
-python3 -m pip install -r requirements.txt
+python -m pip install -r requirements.txt
 deactivate
 ```
 
-run `serve.sh` when developing (or create the windows equivalent)
+run `serve.sh` when developing
 
 Here is the database schema:
 ![1](/docs/images/schema.png)

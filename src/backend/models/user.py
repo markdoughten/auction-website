@@ -23,7 +23,6 @@ class User(db.Model):
     a_user = db.relationship("Auctions", back_populates="a_user")
     b_user = db.relationship("Bids", back_populates="b_user")
 
-
 def add_new(email, username, password, role=constants.USER_ROLE.USER):
     user = User.query.filter((User.email==email) | (User.username==username)).first()
     if (user is None) and email and username and password:

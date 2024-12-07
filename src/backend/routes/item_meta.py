@@ -4,11 +4,12 @@ from flask_jwt_extended import jwt_required
 from sqlalchemy import delete
 from ..utils import constants
 from ..models.item_meta import MetaItemCategory
-from ..db_ops.item_meta import create_meta_item_category
+from ..models.item_meta import create_new_item, add_item_categ, add_item_attr, MetaItemCategory, MetaItemSubCategory, MetaItemAttribute
 from ..db_ops.common import delete_one, delete_all, db_commit
-
-
-
+from ..utils import constants
+from ..models import item_meta
+import os
+import json
 
 @app.route('/item_meta/categories/<id>', methods=["GET"])
 # @jwt_required()
@@ -21,7 +22,6 @@ def get_category(id):
         return jsonify(output), 404
     
     return jsonify(item_category)
-
 
 @app.route('/item_meta/categories/<id>', methods=["PUT"])
 # @jwt_required() 
@@ -45,7 +45,6 @@ def put_category(id):
     db_commit()
 
     return jsonify(item_category)
-
 
 @app.route('/item_meta/categories/<id>', methods=["DELETE"])
 # @jwt_required() 
@@ -82,7 +81,6 @@ def get_categories():
     categories = MetaItemCategory.query.paginate(page=page).items
     return jsonify(categories)
 
-
 @app.route('/item_meta/categories', methods=["POST"])
 # @jwt_required()
 def post_category():
@@ -99,7 +97,7 @@ def post_category():
     )
 
     try:
-        create_meta_item_category(category)
+        add_item_categ(category)
     except:
         output ={}
         output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
@@ -107,7 +105,6 @@ def post_category():
         return jsonify(output), 400
 
     return jsonify(category)
-
 
 @app.route('/item_meta/categories', methods=["DELETE"])
 # @jwt_required()

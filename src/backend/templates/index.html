@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auction Listings</title>
+</head>
+<body>
+    <h1>Active Auctions</h1>
+    <ul>
+        {% for auction in auctions %}
+        <li>
+            <h2>Item ID: {{ auction.item_id }}</h2>
+            <p>Seller ID: {{ auction.seller_id }}</p>
+            <p>Initial Price: ${{ auction.initial_price }}</p>
+            <p>Minimum Increment: ${{ auction.min_increment }}</p>
+            <p>Minimum Price: ${{ auction.min_price }}</p>
+            <p>Opening Time: {{ auction.opening_time }}</p>
+            <p>Closing Time: {{ auction.closing_time }}</p>
+            <p>Status: {{ auction.status }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+
+
+
