@@ -5,6 +5,8 @@ import { LandingComponent } from "./landing/landing.component";
 import { AuthService } from "./auth.service";
 import { DashboardComponent } from "./dashboard/dashboard.component";
 import { NavbarComponent } from "./navbar/navbar.component";
+import { AdminComponent } from "./admin/admin.component";
+import { R_ADMIN } from "./model/usermodel";
 
 @Component({
   selector: "app-root",
@@ -15,11 +17,12 @@ import { NavbarComponent } from "./navbar/navbar.component";
     LandingComponent,
     DashboardComponent,
     NavbarComponent,
+    AdminComponent,
   ],
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.css",
 })
 export class AppComponent {
-  title = "frontend";
+  readonly R_ADMIN = R_ADMIN;
   constructor(public authService: AuthService) {}
 }

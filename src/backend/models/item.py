@@ -18,6 +18,7 @@ class Item(db.Model):
     #Relationships
     category = relationship("MetaItemCategory")
     subcategory = relationship("MetaItemSubCategory")
+    a_item = relationship("Auctions", back_populates="a_item")
     attributes:Mapped[List["ItemAttribute"]] = relationship(back_populates="item")
 
     def __repr__(self):
@@ -26,8 +27,8 @@ class Item(db.Model):
 
 class ItemAttribute(db.Model):
     __tablename__ = 'item_attributes'
-    item_id = db.Column(db.Integer, ForeignKey("items.id"))
-    attribute_id = db.Column(db.Integer, ForeignKey("meta_item_attributes.id"))
+    item_id = db.Column(db.Integer, ForeignKey("items.id"), primary_key=True)
+    attribute_id = db.Column(db.Integer, ForeignKey("meta_item_attributes.id"), primary_key=True)
     attribute_value = db.Column(db.String(255))
 
     #Relationships

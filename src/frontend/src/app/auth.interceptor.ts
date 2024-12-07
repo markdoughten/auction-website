@@ -1,4 +1,4 @@
-import { HTTP_INTERCEPTORS, HttpInterceptorFn } from "@angular/common/http";
+import { HttpInterceptorFn } from "@angular/common/http";
 import { JWT_TOKEN } from "./constants";
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
@@ -6,7 +6,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   req = req.clone({
     headers: req.headers.set(
       "Authorization",
-      token === null ? "" : `Bearer ${token}`,
+      token === null ? "" : `Bearer ` + token,
     ),
   });
   return next(req);

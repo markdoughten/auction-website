@@ -1,0 +1,48 @@
+{
+  "shoe": {
+    "sneakers": {
+      "gender": "str",
+      "size": "int",
+      "color": "str",
+      "material": "str"
+    },
+    "boots": {
+      "gender": "str",
+      "size": "int",
+      "color": "str",
+      "material": "str"
+    },
+    "sandals": {
+      "gender": "str",
+      "size": "int",
+      "color": "str",
+      "material": "str"
+    }
+  },
+  "clothes": {
+    "shirt": {
+      "gender": "str",
+      "size": "int",
+      "color": "str",
+      "material": "str"
+    },
+    "t-shirt": {
+      "gender": "str",
+      "size": "int",
+      "color": "str",
+      "material": "str"
+    },
+    "jeans": {
+      "gender": "str",
+      "size": "int",
+      "color": "str",
+      "material": "str"
+    },
+    "pants": {
+      "gender": "str",
+      "size": "int",
+      "color": "str",
+      "material": "str"
+    }
+  }
+}

@@ -10,6 +10,7 @@ import { ReactiveFormsModule, Validators } from "@angular/forms";
 import { RESPONSE_STATUS, IS_REQUIRED, MIN_LEN, NOT_EMAIL } from "../constants";
 import { AuthService } from "../auth.service";
 import { Router } from "@angular/router";
+import { R_ADMIN } from "../model/usermodel";
 
 function dup_entry_found(self: LandingComponent): ValidatorFn {
   return (c: AbstractControl): { [key: string]: boolean } | null => {
@@ -84,7 +85,15 @@ export class LandingComponent implements OnInit {
     return g;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.auth.isLoggedIn) {
+      let path = "/dashboard";
+      if (this.auth.user.role === R_ADMIN) {
+        path = "/admin";
+      }
+      this.router.navigate([path]);
+    }
+  }
 
   loginUsr() {
     this.signUp.reset();
@@ -104,9 +113,13 @@ export class LandingComponent implements OnInit {
 
     this.auth.login(this.login).subscribe((response: any) => {
       if (response.status === RESPONSE_STATUS.SUCCESS) {
-        this.router.navigate(["login"]);
+        if (self.auth.user.role === R_ADMIN) {
+          self.router.navigate(["admin"]);
+        } else {
+          self.router.navigate(["dashboard"]);
+        }
       } else {
-        this.dup_entry = 2;
+        self.dup_entry = 2;
         self.login.get("email")?.updateValueAndValidity();
         self.login.get("password")?.updateValueAndValidity();
       }
