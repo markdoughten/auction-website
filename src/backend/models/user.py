@@ -1,9 +1,7 @@
 from .. import db
 from ..utils import constants
-from ..utils.misc import get_hash
-from dataclasses import dataclass
 
-@dataclass
+
 class User(db.Model):
     __tablename__ = 'users'
     id:int = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -23,13 +21,3 @@ class User(db.Model):
     a_user = db.relationship("Auctions", back_populates="a_user")
     b_user = db.relationship("Bids", back_populates="b_user")
 
-
-def add_new(email, username, password, role=constants.USER_ROLE.USER):
-    user = User.query.filter((User.email==email) | (User.username==username)).first()
-    if (user is None) and email and username and password:
-        user = User(username, email, get_hash(password), role)
-        db.session.add(user)
-        db.session.commit()
-        return True
-
-    return False

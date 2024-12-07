@@ -7,7 +7,10 @@ db-down:
 
 
 db-reset:
-	make db-down && make db-up
+	make db-down && sleep 1 && make db-up
 
 run:
 	./serve.sh
+
+reset:
+	make db-reset && sleep 3 && ./serve.sh

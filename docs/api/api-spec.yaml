@@ -3,7 +3,7 @@ info:
   description: "Auction Website API"
   version: "1.0.0"
   title: "Auction Website API"
-host: "localhost:8080"
+host: "localhost:5000"
 basePath: "/"
 tags:
 - name: "user"
@@ -22,7 +22,6 @@ tags:
   description: "Manage alerts"
 
 schemes:
-- "https"
 - "http"
 paths:
   /users/{id}:
@@ -541,12 +540,11 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - in: "body"
-        name: "body"
-        description: "Filters for get categories"
+      - in: "query"
+        name: "page"
+        type: integer
+        description: "Page number"
         required: true
-        schema:
-          $ref: "#/definitions/GetCategories"
       responses:
         "200":
           description: "successful operation"

@@ -3,7 +3,8 @@ from flask import current_app as app
 from flask_jwt_extended import (create_access_token, jwt_required, get_jwt_identity)
 from ..utils import constants
 from ..utils.misc import get_hash
-from ..models.user import User, add_new
+from ..models.user import User
+from ..db_ops.user import add_new
 from .. import jwt
 
 

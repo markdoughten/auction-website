@@ -3,31 +3,28 @@ from flask import current_app as app
 from flask_jwt_extended import jwt_required
 from sqlalchemy import delete
 from ..utils import constants
-from ..models.item_meta import MetaItemCategory
-from ..db_ops.item_meta import create_meta_item_category
-from ..db_ops.common import delete_one, delete_all, db_commit
+from ..models.item_meta import MetaItemSubCategory
+from ..db_ops.common import db_create_one, db_delete_one, db_delete_all, db_commit
 
 
-
-
-@app.route('/item_meta/categories/<id>', methods=["GET"])
+@app.route('/item_meta/subcategories/<id>', methods=["GET"])
 # @jwt_required()
-def get_category(id):
-    item_category = MetaItemCategory.query.filter(MetaItemCategory.id==id).first()
-    if not item_category:
+def get_subcategory(id):
+    item_subcategory = MetaItemSubCategory.query.filter(MetaItemSubCategory.id==id).first()
+    if not item_subcategory:
         output={}
         output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
         output[constants.MESSAGE] = constants.NOT_FOUND
         return jsonify(output), 404
     
-    return jsonify(item_category)
+    return jsonify(item_subcategory.to_dict(True, True))
 
 
-@app.route('/item_meta/categories/<id>', methods=["PUT"])
+@app.route('/item_meta/subcategories/<id>', methods=["PUT"])
 # @jwt_required() 
-def put_category(id):
-    item_category = MetaItemCategory.query.filter(MetaItemCategory.id==id).first()
-    if not item_category:
+def put_subcategory(id):
+    item_subcategory = MetaItemSubCategory.query.filter(MetaItemSubCategory.id==id).first()
+    if not item_subcategory:
         output={}
         output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
         output[constants.MESSAGE] = constants.NOT_FOUND
@@ -41,36 +38,36 @@ def put_category(id):
     
     reqJson = request.json
     
-    item_category.category_name = reqJson["categoryName"]
+    item_subcategory.subcategory_name = reqJson["subcategoryName"]
     db_commit()
 
-    return jsonify(item_category)
+    return jsonify(item_subcategory.to_dict(True, True))
 
 
-@app.route('/item_meta/categories/<id>', methods=["DELETE"])
+@app.route('/item_meta/subcategories/<id>', methods=["DELETE"])
 # @jwt_required() 
-def delete_category(id):
-    item_category = MetaItemCategory.query.filter(MetaItemCategory.id==id).first()
-    if not item_category:
+def delete_subcategory(id):
+    item_subcategory = MetaItemSubCategory.query.filter(MetaItemSubCategory.id==id).first()
+    if not item_subcategory:
         output={}
         output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
         output[constants.MESSAGE] = constants.NOT_FOUND
         return jsonify(output), 404
 
     try:
-        delete_one(item_category)
+        db_delete_one(item_subcategory)
     except:
         output ={}
         output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
         output[constants.MESSAGE] = constants.FAILURE_MSG
         return jsonify(output), 400
 
-    return jsonify(item_category), 200
+    return jsonify(item_subcategory.to_dict()), 200
 
 
-@app.route('/item_meta/categories', methods=["GET"])
+@app.route('/item_meta/subcategories', methods=["GET"])
 # @jwt_required()
-def get_categories():
+def get_subcategories():
     if not request.args:
         output={}
         output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
@@ -79,13 +76,14 @@ def get_categories():
 
     page = request.args.get("page")
     page = int(page)
-    categories = MetaItemCategory.query.paginate(page=page).items
-    return jsonify(categories)
+    subcategories = MetaItemSubCategory.query.paginate(page=page).items
+    subcategoriesDict = list(map(lambda x:x.to_dict(True, True), subcategories))
+    return jsonify(subcategoriesDict)
 
 
-@app.route('/item_meta/categories', methods=["POST"])
+@app.route('/item_meta/subcategories', methods=["POST"])
 # @jwt_required()
-def post_category():
+def post_subcategory():
     if not request.json:
         output={}
         output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
@@ -94,26 +92,27 @@ def post_category():
     
     reqJson = request.json
     
-    category = MetaItemCategory(
-        category_name = reqJson["categoryName"]
+    subcategory = MetaItemSubCategory(
+        subcategory_name = reqJson["subcategoryName"],
+        category_id = reqJson["categoryId"]
     )
 
     try:
-        create_meta_item_category(category)
+        db_create_one(subcategory)
     except:
         output ={}
         output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
         output[constants.MESSAGE] = constants.FAILURE_MSG
         return jsonify(output), 400
 
-    return jsonify(category)
+    return jsonify(subcategory.to_dict())
 
 
-@app.route('/item_meta/categories', methods=["DELETE"])
+@app.route('/item_meta/subcategories', methods=["DELETE"])
 # @jwt_required()
-def delete_categories():
+def delete_subcategories():
     try:
-        delete_all(MetaItemCategory)
+        db_delete_all(MetaItemSubCategory)
         output ={}
         output[constants.STATUS] = constants.STATUS_RESPONSE.SUCCESS.value
         output[constants.MESSAGE] = constants.SUCCESS_MSG
@@ -123,3 +122,7 @@ def delete_categories():
         output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
         output[constants.MESSAGE] = constants.FAILURE_MSG
         return jsonify(output), 400
+
+
+
+
