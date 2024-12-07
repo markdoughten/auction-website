@@ -3,10 +3,6 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import Mapped
 from typing import List
-"""
-    Add all item related classes here?
-"""
-
 
 class Item(db.Model):
     __tablename__ = 'items'

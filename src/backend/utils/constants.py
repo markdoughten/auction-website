@@ -13,7 +13,6 @@ class STATUS_RESPONSE(Enum):
     FAILURE = 1
     MISSING_TOKEN = 2
 
-
 class USER_ROLE(Enum):
     ADMIN = 'Admin'
     STAFF = 'Staff'

@@ -9,6 +9,7 @@ load_dotenv(path.join(basedir, '.env'))
 
 class Config:
     """Set Flask configuration from .env file."""
+    
     # General Config
     FLASK_APP="app.py"
     FLASK_ENV = environ.get('FLASK_ENV')

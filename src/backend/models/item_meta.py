@@ -3,7 +3,6 @@ from sqlalchemy import ForeignKey
 from dataclasses import dataclass
 from .. import db
 
-
 @dataclass
 class MetaItemCategory(db.Model):
     __tablename__ = 'meta_item_categories'
@@ -29,7 +28,6 @@ class MetaItemAttribute(db.Model):
 
     #Relationships
     subcategory = relationship("MetaItemSubCategory")
-
 
 def create_new_item(item_name):
     item = MetaItemCategory.query.filter(MetaItemCategory.category_name==item_name).first()

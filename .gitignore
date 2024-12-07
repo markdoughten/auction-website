@@ -4,3 +4,5 @@ __pycache__
 /src/instance
 .venv
 .ropeproject
+.env
+.vs
