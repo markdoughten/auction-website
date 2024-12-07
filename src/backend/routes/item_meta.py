@@ -5,8 +5,8 @@ from sqlalchemy import delete
 from ..utils import constants
 from ..models.item_meta import MetaItemCategory
 from ..models.item_meta import create_new_item, add_item_categ, add_item_attr, MetaItemCategory, MetaItemSubCategory, MetaItemAttribute
-from ..db_ops.common import delete_one, delete_all, db_commit
 from ..utils import constants
+from ..utils.common import delete_one, delete_all, db_commit
 from ..models import item_meta
 import os
 import json
