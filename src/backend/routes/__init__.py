@@ -1,3 +1,4 @@
+from .seeder import *
 from .users import *
 from .items import *
 from .item_meta_categories import *
