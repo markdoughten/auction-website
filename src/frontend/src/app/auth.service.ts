@@ -48,7 +48,7 @@ export class AuthService {
       .post(SERVER_URLS.signup, data.value, { responseType: "json" })
       .pipe(
         tap((response: any) => {
-          console.log(response);
+          // perform opers if any
         }),
       );
   }

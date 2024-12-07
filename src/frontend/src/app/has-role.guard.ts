@@ -18,6 +18,9 @@ export class HasRoleGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot,
   ): MaybeAsync<GuardResult> {
+    if (!this.authService.isLoggedIn) {
+      return false;
+    }
     return route.data["role"].includes(this.authService.user.role);
   }
 }
