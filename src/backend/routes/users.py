@@ -1,6 +1,6 @@
 from flask import request, jsonify
 from flask import current_app as app
-from flask_jwt_extended import create_access_token, jwt_required
+from flask_jwt_extended import (create_access_token, jwt_required, get_jwt_identity)
 from ..utils import constants
 from ..utils.misc import get_hash
 from ..models.user import User, add_new
@@ -12,10 +12,13 @@ def user_identity_lookup(user):
     return {"username": user.username, "role": user.role.value}
 
 
+def add_new_wrapper(request, user_level=constants.USER_ROLE.USER):
+    return add_new(request.json.get('email'), request.json.get('uname'), request.json.get('password'), user_level)
+
 @app.route('/signup', methods=["POST"])
 def signup():
     output = {}
-    if request.method == 'POST' and request.json and add_new(request.json.get('email'), request.json.get('uname'), request.json.get('password')):
+    if request.method == 'POST' and request.json and add_new_wrapper(request):
         output[constants.STATUS] = constants.STATUS_RESPONSE.SUCCESS.value
         output[constants.MESSAGE] = constants.SUCCESS_MSG
         return jsonify(output)
@@ -50,9 +53,10 @@ def login():
 @app.route('/c_account', methods=["POST"])
 @jwt_required()
 def create_account():
+    identity = get_jwt_identity()
+    print(identity)
     output = {}
-    if request.method == 'POST' and request.json and add_new(request.json.get('email'), \
-        request.json.get('uname'), request.json.get('password'), constants.USER_ROLE.STAFF):
+    if request.method == 'POST' and request.json and add_new_wrapper(request, constants.USER_ROLE.STAFF):
         output[constants.STATUS] = constants.STATUS_RESPONSE.SUCCESS.value
         output[constants.MESSAGE] = constants.SUCCESS_MSG
         return jsonify(output)
