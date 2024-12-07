@@ -18,6 +18,6 @@ class User(db.Model):
         self.role = role
 
     #Relationships
-    a_user = db.relationship("Auctions", back_populates="a_user")
-    b_user = db.relationship("Bids", back_populates="b_user")
+    # a_user = db.relationship("Auctions", back_populates="a_user")
+    # b_user = db.relationship("Bids", back_populates="b_user")
 

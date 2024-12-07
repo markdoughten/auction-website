@@ -19,8 +19,8 @@ class Item(db.Model):
     #Relationships
     category:Mapped[MetaItemCategory] = relationship()
     subcategory:Mapped[MetaItemSubCategory] = relationship()
-    a_item = relationship("Auctions", back_populates="a_item")
-    attributes:Mapped[List["ItemAttribute"]] = relationship()
+    # a_item = relationship("Auctions", back_populates="a_item")
+    attributes:Mapped[List["ItemAttribute"]] = relationship(cascade="all, delete")
 
     #methods
     def __repr__(self):
@@ -31,9 +31,11 @@ class Item(db.Model):
         d["id"] = self.id
         d["categoryId"] = self.category_id
         d["subcategoryId"] = self.subcategory_id
+        d["name"] = self.name
         
         if with_child_rels:
-            d["category"] = self.category.to_dict(with_child_rels=True)
+            d["meta"] = self.subcategory.to_dict(with_child_rels=True, with_parent_rels=True)
+            d["attributes"] = list(map(lambda x:x.to_dict(), self.attributes))
         
         if with_parent_rels:
             pass
@@ -50,5 +52,19 @@ class ItemAttribute(db.Model):
     #Relationships
     item: Mapped[Item] = relationship(back_populates="attributes")
 
+    #methods
     def __repr__(self):
         return f"<Item {self.item_id}, Attr_id {self.attribute_id}, Attr_Value {self.attribute_value}>"
+
+    def to_dict(self, with_child_rels=False, with_parent_rels=False):
+        d={}
+        d["attributeId"] = self.attribute_id
+        d["attributeValue"] = self.attribute_value
+
+        if with_parent_rels:
+            d["item"] = self.item.to_dict(with_parent_rels=True)
+        
+        if with_child_rels:
+            pass
+
+        return d

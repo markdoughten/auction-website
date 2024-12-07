@@ -30,4 +30,4 @@ class Config:
     JWT_VERIFY_SUB = False
 
     # Test Config
-    POPULATE_VALUES = True if environ.get("POPULATE_VALUES") == "True" else False
+    POPULATE_VALUES = environ.get("POPULATE_VALUES") == "True"

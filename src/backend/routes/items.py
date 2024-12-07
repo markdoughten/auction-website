@@ -1,17 +1,155 @@
-from ..utils import constants
-from ..models.auction import Auctions
 from flask import request, jsonify
 from flask import current_app as app
 from flask_jwt_extended import jwt_required
+from sqlalchemy import delete
+from ..utils import constants
+from ..utils.item import item_model_to_api_resp
+from ..models.item import Item, ItemAttribute
+from ..db_ops.common import db_create_one, db_delete_one, db_delete_all, db_commit
 
-@app.route('/get_items', methods=["POST"])
-@jwt_required()
+
+
+
+@app.route('/items/<id>', methods=["GET"])
+# @jwt_required()
+def get_item(id):
+    item = Item.query.filter(Item.id==id).first()
+    if not item:
+        output={}
+        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
+        output[constants.MESSAGE] = constants.NOT_FOUND
+        return jsonify(output), 404
+    
+    resp = item_model_to_api_resp(item)
+
+    return jsonify(resp)
+
+
+@app.route('/items/<id>', methods=["PUT"])
+# @jwt_required() 
+def put_item(id):
+    item:Item = Item.query.filter(Item.id==id).first()
+    if not item:
+        output={}
+        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
+        output[constants.MESSAGE] = constants.NOT_FOUND
+        return jsonify(output), 404
+    
+    if not request.json:
+        output={}
+        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
+        output[constants.MESSAGE] = constants.INVALID_REQ
+        return jsonify(output), 401
+    
+    reqJson = request.json
+    
+
+    item.name = reqJson["name"]
+    db_commit()
+
+    attr_id_to_val={}
+    for attr in reqJson["attributes"]:
+        attr_id_to_val[attr["attributeId"]] = attr["attributeValue"]
+
+    for attr in item.attributes:
+        attr.attribute_value = attr_id_to_val[attr.attribute_id]
+    db_commit()
+
+    resp = item_model_to_api_resp(item)
+
+    return jsonify(resp)
+
+
+@app.route('/items/<id>', methods=["DELETE"])
+# @jwt_required() 
+def delete_item(id):
+    item = Item.query.filter(Item.id==id).first()
+    if not item:
+        output={}
+        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
+        output[constants.MESSAGE] = constants.NOT_FOUND
+        return jsonify(output), 404
+
+    try:
+        db_delete_one(item)
+    except:
+        output ={}
+        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
+        output[constants.MESSAGE] = constants.FAILURE_MSG
+        return jsonify(output), 400
+
+    return jsonify(item.to_dict()), 200
+
+
+@app.route('/items', methods=["GET"])
+# @jwt_required()
 def get_items():
-    output = {}
-    if request.method == 'POST':
-        Auctions.query.filter()
-        return jsonify(output)
+    if not request.args:
+        output={}
+        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
+        output[constants.MESSAGE] = constants.INVALID_REQ
+        return jsonify(output), 401
 
-    output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
-    output[constants.MESSAGE] = constants.FAILURE_MSG
-    return jsonify(output)
+    page = request.args.get("page")
+    page = int(page)
+    items = Item.query.paginate(page=page).items
+    itemsDict = list(map(lambda x:item_model_to_api_resp(x),items))
+
+    return jsonify(itemsDict)
+
+
+@app.route('/items', methods=["POST"])
+# @jwt_required()
+def post_item():
+    if not request.json:
+        output={}
+        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
+        output[constants.MESSAGE] = constants.INVALID_REQ
+        return jsonify(output), 401
+    
+    reqJson = request.json
+    
+    item = Item(
+        category_id = reqJson["categoryId"],
+        subcategory_id = reqJson["subcategoryId"],
+        name = reqJson["name"]
+    )
+
+    try:
+        db_create_one(item)
+    except:
+        output ={}
+        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
+        output[constants.MESSAGE] = constants.FAILURE_MSG
+        return jsonify(output), 400
+
+    for attr in reqJson["attributes"]:
+        attribute = ItemAttribute(
+            item_id = item.id, 
+            attribute_id = attr["attributeId"], 
+            attribute_value = attr["attributeValue"]
+            )
+        db_create_one(attribute)
+    
+    resp = item_model_to_api_resp(item)
+    return jsonify(resp)
+
+
+@app.route('/items', methods=["DELETE"])
+# @jwt_required()
+def delete_items():
+    try:
+        db_delete_all(Item)
+        output ={}
+        output[constants.STATUS] = constants.STATUS_RESPONSE.SUCCESS.value
+        output[constants.MESSAGE] = constants.SUCCESS_MSG
+        return jsonify(output), 200
+    except Exception as e:
+        output ={}
+        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
+        output[constants.MESSAGE] = constants.FAILURE_MSG
+        return jsonify(output), 400
+
+
+
+

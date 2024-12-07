@@ -19,10 +19,18 @@ def db_create_one(obj):
         raise e
 
 def db_delete_one(obj):
-    db.session.delete(obj)
-    db.session.commit()
+    try:
+        db.session.delete(obj)
+        db.session.commit()
+    except Exception as e:
+        print("Error deleting row in db:", e)
+        raise e
 
 def db_delete_all(model):
     sql = delete(model)
-    db.session.execute(sql)
-    db.session.commit()
+    try:
+        db.session.execute(sql)
+        db.session.commit()
+    except Exception as e:
+        print("Error deleting rows in db:", e)
+        raise e
