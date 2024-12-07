@@ -12,9 +12,9 @@ item_meta = {
             "sleeve",
             "neck"
         ],
-        "jeans": [
+        "pants": [
             "waist",
-            "length",
+            "size",
             "color",
             "style"
         ],
@@ -23,7 +23,6 @@ item_meta = {
             "color",
             "style",
             "closure",
-            "top"
         ]
     }
 }
