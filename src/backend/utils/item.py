@@ -22,3 +22,19 @@ def item_model_to_api_resp(item):
     del resp["meta"]
 
     return resp
+
+
+def item_match_by_attr(item, attr_id, attr_value):
+    for attr in item["attributes"]:
+        if attr["attributeId"] == attr_id:
+            return attr["attributeValue"] == attr_value
+    
+    return False
+
+
+def filter_items_by_attr(items, attr_id, attr_value):
+    out = []
+    for item in items:
+        if item_match_by_attr(item, attr_id, attr_value):
+            out.append(item)
+    return out

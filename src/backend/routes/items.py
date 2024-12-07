@@ -3,7 +3,7 @@ from flask import current_app as app
 from flask_jwt_extended import jwt_required
 from sqlalchemy import delete
 from ..utils import constants
-from ..utils.item import item_model_to_api_resp
+from ..utils.item import item_model_to_api_resp, filter_items_by_attr
 from ..models.item import Item, ItemAttribute
 from ..db_ops.common import db_create_one, db_delete_one, db_delete_all, db_commit
 
@@ -90,10 +90,29 @@ def get_items():
         output[constants.MESSAGE] = constants.INVALID_REQ
         return jsonify(output), 401
 
+    categoryId = request.args.get("categoryId")
+    subcategoryId = request.args.get("subcategoryId")
+    attr_id = request.args.get("attributeId")
+    attr_value = request.args.get("attributeValue")
+
     page = request.args.get("page")
     page = int(page)
-    items = Item.query.paginate(page=page).items
+    itemQuery = Item.query
+    if(categoryId):
+        categoryId=int(categoryId)
+        itemQuery=itemQuery.filter(Item.category_id == categoryId)
+    
+    if(subcategoryId):
+        subcategoryId=int(subcategoryId)
+        itemQuery=itemQuery.filter(Item.subcategory_id == subcategoryId)
+
+
+    items = itemQuery.paginate(page=page).items
     itemsDict = list(map(lambda x:item_model_to_api_resp(x),items))
+
+    if attr_id!=None and attr_value!=None:
+        print("filter attr", attr_id, attr_value)
+        itemsDict = filter_items_by_attr(itemsDict, int(attr_id), attr_value)
 
     return jsonify(itemsDict)
 

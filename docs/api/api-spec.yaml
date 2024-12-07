@@ -962,6 +962,26 @@ paths:
         description: "Page number"
         required: true
         type: integer
+      - in: "query"
+        name: "categoryId"
+        description: "CategoryId"
+        required: false
+        type: integer
+      - in: "query"
+        name: "subcategoryId"
+        description: "SubCategoryId"
+        required: false
+        type: integer
+      - in: "query"
+        name: "attributeId"
+        description: "AttributeId"
+        required: false
+        type: integer
+      - in: "query"
+        name: "attributeValue"
+        description: "AttributeValue"
+        required: false
+        type: string
       responses:
         "200":
           description: "successful operation"
