@@ -26,6 +26,8 @@ class Config:
     #JWT
     SECRET_KEY = environ.get("SECRET_KEY")
     JWT_SECRET_KEY = environ.get("SECRET_KEY")
+    JWT_TOKEN_LOCATION = ['headers']
+    JWT_VERIFY_SUB = False
 
     # Test Config
     POPULATE_VALUES = True if environ.get("POPULATE_VALUES") == "True" else False
