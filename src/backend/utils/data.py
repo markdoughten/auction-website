@@ -12,7 +12,6 @@ def populate_data():
     try:
         # Delete all existing entries
         print("Deleting all existing entries...")
-
         db.session.execute(text('SET FOREIGN_KEY_CHECKS=0;'))  # Disable foreign key checks
         MetaItemAttribute.query.delete()
         MetaItemSubCategory.query.delete()
@@ -32,25 +31,19 @@ def populate_data():
         # Add a clothing category and related subcategories and attributes
         _, category_created = create_new_item("Clothing")
         print(f"Clothing category created: {category_created}")
-
         _, tshirts_created = add_item_categ("Clothing", "T-Shirts")
         print(f"T-Shirts subcategory created: {tshirts_created}")
-
         _, jeans_created = add_item_categ("Clothing", "Jeans")
         print(f"Jeans subcategory created: {jeans_created}")
-
         _, size_attr_created = add_item_attr("Clothing", "T-Shirts", "Size")
         print(f"T-Shirts size attribute created: {size_attr_created}")
-
         _, material_attr_created = add_item_attr("Clothing", "T-Shirts", "Material")
         print(f"T-Shirts material attribute created: {material_attr_created}")
-
         _, color_attr_created = add_item_attr("Clothing", "Jeans", "Color")
         print(f"Jeans color attribute created: {color_attr_created}")
 
         # Adding Items
         print("Adding Items...")
-
         tshirt_item = Item(name="Graphic T-Shirt", category_id=MetaItemCategory.query.filter_by(category_name="Clothing").first().id,
                            subcategory_id=MetaItemSubCategory.query.filter_by(subcategory_name="T-Shirts").first().id)
         jeans_item = Item(name="Skinny Jeans", category_id=MetaItemCategory.query.filter_by(category_name="Clothing").first().id,
@@ -110,7 +103,6 @@ def populate_data():
         db.session.add_all([tshirt_bid, jeans_bid])
         db.session.commit()
         print("Bids added successfully.")
-
         print("Dummy data populated successfully.")
     except Exception as e:
         print(f"Error populating data: {e}")

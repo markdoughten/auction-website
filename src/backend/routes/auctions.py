@@ -19,5 +19,3 @@ def create_auction():
 def render_auction():
     # query for auction data based on id
     return render_template("auction.html")  # Render an HTML file (create index.html in the templates folder)
-
-

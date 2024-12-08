@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<h1>Search Results</h1>
+<ul>
+    {% if auctions %}
+    {% for auction in auctions %}
+        {% include "item.html" %}
+    {% endfor %}
+    {% else %}
+    <p>No results found.</p>
+    {% endif %}
+</ul>
+{% endblock %}
