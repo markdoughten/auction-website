@@ -10,7 +10,6 @@ class User(db.Model):
     role:constants.USER_ROLE = db.Column(db.Enum(constants.USER_ROLE, values_callable=lambda t: [ str(item.value) for item in t]), nullable=False)
 
     #Relationships
-    # a_user = db.relationship("Auctions", back_populates="a_user")
     # b_user = db.relationship("Bids", back_populates="b_user")
 
     #methods

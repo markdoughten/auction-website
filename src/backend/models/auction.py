@@ -1,5 +1,6 @@
 from .. import db
 from ..models.item import Item
+from ..models.user import User
 from sqlalchemy.orm import relationship, Mapped
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import func
@@ -13,7 +14,7 @@ class Auctions(db.Model):
     __tablename__ = 'auctions'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     item_id = db.Column(db.Integer, ForeignKey("items.id", ondelete="CASCADE"), nullable=False)
-    seller_id = db.Column(db.Integer, nullable=True)
+    seller_id = db.Column(db.Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     initial_price = db.Column(db.Float, nullable=False)
     min_increment = db.Column(db.Float, nullable=False)
     min_price = db.Column(db.Float, nullable=False)
@@ -23,7 +24,7 @@ class Auctions(db.Model):
 
     #Relationships
     item:Mapped[Item] = relationship()
-    # a_user = db.relationship("User", foreign_keys=[seller_id], back_populates="a_user")
+    seller:Mapped[User] = relationship()
     # b_item = db.relationship("Bids", back_populates="b_item")
 
     #methods
@@ -46,6 +47,7 @@ class Auctions(db.Model):
 
         if with_parent_rels:
             d["item"] = self.item.to_dict(with_child_rels=True)
+            d["seller"] = self.seller.to_dict()
 
         return d
 

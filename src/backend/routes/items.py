@@ -92,7 +92,6 @@ def get_items():
     itemsDict = list(map(lambda x:item_model_to_api_resp(x),items))
 
     if attr_id!=None and attr_value!=None:
-        print("filter attr", attr_id, attr_value)
         itemsDict = filter_items_by_attr(itemsDict, int(attr_id), attr_value)
 
     return jsonify(itemsDict)

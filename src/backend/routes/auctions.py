@@ -1,14 +1,13 @@
 from flask import request, jsonify
 from flask import current_app as app
 from flask_jwt_extended import jwt_required
-from sqlalchemy import delete
-from ..utils import constants
 from ..utils.misc import gen_resp_msg
+from ..utils.auction import auction_model_to_api_resp, filter_auctions_by_attr
 from ..models.auction import Auctions
 from ..db_ops.common import db_create_one, db_delete_one, db_delete_all, db_commit
 from datetime import datetime
 
-
+from sqlalchemy.dialects import mysql
 
 @app.route('/auctions/<id>', methods=["GET"])
 # @jwt_required()
@@ -17,7 +16,8 @@ def get_auction(id):
     if not auction:
         return gen_resp_msg(404)
     
-    return jsonify(auction.to_dict(True,True))
+    resp = auction_model_to_api_resp(auction)
+    return jsonify(resp)
 
 
 @app.route('/auctions/<id>', methods=["PUT"])
@@ -32,10 +32,12 @@ def put_auction(id):
     
     reqJson = request.json
     
-    auction.category_name = reqJson["categoryName"]
+    auction.min_price = reqJson["minPrice"]
+    auction.closing_time = datetime.strptime(reqJson["closingTime"], '%m/%d/%Y %H:%M:%S')
     db_commit()
 
-    return jsonify(auction.to_dict(True,True))
+    resp = auction_model_to_api_resp(auction)
+    return jsonify(resp)
 
 
 @app.route('/auctions/<id>', methods=["DELETE"])
@@ -63,6 +65,8 @@ def get_auctions():
     categoryId = request.args.get("categoryId")
     subcategoryId = request.args.get("subcategoryId")
     initialPrice = request.args.get("initialPrice")
+    sellerId = request.args.get("sellerId")
+
 
     attr_id = request.args.get("attributeId")
     attr_value = request.args.get("attributeValue")
@@ -76,14 +80,19 @@ def get_auctions():
         auctionsQuery = auctionsQuery.filter(Auctions.item.has(subcategory_id=subcategoryId))
 
     if initialPrice:
-        auctionsQuery = auctionsQuery.filter(Auctions.item.has(initial_price=initialPrice))
+        auctionsQuery = auctionsQuery.filter(Auctions.initial_price==initialPrice)
 
-
+    if sellerId:
+        auctionsQuery = auctionsQuery.filter(Auctions.seller.has(id=sellerId))
 
     page = request.args.get("page")
     page = int(page)
     auctions = auctionsQuery.paginate(page=page).items
-    auctionsDict = list(map(lambda x:x.to_dict(True,True),auctions))
+    auctionsDict = list(map(lambda x:auction_model_to_api_resp(x),auctions))
+    
+    if attr_id!=None and attr_value!=None:
+        itemsDict = filter_auctions_by_attr(itemsDict, int(attr_id), attr_value)
+
     return jsonify(auctionsDict)
 
 

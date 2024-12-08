@@ -1120,12 +1120,41 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - in: "body"
-        name: "body"
-        description: "Filters for get auctions"
+      - in: "query"
+        name: "page"
+        description: "Page number"
         required: true
-        schema:
-          $ref: "#/definitions/GetAuctions"
+        type: integer
+      - in: "query"
+        name: "categoryId"
+        description: "CategoryId"
+        required: false
+        type: integer
+      - in: "query"
+        name: "subcategoryId"
+        description: "SubCategoryId"
+        required: false
+        type: integer
+      - in: "query"
+        name: "attributeId"
+        description: "AttributeId"
+        required: false
+        type: integer
+      - in: "query"
+        name: "attributeValue"
+        description: "AttributeValue"
+        required: false
+        type: string
+      - in: "query"
+        name: "initialPrice"
+        description: "Initial Price"
+        required: false
+        type: number
+      - in: "query"
+        name: "sellerId"
+        description: "seller id"
+        required: false
+        type: integer
       responses:
         "200":
           description: "successful operation"
