@@ -202,7 +202,7 @@ paths:
             $ref: "#/definitions/Error"
   
   
-  /question/{id}:
+  /questions/{id}:
     get:
       tags:
       - "Q&A"
@@ -307,12 +307,21 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - in: "body"
-        name: "body"
-        description: "Filters for get questions"
+      - in: "query"
+        name: "page"
+        description: "Page number"
         required: true
-        schema:
-          $ref: "#/definitions/GetQuestions"
+        type: integer
+      - in: "query"
+        name: "auctionId"
+        description: "auction Id"
+        required: false
+        type: integer
+      - in: "query"
+        name: "askerId"
+        description: "asker Id"
+        required: false
+        type: integer
       responses:
         "200":
           description: "successful operation"
@@ -342,7 +351,7 @@ paths:
     
      
          
-  /answer/{id}:
+  /answers/{id}:
     get:
       tags:
       - "Q&A"
