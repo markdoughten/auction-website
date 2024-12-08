@@ -1,8 +1,6 @@
-from flask import request, jsonify
 from flask import current_app as app
-from ..utils import constants
 from ..utils.misc import gen_resp_msg
-from ..tools import seed_item_meta, seed_items, seed_users
+from ..tools import seed_item_meta, seed_items, seed_users, seed_auctions
 
 
 
@@ -22,5 +20,11 @@ def add_items():
 @app.route('/seed/users', methods=["POST"])
 def add_users():
     seed_users()
+    return gen_resp_msg(200)
+
+
+@app.route('/seed/auctions', methods=["POST"])
+def add_auctions():
+    seed_auctions()
     return gen_resp_msg(200)
 
