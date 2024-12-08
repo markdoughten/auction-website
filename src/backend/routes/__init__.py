@@ -7,3 +7,4 @@ from .item_meta_attrs import *
 from .auctions import *
 from .bids import *
 from .q_and_a import *
+#from .alerts import *

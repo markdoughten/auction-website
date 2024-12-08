@@ -54,7 +54,7 @@ class Bids(db.Model):
     __tablename__ = 'bids'
     id = db.Column(db.Integer, primary_key=True)
     auction_id = db.Column(db.Integer, ForeignKey("auctions.id", ondelete="CASCADE"), nullable=False)
-    user_id = db.Column(db.Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    users_id = db.Column(db.Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     bid_value = db.Column(db.Float, nullable=False)
     bid_active = db.Column(db.Boolean, nullable=False)
 

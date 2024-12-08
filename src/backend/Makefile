@@ -18,7 +18,8 @@ db-seed:
 	curl "http://localhost:5000/seed/items" -X "POST" && \
 	curl "http://localhost:5000/seed/auctions" -X "POST" && \
 	curl "http://localhost:5000/seed/bids" -X "POST" && \
-	curl "http://localhost:5000/seed/qa" -X "POST" 
+	curl "http://localhost:5000/seed/qa" -X "POST" && \
+	curl "http://localhost:5000/seed/alerts" -X "POST"
 
 
 
