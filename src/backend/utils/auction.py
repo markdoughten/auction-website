@@ -5,8 +5,8 @@ def auction_model_to_api_resp(auction):
     resp = auction.to_dict(True,True)
     del resp["seller"]["password"]
 
-    resp["categoryName"] = resp["item"]["meta"]["category"]["categoryName"]
-    resp["subcategoryName"] = resp["item"]["meta"]["subcategoryName"]
+    resp["item"]["categoryName"] = resp["item"]["meta"]["category"]["categoryName"]
+    resp["item"]["subcategoryName"] = resp["item"]["meta"]["subcategoryName"]
     resp["item"]["attributes"] = zip_item_attrs(resp["item"]["meta"]["attributes"], resp["item"]["attributes"])
     del resp["item"]["meta"]
 

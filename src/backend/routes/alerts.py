@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required
 from ..utils.misc import gen_resp_msg
 from ..models.alert import Alert, Notification
 from ..db_ops.common import db_create_one, db_delete_one, db_delete_all
-from ..utils.alert import alert_model_to_api_resp
+from ..utils.alert import alert_model_to_api_resp, notification_model_to_api_resp
 
 
 
@@ -93,14 +93,32 @@ def delete_alerts():
 
 
 
-@app.route('/alerts/<id>', methods=["GET"])
+@app.route('/notifications/<id>', methods=["GET"])
 # @jwt_required()
 def get_notification(id):
     notification = Notification.query.filter(Notification.id==id).first()
     if not notification:
         return gen_resp_msg(404)
     
-    return jsonify(notification.to_dict())
+    resp = notification_model_to_api_resp(notification)
+    return jsonify(resp)
+
+
+
+@app.route('/notifications/<id>', methods=["DELETE"])
+# @jwt_required()
+def delete_notification(id):
+    notification = Notification.query.filter(Notification.id==id).first()
+    if not notification:
+        return gen_resp_msg(404)
+
+    try:
+        db_delete_one(notification)
+    except:
+        return gen_resp_msg(500)
+
+    return jsonify(notification.to_dict()), 200
+
 
 
 
@@ -122,6 +140,6 @@ def get_notifications():
         notifQuery =notifQuery.filter(Notification.user_id == userId)
 
     notifs = notifQuery.paginate(page=page).items
-    notifsDict = list(map(lambda x:x.to_dict(True, True),notifs))
+    notifsDict = list(map(lambda x:notification_model_to_api_resp(x),notifs))
     return jsonify(notifsDict)
 

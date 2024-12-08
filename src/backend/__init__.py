@@ -3,7 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from . import config
-
+from sqlalchemy import text
+from .utils import constants
 
 db = SQLAlchemy()
 jwt = JWTManager()
@@ -29,4 +30,12 @@ def create_app():
             db.create_all()  # Create sql tables for our data models
         except Exception as e:
             print("Error creating tables: ",e)
+        
+
+        try:
+            db.session.execute(text(constants.CREATE_NOTIFS_PROCEDURE))
+            db.session.execute(text(constants.CREATE_NOTIFS_TRIGGER))
+        except Exception as e:
+            print("Error executing raw SQL: ",e)
+
         return app
