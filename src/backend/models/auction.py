@@ -25,7 +25,6 @@ class Auctions(db.Model):
     #Relationships
     item:Mapped[Item] = relationship()
     seller:Mapped[User] = relationship()
-    # b_item = db.relationship("Bids", back_populates="b_item")
 
     #methods
     def __repr__(self):
@@ -52,13 +51,32 @@ class Auctions(db.Model):
         return d
 
 
-# class Bids(db.Model):
-#     __tablename__ = 'bids'
-#     id = db.Column(db.Integer, primary_key=True)
-#     auction_id = db.Column(db.Integer, db.ForeignKey("auctions.id"), nullable=False)
-#     users_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-#     bid_value = db.Column(db.Float, nullable=False)
-#     bid_active = db.Column(db.Float, nullable=False)
+class Bids(db.Model):
+    __tablename__ = 'bids'
+    id = db.Column(db.Integer, primary_key=True)
+    auction_id = db.Column(db.Integer, ForeignKey("auctions.id", ondelete="CASCADE"), nullable=False)
+    bidder_id = db.Column(db.Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    bid_value = db.Column(db.Float, nullable=False)
+    bid_active = db.Column(db.Boolean, nullable=False)
 
-#     b_user = db.relationship("User", foreign_keys=[users_id], back_populates="b_user")
-#     b_item = db.relationship("Auctions", foreign_keys=[auction_id], back_populates="b_item")
+    #Relationships
+    bidder:Mapped[User] = relationship()
+    auction:Mapped[Auctions] = relationship()
+
+    #methods
+    def to_dict(self, with_child_rels=False, with_parent_rels=False):
+        d={}
+        d["id"] = self.id
+        d["auctionId"] = self.auction_id
+        d["bidderId"] = self.bidder_id
+        d["bidValue"] = self.bid_value
+        d["bidActive"] = self.bid_active
+
+        if with_child_rels:
+            pass
+        
+        if with_parent_rels:
+            d["bidder"] = self.bidder.to_dict()
+            d["auction"] = self.auction.to_dict(with_parent_rels=True)
+        
+        return d

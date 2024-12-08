@@ -12,12 +12,13 @@ db-reset:
 
 
 
-
 db-seed:
 	curl "http://localhost:5000/seed/users" -X "POST" && \
 	curl "http://localhost:5000/seed/item_meta" -X "POST" && \
 	curl "http://localhost:5000/seed/items" -X "POST" && \
-	curl "http://localhost:5000/seed/auctions" -X "POST" 
+	curl "http://localhost:5000/seed/auctions" -X "POST" && \
+	curl "http://localhost:5000/seed/bids" -X "POST" 
+
 
 
 run:

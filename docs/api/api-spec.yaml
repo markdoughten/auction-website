@@ -1188,7 +1188,7 @@ paths:
   
   
   
-  /bid/{id}:
+  /bids/{id}:
     get:
       tags:
       - "bid"
@@ -1264,12 +1264,26 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - in: "body"
-        name: "body"
-        description: "Filters for get bids"
+      - in: "query"
+        name: "page"
+        description: "page number"
         required: true
-        schema:
-          $ref: "#/definitions/GetBids"
+        type: integer
+      - in: "query"
+        name: "sellerId"
+        description: "seller id"
+        required: false
+        type: integer
+      - in: "query"
+        name: "bidderId"
+        description: "bidder id"
+        required: false
+        type: integer
+      - in: "query"
+        name: "auctionId"
+        description: "auction id"
+        required: false
+        type: integer
       responses:
         "200":
           description: "successful operation"

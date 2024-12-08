@@ -83,7 +83,7 @@ def get_auctions():
         auctionsQuery = auctionsQuery.filter(Auctions.initial_price==initialPrice)
 
     if sellerId:
-        auctionsQuery = auctionsQuery.filter(Auctions.seller.has(id=sellerId))
+        auctionsQuery = auctionsQuery.filter(Auctions.seller_id == sellerId)
 
     page = request.args.get("page")
     page = int(page)
