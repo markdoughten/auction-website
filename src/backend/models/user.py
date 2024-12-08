@@ -1,36 +1,27 @@
 from .. import db
 from ..utils import constants
-from ..utils.misc import get_hash
+from ..utils.hash import get_hash
 from dataclasses import dataclass
 
-@dataclass
 class User(db.Model):
     __tablename__ = 'users'
-    id:int = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username:str = db.Column(db.String(80), unique=True, nullable=False)
-    email:str = db.Column(db.String(120), unique=True, nullable=False)
-    password:str = db.Column(db.String(128), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(128), nullable=False)
     role:constants.USER_ROLE = db.Column(db.Enum(constants.USER_ROLE, values_callable=lambda t: [ str(item.value) for item in t]), nullable=False)
 
-    # init not working even with dataclass??
-    def __init__(self, username, email, password, role):
-        self.username = username
-        self.email = email
-        self.password = password
-        self.role = role
-
-    def to_dict(self):
+    #methods
+    def to_dict(self, with_child_rels=False, with_parent_rels=False):
         d={}
         d["id"] = self.id
         d["username"] = self.username
         d["email"] = self.email
+        d["password"] = self.password
         d["role"] = self.role.value
 
-        return d
-
-    #Relationships
-    a_user = db.relationship("Auctions", back_populates="a_user")
-    b_user = db.relationship("Bids", back_populates="b_user")
+        if with_child_rels:
+            pass
 
 @dataclass
 class UserQuestion(db.Model):
@@ -55,6 +46,9 @@ class UserAnswer(db.Model):
 
     def __repr__(self):
         return f"<UserAnswer {self.id}, Question {self.question_id}, Replier {self.replier_id}>"
+        if with_parent_rels:
+            pass
+        return d
 
 def add_new(email, username, password, role=constants.USER_ROLE.USER):
     user = User.query.filter((User.email==email) | (User.username==username)).first()
@@ -87,3 +81,4 @@ def delete_account(email, username):
 
 def get_users(roles):
     return db.session.query(User.id, User.username, User.email, User.role).filter(User.role.in_(roles)).all()
+    return False
