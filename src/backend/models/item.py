@@ -1,9 +1,9 @@
 from .. import db
-from sqlalchemy import ForeignKey, PrimaryKeyConstraint, UniqueConstraint
+from sqlalchemy import ForeignKey, PrimaryKeyConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import Mapped
 from typing import List
-from ..models.item_meta import MetaItemCategory, MetaItemSubCategory, MetaItemAttribute
+from ..models.item_meta import MetaItemCategory, MetaItemSubCategory
 """
     Add all item related classes here?
 """
@@ -19,8 +19,8 @@ class Item(db.Model):
     #Relationships
     category:Mapped[MetaItemCategory] = relationship()
     subcategory:Mapped[MetaItemSubCategory] = relationship()
-    # a_item = relationship("Auctions", back_populates="a_item")
     attributes:Mapped[List["ItemAttribute"]] = relationship(cascade="all, delete")
+
 
     #methods
     def __repr__(self):

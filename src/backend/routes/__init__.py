@@ -4,3 +4,4 @@ from .items import *
 from .item_meta_categories import *
 from .item_meta_subcategories import *
 from .item_meta_attrs import *
+from .auctions import *

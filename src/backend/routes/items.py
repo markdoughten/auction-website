@@ -1,9 +1,8 @@
 from flask import request, jsonify
 from flask import current_app as app
 from flask_jwt_extended import jwt_required
-from sqlalchemy import delete
-from ..utils import constants
 from ..utils.item import item_model_to_api_resp, filter_items_by_attr
+from ..utils.misc import gen_resp_msg
 from ..models.item import Item, ItemAttribute
 from ..db_ops.common import db_create_one, db_delete_one, db_delete_all, db_commit
 
@@ -15,10 +14,7 @@ from ..db_ops.common import db_create_one, db_delete_one, db_delete_all, db_comm
 def get_item(id):
     item = Item.query.filter(Item.id==id).first()
     if not item:
-        output={}
-        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
-        output[constants.MESSAGE] = constants.NOT_FOUND
-        return jsonify(output), 404
+        return gen_resp_msg(404)
     
     resp = item_model_to_api_resp(item)
 
@@ -30,16 +26,10 @@ def get_item(id):
 def put_item(id):
     item:Item = Item.query.filter(Item.id==id).first()
     if not item:
-        output={}
-        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
-        output[constants.MESSAGE] = constants.NOT_FOUND
-        return jsonify(output), 404
+        return gen_resp_msg(404)
     
     if not request.json:
-        output={}
-        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
-        output[constants.MESSAGE] = constants.INVALID_REQ
-        return jsonify(output), 401
+        return gen_resp_msg(400)
     
     reqJson = request.json
     
@@ -65,18 +55,12 @@ def put_item(id):
 def delete_item(id):
     item = Item.query.filter(Item.id==id).first()
     if not item:
-        output={}
-        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
-        output[constants.MESSAGE] = constants.NOT_FOUND
-        return jsonify(output), 404
+        return gen_resp_msg(404)
 
     try:
         db_delete_one(item)
     except:
-        output ={}
-        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
-        output[constants.MESSAGE] = constants.FAILURE_MSG
-        return jsonify(output), 400
+        return gen_resp_msg(500)
 
     return jsonify(item.to_dict()), 200
 
@@ -85,10 +69,7 @@ def delete_item(id):
 # @jwt_required()
 def get_items():
     if not request.args:
-        output={}
-        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
-        output[constants.MESSAGE] = constants.INVALID_REQ
-        return jsonify(output), 401
+        return gen_resp_msg(400)
 
     categoryId = request.args.get("categoryId")
     subcategoryId = request.args.get("subcategoryId")
@@ -121,10 +102,7 @@ def get_items():
 # @jwt_required()
 def post_item():
     if not request.json:
-        output={}
-        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
-        output[constants.MESSAGE] = constants.INVALID_REQ
-        return jsonify(output), 401
+        return gen_resp_msg(400)
     
     reqJson = request.json
     
@@ -137,10 +115,7 @@ def post_item():
     try:
         db_create_one(item)
     except:
-        output ={}
-        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
-        output[constants.MESSAGE] = constants.FAILURE_MSG
-        return jsonify(output), 400
+        return gen_resp_msg(500)
 
     for attr in reqJson["attributes"]:
         attribute = ItemAttribute(
@@ -159,16 +134,9 @@ def post_item():
 def delete_items():
     try:
         db_delete_all(Item)
-        output ={}
-        output[constants.STATUS] = constants.STATUS_RESPONSE.SUCCESS.value
-        output[constants.MESSAGE] = constants.SUCCESS_MSG
-        return jsonify(output), 200
     except Exception as e:
-        output ={}
-        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
-        output[constants.MESSAGE] = constants.FAILURE_MSG
-        return jsonify(output), 400
+        return gen_resp_msg(500)
 
-
+    return gen_resp_msg(200)
 
 

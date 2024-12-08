@@ -1,8 +1,7 @@
 from flask import request, jsonify
 from flask import current_app as app
 from flask_jwt_extended import jwt_required
-from sqlalchemy import delete
-from ..utils import constants
+from ..utils.misc import gen_resp_msg
 from ..models.item_meta import MetaItemCategory
 from ..db_ops.common import db_create_one, db_delete_one, db_delete_all, db_commit
 
@@ -14,10 +13,7 @@ from ..db_ops.common import db_create_one, db_delete_one, db_delete_all, db_comm
 def get_category(id):
     item_category = MetaItemCategory.query.filter(MetaItemCategory.id==id).first()
     if not item_category:
-        output={}
-        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
-        output[constants.MESSAGE] = constants.NOT_FOUND
-        return jsonify(output), 404
+        return gen_resp_msg(404)
     
     return jsonify(item_category.to_dict(True,True))
 
@@ -27,19 +23,12 @@ def get_category(id):
 def put_category(id):
     item_category = MetaItemCategory.query.filter(MetaItemCategory.id==id).first()
     if not item_category:
-        output={}
-        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
-        output[constants.MESSAGE] = constants.NOT_FOUND
-        return jsonify(output), 404
+        return gen_resp_msg(404)
     
     if not request.json:
-        output={}
-        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
-        output[constants.MESSAGE] = constants.INVALID_REQ
-        return jsonify(output), 401
+       return gen_resp_msg(400)
     
     reqJson = request.json
-    
     item_category.category_name = reqJson["categoryName"]
     db_commit()
 
@@ -51,18 +40,12 @@ def put_category(id):
 def delete_category(id):
     item_category = MetaItemCategory.query.filter(MetaItemCategory.id==id).first()
     if not item_category:
-        output={}
-        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
-        output[constants.MESSAGE] = constants.NOT_FOUND
-        return jsonify(output), 404
+        return gen_resp_msg(404)
 
     try:
         db_delete_one(item_category)
     except:
-        output ={}
-        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
-        output[constants.MESSAGE] = constants.FAILURE_MSG
-        return jsonify(output), 400
+        return gen_resp_msg(500)
 
     return jsonify(item_category.to_dict()), 200
 
@@ -71,10 +54,7 @@ def delete_category(id):
 # @jwt_required()
 def get_categories():
     if not request.args:
-        output={}
-        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
-        output[constants.MESSAGE] = constants.INVALID_REQ
-        return jsonify(output), 401
+       return gen_resp_msg(400)
 
     page = request.args.get("page")
     page = int(page)
@@ -87,10 +67,7 @@ def get_categories():
 # @jwt_required()
 def post_category():
     if not request.json:
-        output={}
-        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
-        output[constants.MESSAGE] = constants.INVALID_REQ
-        return jsonify(output), 401
+       return gen_resp_msg(400)
     
     reqJson = request.json
     
@@ -101,10 +78,7 @@ def post_category():
     try:
         db_create_one(category)
     except:
-        output ={}
-        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
-        output[constants.MESSAGE] = constants.FAILURE_MSG
-        return jsonify(output), 400
+        return gen_resp_msg(500)
 
     return jsonify(category.to_dict())
 
@@ -114,16 +88,9 @@ def post_category():
 def delete_categories():
     try:
         db_delete_all(MetaItemCategory)
-        output ={}
-        output[constants.STATUS] = constants.STATUS_RESPONSE.SUCCESS.value
-        output[constants.MESSAGE] = constants.SUCCESS_MSG
-        return jsonify(output), 200
     except Exception as e:
-        output ={}
-        output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
-        output[constants.MESSAGE] = constants.FAILURE_MSG
-        return jsonify(output), 400
+        return gen_resp_msg(500)
 
-
+    return gen_resp_msg(200)
 
 

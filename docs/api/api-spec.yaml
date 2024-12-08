@@ -125,12 +125,15 @@ paths:
       produces:
       - "application/json"
       parameters:
-      - in: "body"
-        name: "body"
-        description: "Get user objects"
+      - in: "query"
+        name: "page"
+        description: "Page number"
+        type: integer
         required: true
-        schema:
-          $ref: "#/definitions/GetUsers"
+      - in: "query"
+        name: "role"
+        description: "Role"
+        type: string
       responses:
         200:
           description: "successful operation"
@@ -1014,7 +1017,7 @@ paths:
   
   
   
-  /auction/{id}:
+  /auctions/{id}:
     get:
       tags:
       - "auction"
