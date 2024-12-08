@@ -1,6 +1,6 @@
 from .. import db
 from ..utils import constants
-from ..utils.misc import get_hash
+from ..utils.hash import get_hash
 from dataclasses import dataclass
 
 @dataclass
@@ -56,5 +56,3 @@ def add_new(email, username, password, role=constants.USER_ROLE.USER):
         return True
 
     return False
-
-

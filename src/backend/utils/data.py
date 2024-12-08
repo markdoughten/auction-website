@@ -5,7 +5,7 @@ from ..models.item import Item, ItemAttribute
 from ..models.item_meta import create_new_item, add_item_categ, add_item_attr, MetaItemCategory, MetaItemSubCategory, MetaItemAttribute
 from ..models.user import User
 from ..utils import constants
-from ..utils.misc import get_hash
+from ..utils.hash import get_hash
 from sqlalchemy import text
 
 def populate_data():

@@ -16,26 +16,50 @@ nav {
     background-color: #007bff;
     padding: 1rem;
     display: flex;
-    justify-content: space-between; /* Align items to left and right */
-    align-items: center; /* Center items vertically */
+    justify-content: space-between;
+    align-items: center;
 }
 
-    nav .left-links a {
-        color: white;
-        text-decoration: none;
-        margin-right: 1.5rem;
-        font-weight: bold;
-    }
+nav .left-links a {
+    color: white;
+    text-decoration: none;
+    margin-right: 1.5rem;
+    font-weight: bold;
+}
 
-    nav .right-links a {
-        color: white;
-        text-decoration: none;
-        margin-left: 1.5rem;
-        font-weight: bold;
-    }
+nav .right-links a {
+    color: white;
+    text-decoration: none;
+    margin-left: 1.5rem;
+    font-weight: bold;
+}
 
-    nav a:hover {
-        text-decoration: underline;
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* Username styling */
+nav .right-links span {
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    margin-right: 1rem;
+}
+
+nav .right-links span {
+    padding: 0.3rem 0.6rem;
+    background-color: #28a745;
+    border-radius: 5px;
+}
+
+nav .right-links a.logout {
+    background-color: #dc3545;
+    padding: 0.3rem 1rem;
+    border-radius: 5px;
+}
+
+    nav .right-links a.logout:hover {
+        background-color: #c82333;
     }
 
 /* Main Content */
@@ -49,22 +73,22 @@ ul {
     padding: 0;
 }
 
-    ul li {
-        background: #fff;
-        margin: 1rem 0;
-        padding: 1rem;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+ul li {
+    background: #fff;
+    margin: 1rem 0;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-        ul li h2 {
-            margin: 0;
-        }
+ul li h2 {
+    margin: 0;
+}
 
-        ul li p {
-            margin: 0.5rem 0;
-        }
+ul li p {
+    margin: 0.5rem 0;
+}
 
 /* Form Styles */
 form {
@@ -77,34 +101,34 @@ form {
     margin: 1rem 0;
 }
 
-    form label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: bold;
-    }
+form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
 
-    form input[type="text"],
-    form input[type="email"],
-    form input[type="password"] {
-        width: 100%;
-        padding: 0.5rem;
-        margin-bottom: 1rem;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    }
+form input[type="text"],
+form input[type="email"],
+form input[type="password"] {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
 
-    form button {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
-        cursor: pointer;
-    }
+form button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
 
-        form button:hover {
-            background-color: #0056b3;
-        }
+form button:hover {
+    background-color: #0056b3;
+}
 
 /* Item Page */
 .item-details {
