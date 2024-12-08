@@ -1,4 +1,4 @@
-import { API_URL } from "./env";
+import { API_URL } from "../env";
 
 export const SERVER_URLS = {
   signup: API_URL + "/signup",

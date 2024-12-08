@@ -1,21 +1,17 @@
 import { Routes } from "@angular/router";
-import { LandingComponent } from "./landing/landing.component";
-import { DashboardComponent } from "./dashboard/dashboard.component";
-import { IsAuthGuard } from "./is-auth.guard";
-import { NotIsAuthGuard } from "./not-is-auth.guard";
-import { HasRoleGuard } from "./has-role.guard";
-import {
-  admin_access,
-  staff_access,
-  all_access,
-  R_ADMIN,
-} from "./model/usermodel";
-import { AdminComponent } from "./admin/admin.component";
-import { AuthService } from "./auth.service";
 import { inject } from "@angular/core";
-import { RegisterComponent } from "./admin/register/register.component";
-import { AdminDashboardComponent } from "./admin/dashboard/dashboard.component";
-import { ModifyComponent } from "./admin/modify/modify.component";
+import { AuthService } from "@core/auth.service";
+import { IsAuthGuard } from "@core/is-auth.guard";
+import { NotIsAuthGuard } from "@core/not-is-auth.guard";
+import { HasRoleGuard } from "@core/has-role.guard";
+import { LandingComponent } from "@layouts/landing/landing.component";
+import { DashboardComponent } from "@layouts/dashboard/dashboard.component";
+import { AdminComponent } from "@layouts/admin/admin.component";
+import { AdminDashboardComponent } from "@layouts/admin/dashboard/dashboard.component";
+import { RegisterComponent } from "@layouts/admin/register/register.component";
+import { ModifyComponent } from "@layouts/admin/modify/modify.component";
+import { admin_access, staff_access, all_access } from "@model/usermodel";
+import { ProfileComponent } from "@layouts/profile/profile.component";
 
 export const routes: Routes = [
   {
@@ -67,6 +63,11 @@ export const routes: Routes = [
       },
       { path: "**", redirectTo: "dashboard", pathMatch: "full" },
     ],
+  },
+  {
+    path: "profile/:id",
+    component: ProfileComponent,
+    canActivate: [IsAuthGuard],
   },
   {
     path: "login",

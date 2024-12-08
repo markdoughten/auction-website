@@ -6,7 +6,6 @@ import {
   FormGroup,
   ValidatorFn,
 } from "@angular/forms";
-import { AuthService } from "../../auth.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { ReactiveFormsModule, Validators } from "@angular/forms";
 import {
@@ -15,8 +14,9 @@ import {
   MIN_LEN,
   NOT_EMAIL,
   SERVER_URLS,
-} from "../../constants";
-import { staff_access, R_STAFF } from "../../model/usermodel";
+} from "@core/constants";
+import { AuthService } from "@core/auth.service";
+import { staff_access, R_STAFF } from "@model/usermodel";
 
 function dup_entry_found(self: RegisterComponent): ValidatorFn {
   return (c: AbstractControl): { [key: string]: boolean } | null => {

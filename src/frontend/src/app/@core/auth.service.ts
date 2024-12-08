@@ -1,12 +1,11 @@
 import { Injectable, Inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { AbstractControl } from "@angular/forms";
-import { UserModel } from "./model/usermodel";
 import { BehaviorSubject, tap } from "rxjs";
-import { SERVER_URLS, RESPONSE_STATUS, JWT_TOKEN } from "./constants";
 import { DOCUMENT } from "@angular/common";
-import { R_ADMIN } from "./model/usermodel";
-import { switchMap } from "rxjs/operators";
+import { UserModel } from "@model/usermodel";
+import { SERVER_URLS, RESPONSE_STATUS, JWT_TOKEN } from "./constants";
+import { R_ADMIN } from "@model/usermodel";
 
 @Injectable({
   providedIn: "root",

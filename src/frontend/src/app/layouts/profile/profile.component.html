@@ -1,0 +1,85 @@
+<app-navbar></app-navbar>
+<div class="w-100 position-relative p-3">
+  <div class="d-flex justify-content-center align-items-end">
+    <div class="d-flex align-items-center">
+      <div>
+        <h5 class="mb-1 font-weight-bolder">{{ this.productId }}</h5>
+        <p class="mb-0 text-sm">{{ this.productId }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-12 mt-4" *ngIf="auctionItems">
+  <div class="card mb-4">
+    <div class="card-header pb-0 p-3">
+      <h6 class="mb-1">Auction Items</h6>
+      <p class="text-sm">Items on auction by {{ this.productId }}</p>
+    </div>
+    <div class="card-body p-3">
+      <div class="row" *ngFor="let userData of auctionItems">
+        <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
+          <div class="card card-blog card-plain">
+            <!-- <div class="position-relative">
+                      <a class="d-block">
+                        <img src="../assets/img/home-decor-1.jpg" alt="img-blur-shadow" class="img-fluid shadow border-radius-md">
+                      </a>
+                    </div> -->
+            <div class="card-body px-1 pb-0">
+              <p class="text-secondary mb-0 text-sm">Item Status</p>
+              <a>
+                <h5 class="font-weight-bolder">Item Name</h5>
+              </a>
+              <p class="mb-4 text-sm">Item Description</p>
+              <div class="d-flex align-items-center justify-content-between">
+                <button
+                  type="button"
+                  class="btn btn-outline-primary btn-sm mb-0"
+                >
+                  View Item
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-12 mt-4" *ngIf="showBid">
+  <div class="card mb-4">
+    <div class="card-header pb-0 p-3">
+      <h6 class="mb-1">Bid Items</h6>
+      <p class="text-sm">Items being bid by {{ this.productId }}</p>
+    </div>
+    <div class="card-body p-3">
+      <div class="row" *ngFor="let userData of auctionItems">
+        <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
+          <div class="card card-blog card-plain">
+            <!-- <div class="position-relative">
+                      <a class="d-block">
+                        <img src="../assets/img/home-decor-1.jpg" alt="img-blur-shadow" class="img-fluid shadow border-radius-md">
+                      </a>
+                    </div> -->
+            <div class="card-body px-1 pb-0">
+              <p class="text-secondary mb-0 text-sm">Item Status</p>
+              <a>
+                <h5 class="font-weight-bolder">Item Name</h5>
+              </a>
+              <p class="mb-4 text-sm">Item Description</p>
+              <div class="d-flex align-items-center justify-content-between">
+                <button
+                  type="button"
+                  class="btn btn-outline-primary btn-sm mb-0"
+                >
+                  View Item
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

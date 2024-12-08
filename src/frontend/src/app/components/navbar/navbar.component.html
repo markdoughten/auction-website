@@ -1,29 +1,31 @@
 <div class="container-fluid">
   <div class="row align-items-center py-3 px-xl-5">
-    <div class="col-lg-3 d-none d-lg-block">
+    <div class="col-lg-1 d-none d-lg-block me-3">
       <a href="" class="text-decoration-none">
-        <h2 class="m-0 font-weight-semi-bold">
-          <span class="text-primary font-weight-bold border px-3 mr-1">E</span
-          >Shopper
-        </h2>
+        <h2 class="fs-3">BuyMe</h2>
       </a>
     </div>
-    <div class="col-lg-5 col-6 text-left">
-      <form action="">
+    <div class="col-lg-5 col-5 text-left mb-3" *ngIf="showSearch()">
+      <form action="submit">
         <div class="input-group">
           <input
             type="text"
-            class="form-control"
+            class="form-control border-end w-sm-auto shadow-none me-2 m-xl-1"
             placeholder="Search for products"
             [(ngModel)]="product"
             name="product"
           />
-          <div class="input-group-append">
-            <span class="input-group-text bg-transparent text-primary">
+          <div class="input-group-append ms-lg-2">
+            <span
+              class="input-group-text bg-transparent w-sm-auto shadow-none text-primary border-end m-xl-1"
+            >
               <svg class="bi" width="20" height="20" fill="currentColor">
                 <use xlink:href="bootstrap-icons.svg#search" />
               </svg>
-              <i class="font-normal pl-2" type="button" (click)="searchevent()"
+              <i
+                class="font-normal pl-2 ms-lg-2"
+                type="button"
+                (click)="searchevent()"
                 >submit</i
               >
             </span>
@@ -31,34 +33,41 @@
         </div>
       </form>
     </div>
-    <div class="col-lg-4 col-6 text-right">
-      <a href="/settings" class="btn border">
+    <div class="col-lg-auto col-auto text-right">
+      <a href="/settings" class="btn border me-2 w-sm-auto shadow-none">
         <svg class="bi" width="20" height="20" fill="currentColor">
           <use xlink:href="bootstrap-icons.svg#gear-fill" />
         </svg>
-        <span class="badge">Settings</span>
+        <span class="text ms-lg-1">Settings</span>
       </a>
-      <a href="/profile" class="btn border">
+      <a
+        href="/profile/{{ this.username }}"
+        class="btn border me-2 w-sm-auto shadow-none"
+      >
         <svg class="bi" width="20" height="20" fill="currentColor">
           <use xlink:href="bootstrap-icons.svg#person" />
         </svg>
-        <span class="badge">Profile</span>
+        <span class="text ms-lg-1">Profile</span>
       </a>
-      <a type="button" class="btn border" (click)="logout()">
+      <a
+        type="button"
+        class="btn border me-2 w-sm-auto shadow-none"
+        (click)="logout()"
+      >
         <svg class="bi" width="20" height="20" fill="currentColor">
           <use xlink:href="bootstrap-icons.svg#x-circle" />
         </svg>
-        <span class="badge">Logout</span>
+        <span class="text ms-lg-1">Logout</span>
       </a>
       <a
         href="/admin"
-        class="btn border"
+        class="btn border me-2 w-sm-auto shadow-none"
         *ngIf="this.authService.isAdmin | async"
       >
         <svg class="bi" width="20" height="20" fill="currentColor">
           <use xlink:href="bootstrap-icons.svg#person-lock" />
         </svg>
-        <span class="badge">Admin</span>
+        <span class="text ms-lg-1">Admin</span>
       </a>
     </div>
   </div>

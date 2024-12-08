@@ -5,7 +5,6 @@ from flask_jwt_extended import (create_access_token, get_jwt_identity)
 from ..models.user import (User, add_new, update_info, delete_account, get_users)
 from ..utils import (constants, misc)
 from .. import (jwt, db)
-import json
 
 @jwt.user_identity_loader
 def user_identity_lookup(user):
@@ -77,7 +76,7 @@ def update_user():
     if output:
         return output
 
-    if update_info(request.json['email'], request.json['username'], request.json['password']):
+    if request.json and update_info(request.json['email'], request.json['username'], request.json['password']):
         output[constants.STATUS] = constants.STATUS_RESPONSE.SUCCESS.value
         output[constants.MESSAGE] = constants.SUCCESS_MSG
         return jsonify(output)

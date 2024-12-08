@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Router } from "@angular/router";
 import { HttpClient } from "@angular/common/http";
-import { SERVER_URLS, RESPONSE_STATUS } from "../../constants";
+import { SERVER_URLS, RESPONSE_STATUS } from "@core/constants";
 
 @Component({
   selector: "app-admin-dashboard",

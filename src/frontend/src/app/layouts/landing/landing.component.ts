@@ -1,22 +1,22 @@
+import { ReactiveFormsModule, Validators } from "@angular/forms";
 import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { Router } from "@angular/router";
 import {
   AbstractControl,
   FormControl,
   FormGroup,
   ValidatorFn,
 } from "@angular/forms";
-import { ReactiveFormsModule, Validators } from "@angular/forms";
+import { AuthService } from "../../@core/auth.service";
+import { R_ADMIN } from "../../model/usermodel";
 import {
   RESPONSE_STATUS,
   IS_REQUIRED,
   MIN_LEN,
   NOT_EMAIL,
   SERVER_URLS,
-} from "../constants";
-import { AuthService } from "../auth.service";
-import { Router } from "@angular/router";
-import { R_ADMIN } from "../model/usermodel";
+} from "../../@core/constants";
 
 function dup_entry_found(self: LandingComponent): ValidatorFn {
   return (c: AbstractControl): { [key: string]: boolean } | null => {
