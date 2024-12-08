@@ -50,26 +50,26 @@
     <form [formGroup]="signUp" (submit)="signupUsr()">
       <label for="user">User Name</label>
       <input
-        formControlName="uname"
+        formControlName="username"
         type="text"
         name="username"
         placeholder="Enter your username"
       />
-      <div class="text-danger" *ngIf="signUp.controls?.['uname']?.touched">
-        <span *ngIf="signUp.controls?.['uname']?.errors?.['required']">{{
+      <div class="text-danger" *ngIf="signUp.controls?.['username']?.touched">
+        <span *ngIf="signUp.controls?.['username']?.errors?.['required']">{{
           IS_REQUIRED
         }}</span>
-        <span *ngIf="signUp.controls?.['uname']?.errors?.['minlength']">{{
+        <span *ngIf="signUp.controls?.['username']?.errors?.['minlength']">{{
           MIN_LEN
         }}</span>
-        <span *ngIf="signUp.controls?.['uname']?.errors?.['incorrect']">{{
+        <span *ngIf="signUp.controls?.['username']?.errors?.['incorrect']">{{
           DUP_TRY_AGAIN
         }}</span>
       </div>
       <label for="email">Email</label>
       <input
         formControlName="email"
-        type="text"
+        type="email"
         name="email"
         placeholder="Enter your email"
       />

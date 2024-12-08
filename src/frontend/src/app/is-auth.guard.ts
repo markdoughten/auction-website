@@ -8,7 +8,6 @@ import {
   RouterStateSnapshot,
 } from "@angular/router";
 import { AuthService } from "./auth.service";
-import { tap } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -23,12 +22,13 @@ export class IsAuthGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot,
   ): MaybeAsync<GuardResult> {
-    return this.authService.isLoggedIn.pipe(
-      tap((isLoggedIn) => {
-        if (!isLoggedIn) {
-          this.router.navigate(["login"]);
-        }
-      }),
-    );
+    let result = false;
+    this.authService.isLoggedIn.subscribe((isLoggedIn) => {
+      if (!isLoggedIn) {
+        this.router.navigateByUrl("/");
+      }
+      result = isLoggedIn;
+    });
+    return result;
   }
 }

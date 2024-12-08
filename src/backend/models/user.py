@@ -19,6 +19,15 @@ class User(db.Model):
         self.password = password
         self.role = role
 
+    def to_dict(self):
+        d={}
+        d["id"] = self.id
+        d["username"] = self.username
+        d["email"] = self.email
+        d["role"] = self.role.value
+
+        return d
+
     #Relationships
     a_user = db.relationship("Auctions", back_populates="a_user")
     b_user = db.relationship("Bids", back_populates="b_user")
@@ -57,4 +66,24 @@ def add_new(email, username, password, role=constants.USER_ROLE.USER):
 
     return False
 
+def update_info(email, username, password):
+    user = User.query.filter((User.email==email) | (User.username==username)).first()
+    if (user is None):
+        return False
 
+    user.password = get_hash(password);
+    db.session.commit();
+
+    return True
+
+def delete_account(email, username):
+    user = User.query.filter((User.email==email) | (User.username==username)).first()
+    if (user is None):
+        return False
+
+    db.session.delete(user)
+    db.session.commit()
+    return True
+
+def get_users(roles):
+    return db.session.query(User.id, User.username, User.email, User.role).filter(User.role.in_(roles)).all()

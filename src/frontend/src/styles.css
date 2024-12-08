@@ -9685,6 +9685,10 @@ button.bg-dark:focus {
   font-weight: bolder !important;
 }
 
+.font-normal {
+  font-style: normal !important;
+}
+
 .font-italic {
   font-style: italic !important;
 }

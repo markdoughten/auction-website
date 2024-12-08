@@ -3,7 +3,9 @@ import { API_URL } from "./env";
 export const SERVER_URLS = {
   signup: API_URL + "/signup",
   login: API_URL + "/login",
-  c_account: API_URL + "/c_account",
+  create_account: API_URL + "/create_account",
+  get_accounts: API_URL + "/get_users",
+  update_user: API_URL + "/update_user",
 };
 
 export const RESPONSE_STATUS = {

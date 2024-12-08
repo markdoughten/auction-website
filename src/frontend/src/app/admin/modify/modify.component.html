@@ -1,0 +1,55 @@
+<div class="col-12">
+  <div class="card mb-4">
+    <div class="card-header pb-0">
+      <h6>Admin Actions</h6>
+    </div>
+    <div class="card-body px-0 pt-0 pb-2">
+      <div class="table-responsive p-0">
+        <table class="table align-items-center mb-0">
+          <thead>
+            <tr>
+              <th
+                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+              >
+                Action
+              </th>
+              <th class="text-secondary opacity-7"></th>
+            </tr>
+          </thead>
+          <div *ngIf="!users">
+            <p>User data not found!!</p>
+          </div>
+          <tbody *ngIf="users">
+            <tr *ngFor="let userData of users">
+              <td>
+                <div class="d-flex px-2 py-1">
+                  <div class="d-flex flex-column justify-content-center">
+                    <h6 class="mb-0 text-sm"></h6>
+                    {{ userData.username }}
+                    <!-- <p class="text-xs text-secondary mb-0">Create New Staff</p> -->
+                  </div>
+                </div>
+              </td>
+              <td class="align-middle">
+                <span class="badge badge-sm bg-gradient-success col-2">
+                  <a
+                    type="button"
+                    class="text-white font-weight-bold text-xs"
+                    data-toggle="tooltip"
+                    data-original-title="Edit user"
+                    (click)="modifyUser(userData)"
+                  >
+                    <svg class="bi" width="20" height="20" fill="currentColor">
+                      <use xlink:href="bootstrap-icons.svg#pencil-square" />
+                    </svg>
+                    Modify
+                  </a>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

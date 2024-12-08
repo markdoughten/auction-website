@@ -1,18 +1,25 @@
 import { Component } from "@angular/core";
+import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
+import { AuthService } from "../../auth.service";
 
 @Component({
   selector: "app-navbar",
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: "./navbar.component.html",
-  styleUrl: "./navbar.component.css",
+  styleUrl: "../dashboard.component.css",
 })
 export class NavbarComponent {
-  constructor() {}
+  constructor(protected authService: AuthService) {}
   product: string = "";
 
   searchevent() {
     console.log("test...", this.product);
+  }
+
+  logout() {
+    sessionStorage.clear();
+    location.reload();
   }
 }

@@ -12,7 +12,7 @@ import { AuthService } from "./auth.service";
 @Injectable({
   providedIn: "root",
 })
-export class HasRoleGuard implements CanActivate {
+export class NotIsAuthGuard implements CanActivate {
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -24,16 +24,11 @@ export class HasRoleGuard implements CanActivate {
   ): MaybeAsync<GuardResult> {
     let result = false;
     this.authService.isLoggedIn.subscribe((isLoggedIn) => {
-      if (
-        !isLoggedIn ||
-        !route.data["role"].includes(this.authService.user.role)
-      ) {
-        result = false;
-        this.router.navigate([""]);
-      } else {
-        result = true;
+      if (isLoggedIn) {
+        this.router.navigateByUrl("/");
       }
+      result = isLoggedIn;
     });
-    return result;
+    return !result;
   }
 }

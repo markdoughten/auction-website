@@ -1,28 +1,28 @@
 import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
-import { LandingComponent } from "./landing/landing.component";
-import { AuthService } from "./auth.service";
-import { DashboardComponent } from "./dashboard/dashboard.component";
-import { NavbarComponent } from "./navbar/navbar.component";
-import { AdminComponent } from "./admin/admin.component";
-import { R_ADMIN } from "./model/usermodel";
+import { NavigationEnd, Router } from "@angular/router";
 
 @Component({
   selector: "app-root",
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterOutlet,
-    LandingComponent,
-    DashboardComponent,
-    NavbarComponent,
-    AdminComponent,
-  ],
+  imports: [CommonModule, RouterOutlet],
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.css",
 })
 export class AppComponent {
-  readonly R_ADMIN = R_ADMIN;
-  constructor(public authService: AuthService) {}
+  constructor(private router: Router) {
+    this.router.events.subscribe((event) => {
+      // console.log(event);
+      // if (event instanceof NavigationEnd) {
+      //   if (event.url === this.router.url) {
+      //     this.router
+      //       .navigateByUrl("/", { skipLocationChange: true })
+      //       .then(() => {
+      //         this.router.navigate([event.url]);
+      //       });
+      //   }
+      // }
+    });
+  }
 }

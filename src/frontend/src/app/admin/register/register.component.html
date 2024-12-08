@@ -1,0 +1,164 @@
+<div class="z-index-0">
+  <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
+    <a
+      class="btn btn-group-vertical shadow-none"
+      href="../admin/dashboard"
+      style="--bs-btn-padding-x: 0px"
+    >
+      <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i>
+      <span class="text"
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24"
+          viewBox="0 0 24 24"
+          width="24"
+        >
+          <path d="M0 0h24v24H0V0z" fill="none" />
+          <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
+        </svg>
+        Back to Admin Dashboard</span
+      >
+    </a>
+
+    <div class="card-body">
+      <form [formGroup]="signUp" (submit)="signupUsr()" role="form text-left">
+        <div class="mb-3">
+          <label for="user">User Name</label>
+          <input
+            type="text"
+            class="form-control"
+            aria-label="Name"
+            aria-describedby="email-addon"
+            formControlName="username"
+            name="username"
+            placeholder="Enter your username"
+          />
+          <div
+            class="text-danger text-xxs"
+            *ngIf="signUp.controls?.['username']?.touched"
+          >
+            <span *ngIf="signUp.controls?.['username']?.errors?.['required']">{{
+              IS_REQUIRED
+            }}</span>
+            <span
+              *ngIf="signUp.controls?.['username']?.errors?.['minlength']"
+              >{{ MIN_LEN }}</span
+            >
+            <span
+              *ngIf="signUp.controls?.['username']?.errors?.['incorrect']"
+              >{{ DUP_TRY_AGAIN }}</span
+            >
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            aria-label="Email"
+            aria-describedby="email-addon"
+            formControlName="email"
+            name="email"
+            placeholder="Enter your email"
+          />
+          <div
+            class="text-danger text-xxs"
+            *ngIf="signUp.controls?.['email']?.touched"
+          >
+            <span *ngIf="signUp.controls?.['email']?.errors?.['required']">{{
+              IS_REQUIRED
+            }}</span>
+            <span *ngIf="signUp.controls?.['email']?.errors?.['email']">{{
+              NOT_EMAIL
+            }}</span>
+            <span *ngIf="signUp.controls?.['email']?.errors?.['incorrect']">{{
+              DUP_TRY_AGAIN
+            }}</span>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="email">Email</label>
+          <input
+            class="form-control"
+            aria-label="Password"
+            aria-describedby="password-addon"
+            formControlName="password"
+            type="password"
+            name="password"
+            placeholder="Create a password"
+          />
+          <div
+            class="text-danger text-xxs"
+            *ngIf="signUp.controls?.['password']?.touched"
+          >
+            <span *ngIf="signUp.controls?.['password']?.errors?.['required']">{{
+              IS_REQUIRED
+            }}</span>
+            <span
+              *ngIf="signUp.controls?.['password']?.errors?.['minlength']"
+              >{{ MIN_LEN }}</span
+            >
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="passwordConfirm">Confirm Password</label>
+          <input
+            type="password"
+            class="form-control"
+            aria-label="Password"
+            aria-describedby="password-addon"
+            formControlName="passwordConfirm"
+            type="password"
+            name="passwordConfirm"
+            placeholder="Confirm your password"
+          />
+          <div
+            class="text-danger text-xxs"
+            *ngIf="signUp.controls?.['passwordConfirm']?.touched"
+          >
+            <span
+              *ngIf="signUp.controls?.['passwordConfirm']?.errors?.['required']"
+              >{{ IS_REQUIRED }}</span
+            >
+            <span
+              *ngIf="
+                signUp.controls?.['passwordConfirm']?.errors?.['minlength']
+              "
+              >{{ MIN_LEN }}</span
+            >
+            <span
+              *ngIf="signUp.controls?.['passwordConfirm']?.errors?.['notSame']"
+              >{{ NOT_MATCHING }}</span
+            >
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="userRole">User Role</label>
+          <select class="form-select" formControlName="userRole">
+            <option *ngFor="let c of userRoles" [ngValue]="c">{{ c }}</option>
+          </select>
+        </div>
+        <div class="text-center" *ngIf="!modify_user">
+          <input
+            type="submit"
+            class="btn bg-gradient-dark w-100 my-4 mb-2"
+            value="Sign up"
+          />
+          <!-- <button type="button" class="btn bg-gradient-dark w-100 my-4 mb-2">
+            Sign up
+          </button> -->
+        </div>
+        <div class="text-center" *ngIf="modify_user">
+          <input
+            type="submit"
+            class="btn bg-gradient-dark w-100 my-4 mb-2"
+            value="Update"
+          />
+          <!-- <button type="button" class="btn bg-gradient-dark w-100 my-4 mb-2">
+            Sign up
+          </button> -->
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
