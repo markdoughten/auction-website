@@ -20,7 +20,15 @@ def create_app():
 
         # Register blueprints for routes
         from .routes.home import home_bp
+        from .routes.auth import auth_bp
+        from .routes.search import search_bp
+        from .routes.notifications import notifications_bp
+        from .routes.auctions import auctions_bp
         app.register_blueprint(home_bp)
+        app.register_blueprint(auth_bp)
+        app.register_blueprint(search_bp)
+        app.register_blueprint(notifications_bp)
+        app.register_blueprint(auctions_bp)
 
         # Create database tables
         try:
