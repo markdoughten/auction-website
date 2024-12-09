@@ -3,7 +3,7 @@ from flask import current_app as app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import datetime
 from ..utils import constants
-from ..utils.misc import gen_resp_msg
+from ..utils.misc import gen_resp_msg, gen_success_response
 from ..utils.auction import auction_model_to_api_resp, filter_auctions_by_attr
 from ..models.auction import Auctions
 from ..utils.common import db_create_one, db_delete_one, db_delete_all, db_commit
@@ -48,6 +48,7 @@ def auction():
         flash("Auction created successfully!", "success")
         return redirect(url_for("home_bp.home"))
 
+
 @auctions_bp.route("/auctions/<int:auction_id>", methods=["GET", "POST", "PUT", "DELETE"])
 @jwt_required()
 def manage_auction(auction_id):
@@ -56,7 +57,7 @@ def manage_auction(auction_id):
     if request.method == "GET":
         if not auction:
             return gen_resp_msg(404)
-        return jsonify(auction_model_to_api_resp(auction))
+        return gen_success_response(auction_model_to_api_resp(auction))
 
     elif request.method == "PUT":
         if not auction or not request.json:
@@ -65,13 +66,14 @@ def manage_auction(auction_id):
         auction.min_price = req_json.get("minPrice", auction.min_price)
         auction.closing_time = datetime.strptime(req_json["closingTime"], '%m/%d/%Y %H:%M:%S')
         db_commit()
-        return jsonify(auction_model_to_api_resp(auction))
+        return gen_success_response(auction_model_to_api_resp(auction))
 
     elif request.method == "DELETE":
         if not auction:
             return gen_resp_msg(404)
         db_delete_one(auction)
-        return jsonify(auction.to_dict()), 200
+        return gen_success_response(auction.to_dict())
+
 
 @auctions_bp.route("/auctions", methods=["GET", "POST", "DELETE"])
 @jwt_required()
@@ -125,6 +127,7 @@ def handle_auctions():
         db_delete_all(Auctions)
         return gen_resp_msg(200)
 
+
 @auctions_bp.route('/add_items', methods=["POST"])
 def add_items():
     failed = []
@@ -143,3 +146,14 @@ def add_items():
         constants.MESSAGE: failed if failed else "Items added successfully"
     }
     return jsonify(response)
+
+
+
+@app.route('/auctions_all', methods=["GET"])
+def get_all():
+    auctions = Auctions.query.filter(Auctions.status == 'Open').all()
+    if not auctions:
+        return gen_resp_msg(404)
+
+    auction_items = [auction.to_dict() for auction in auctions]
+    return gen_success_response(auction_items)

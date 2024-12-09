@@ -11,43 +11,86 @@
               <th
                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
               >
-                Action
+                Users
               </th>
-              <th class="text-secondary opacity-7"></th>
+              <th
+                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+              >
+                Operation
+              </th>
             </tr>
           </thead>
-          <div *ngIf="!users">
-            <p>User data not found!!</p>
-          </div>
-          <tbody *ngIf="users">
-            <tr *ngFor="let userData of users">
+          @if (users == undefined) {
+            <tr>
               <td>
                 <div class="d-flex px-2 py-1">
                   <div class="d-flex flex-column justify-content-center">
-                    <h6 class="mb-0 text-sm"></h6>
-                    {{ userData.username }}
-                    <!-- <p class="text-xs text-secondary mb-0">Create New Staff</p> -->
+                    <h6 class="mb-0 text-sm">No user data found!!</h6>
                   </div>
                 </div>
               </td>
-              <td class="align-middle">
-                <span class="badge badge-sm bg-gradient-success col-2">
-                  <a
-                    type="button"
-                    class="text-white font-weight-bold text-xs"
-                    data-toggle="tooltip"
-                    data-original-title="Edit user"
-                    (click)="modifyUser(userData)"
-                  >
-                    <svg class="bi" width="20" height="20" fill="currentColor">
-                      <use xlink:href="bootstrap-icons.svg#pencil-square" />
-                    </svg>
-                    Modify
-                  </a>
-                </span>
-              </td>
             </tr>
-          </tbody>
+          } @else {
+            <tbody>
+              <tr *ngFor="let userData of users">
+                <td>
+                  <div class="d-flex px-2 py-1">
+                    <div class="d-flex flex-column justify-content-center">
+                      <h6 class="mb-0 text-sm"></h6>
+                      {{ userData.username }}
+                      <!-- <p class="text-xs text-secondary mb-0">Create New Staff</p> -->
+                    </div>
+                  </div>
+                </td>
+                <td class="align-middle">
+                  <span
+                    class="badge border me-2 w-sm-auto bg-gradient-success col-2"
+                  >
+                    <a
+                      type="button"
+                      class="text-white font-weight-bold text-xs"
+                      data-toggle="tooltip"
+                      data-original-title="Edit user"
+                      (click)="modifyUser(userData)"
+                    >
+                      <svg
+                        class="bi"
+                        width="20"
+                        height="20"
+                        fill="currentColor"
+                      >
+                        <use xlink:href="bootstrap-icons.svg#pencil-square" />
+                      </svg>
+                      Modify
+                    </a>
+                  </span>
+                </td>
+                <td class="align-middle">
+                  <span
+                    class="badge border me-2 w-sm-auto bg-gradient-danger col-2"
+                  >
+                    <a
+                      type="button"
+                      class="text-white font-weight-bold text-xs"
+                      data-toggle="tooltip"
+                      data-original-title="Delete user"
+                      (click)="deleteUser(userData)"
+                    >
+                      <svg
+                        class="bi"
+                        width="20"
+                        height="20"
+                        fill="currentColor"
+                      >
+                        <use xlink:href="bootstrap-icons.svg#person-x" />
+                      </svg>
+                      Delete
+                    </a>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          }
         </table>
       </div>
     </div>

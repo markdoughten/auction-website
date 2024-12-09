@@ -10,8 +10,12 @@ import { AdminComponent } from "@layouts/admin/admin.component";
 import { AdminDashboardComponent } from "@layouts/admin/dashboard/dashboard.component";
 import { RegisterComponent } from "@layouts/admin/register/register.component";
 import { ModifyComponent } from "@layouts/admin/modify/modify.component";
-import { admin_access, staff_access, all_access } from "@model/usermodel";
 import { ProfileComponent } from "@layouts/profile/profile.component";
+import { ItemComponent } from "@layouts/items/item/item.component";
+import { ItemLandingComponent } from "@layouts/items/itemlanding.component";
+import { ItemFormComponent } from "@layouts/items/itemform/itemform.component";
+import { SettingsComponent } from "@layouts/settings/settings.component";
+import { admin_access, staff_access, all_access } from "@model/usermodel";
 
 export const routes: Routes = [
   {
@@ -21,13 +25,7 @@ export const routes: Routes = [
       let path = "/login";
       authService.isLoggedIn.subscribe((isLoggedIn) => {
         if (isLoggedIn) {
-          authService.isAdmin.subscribe((isAdmin) => {
-            if (isAdmin) {
-              path = "/admin";
-            } else {
-              path = "/dashboard";
-            }
-          });
+          path = "/dashboard";
         }
       });
       return path;
@@ -67,6 +65,28 @@ export const routes: Routes = [
   {
     path: "profile/:id",
     component: ProfileComponent,
+    canActivate: [IsAuthGuard],
+  },
+  {
+    path: "item",
+    component: ItemLandingComponent,
+    canActivate: [IsAuthGuard],
+    children: [
+      {
+        path: "view/:id",
+        component: ItemComponent,
+        canActivate: [IsAuthGuard],
+      },
+      {
+        path: "",
+        component: ItemFormComponent,
+        canActivate: [IsAuthGuard],
+      },
+    ],
+  },
+  {
+    path: "settings",
+    component: SettingsComponent,
     canActivate: [IsAuthGuard],
   },
   {

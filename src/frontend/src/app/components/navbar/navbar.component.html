@@ -1,11 +1,11 @@
 <div class="container-fluid">
   <div class="row align-items-center py-3 px-xl-5">
-    <div class="col-lg-1 d-none d-lg-block me-3">
+    <div class="col-lg-1 me-3">
       <a href="" class="text-decoration-none">
         <h2 class="fs-3">BuyMe</h2>
       </a>
     </div>
-    <div class="col-lg-5 col-5 text-left mb-3" *ngIf="showSearch()">
+    <div class="col-lg-4 col-4 text-left mb-3" *ngIf="showSearch()">
       <form action="submit">
         <div class="input-group">
           <input
@@ -41,7 +41,7 @@
         <span class="text ms-lg-1">Settings</span>
       </a>
       <a
-        href="/profile/{{ this.username }}"
+        href="/profile/{{ this.id }}"
         class="btn border me-2 w-sm-auto shadow-none"
       >
         <svg class="bi" width="20" height="20" fill="currentColor">

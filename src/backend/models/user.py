@@ -23,6 +23,11 @@ class User(db.Model):
         if with_child_rels:
             pass
 
+        if with_parent_rels:
+            pass
+
+        return d
+
 @dataclass
 class UserQuestion(db.Model):
     __tablename__ = 'user_questions'

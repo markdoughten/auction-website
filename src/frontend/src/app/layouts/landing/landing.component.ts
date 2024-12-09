@@ -8,15 +8,15 @@ import {
   FormGroup,
   ValidatorFn,
 } from "@angular/forms";
-import { AuthService } from "../../@core/auth.service";
-import { R_ADMIN } from "../../model/usermodel";
+import { AuthService } from "@core/auth.service";
 import {
   RESPONSE_STATUS,
   IS_REQUIRED,
   MIN_LEN,
   NOT_EMAIL,
   SERVER_URLS,
-} from "../../@core/constants";
+} from "@core/constants";
+import { timer } from "rxjs";
 
 function dup_entry_found(self: LandingComponent): ValidatorFn {
   return (c: AbstractControl): { [key: string]: boolean } | null => {
@@ -93,7 +93,7 @@ export class LandingComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  loginUsr() {
+  async loginUsr() {
     this.signUp.reset();
     const login = this.login;
     let is_invalid = false;
@@ -109,19 +109,27 @@ export class LandingComponent implements OnInit {
     }
     const self = this;
 
-    this.auth.login(this.login).subscribe(async (response: any) => {
-      if (response.status === RESPONSE_STATUS.SUCCESS) {
-        if (self.auth.user.role === R_ADMIN) {
-          window.location.href = "/admin/dashboard";
+    this.auth.login(this.login).subscribe(
+      (response) => {
+        if (response.status === RESPONSE_STATUS.SUCCESS) {
+          timer(100).subscribe(() => {
+            console.log(".1 seconds have passed!");
+            window.location.href = "/dashboard";
+          });
         } else {
-          window.location.href = "/dashboard";
+          self.handleSignUpErr(login);
         }
-      } else {
-        self.dup_entry = 2;
-        self.login.get("email")?.updateValueAndValidity();
-        self.login.get("password")?.updateValueAndValidity();
-      }
-    });
+      },
+      (error) => {
+        self.handleSignUpErr(login);
+      },
+    );
+  }
+
+  handleSignUpErr(form: FormGroup) {
+    this.dup_entry = 2;
+    form.get("username")?.updateValueAndValidity();
+    form.get("email")?.updateValueAndValidity();
   }
 
   signupUsr() {
@@ -139,20 +147,22 @@ export class LandingComponent implements OnInit {
       return;
     }
 
-    this.auth
-      .signup(this.signUp, SERVER_URLS.signup)
-      .subscribe((response: any) => {
-        if (response.status === RESPONSE_STATUS.SUCCESS) {
+    const self = this;
+    this.auth.addUpUsr(this.signUp, SERVER_URLS.signup).subscribe(
+      (data) => {
+        if (data.status === RESPONSE_STATUS.SUCCESS) {
           alert("User registered successfully");
           let element: HTMLElement = document.getElementById(
             "login_now",
           ) as HTMLElement;
           element.click();
         } else {
-          this.dup_entry = 2;
-          signUp.get("username")?.updateValueAndValidity();
-          signUp.get("email")?.updateValueAndValidity();
+          self.handleSignUpErr(signUp);
         }
-      });
+      },
+      (err) => {
+        self.handleSignUpErr(signUp);
+      },
+    );
   }
 }

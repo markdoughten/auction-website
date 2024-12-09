@@ -32,3 +32,6 @@ def db_delete_all(model):
     except Exception as e:
         print("Error deleting rows in db:", e)
         raise e
+
+def db_session():
+    return db.session

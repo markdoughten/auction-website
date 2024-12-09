@@ -12,11 +12,11 @@ import { AuthService } from "@core/auth.service";
 })
 export class NavbarComponent {
   constructor(protected authService: AuthService) {
-    this.username = this.authService.user.username;
+    this.id = this.authService.user.id;
   }
   showSearch = input<boolean>(true);
   product: string = "";
-  username: string = "";
+  id: number = -1;
 
   searchevent() {
     console.log("test...", this.product);

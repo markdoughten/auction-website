@@ -43,10 +43,9 @@ export class RegisterComponent {
   NOT_MATCHING = "Passwords don't match";
   DUP_TRY_AGAIN = "Email or User already present";
   INCORRECT_TRY_AGAIN = "Incorrect email/password";
-  userRoles = staff_access;
+  roles = staff_access;
   signUp: FormGroup;
-  modify_user: boolean = false;
-  initParams: any;
+  initParams: any = undefined;
 
   constructor(
     private auth: AuthService,
@@ -73,19 +72,19 @@ export class RegisterComponent {
           Validators.required,
           Validators.minLength(5),
         ]),
-        userRole: new FormControl(null),
+        role: new FormControl(null),
       },
       this.passwordMatchValidator,
     );
-    this.signUp.controls["userRole"].setValue(R_STAFF, { onlySelf: true });
+    this.signUp.controls["role"].setValue(R_STAFF, { onlySelf: true });
     const self = this;
     this.activator.queryParams.subscribe((params) => {
       if (Object.keys(params).length === 0) {
         return;
       }
       this.initParams = JSON.parse(JSON.stringify(params));
-      if (!this.userRoles.includes(this.initParams.role)) {
-        this.userRoles = [this.initParams.role];
+      if (!this.roles.includes(this.initParams.role)) {
+        this.roles = [this.initParams.role];
       }
       if (
         !(
@@ -94,9 +93,11 @@ export class RegisterComponent {
           self.is_empty(this.initParams.role)
         )
       ) {
+        this.signUp.controls["email"].setValue(this.initParams.email, {
+          onlySelf: true,
+        });
         self.setDefModSignUp();
         self.disableModSignUp();
-        self.modify_user = true;
       }
     });
   }
@@ -105,18 +106,14 @@ export class RegisterComponent {
     this.signUp.controls["username"].setValue(this.initParams.username, {
       onlySelf: true,
     });
-    this.signUp.controls["email"].setValue(this.initParams.email, {
-      onlySelf: true,
-    });
-    this.signUp.controls["userRole"].setValue(this.initParams.role, {
+    this.signUp.controls["role"].setValue(this.initParams.role, {
       onlySelf: true,
     });
   }
 
   disableModSignUp() {
     this.signUp.controls["username"].disable();
-    this.signUp.controls["email"].disable();
-    this.signUp.controls["userRole"].disable();
+    this.signUp.controls["role"].disable();
   }
 
   is_empty(s: string) {
@@ -150,35 +147,43 @@ export class RegisterComponent {
     }
 
     const self = this;
-    if (this.modify_user) {
+    if (this.initParams != undefined) {
       this.setDefModSignUp();
       signUp.enable({ emitEvent: true });
-      this.auth
-        .signup(signUp, SERVER_URLS.update_user)
-        .subscribe((response: any) => {
+      SERVER_URLS.update_user.id = this.auth.user.id;
+      this.auth.addUpUsr(signUp, SERVER_URLS.update_user).subscribe(
+        (response: any) => {
           if (response.status === RESPONSE_STATUS.SUCCESS) {
             alert("User updated successfully");
             self.router.navigate(["admin"]);
-          } else {
-            alert(response.message);
+            // } else {
+            //   alert(response.message);
           }
-        });
-
-      self.dup_entry = 2;
+        },
+        (error) => {
+          // alert(error.error.message);
+        },
+      );
+      self.dup_entry = 1;
+      signUp.get("email")?.updateValueAndValidity();
       self.disableModSignUp();
     } else {
-      this.auth
-        .signup(this.signUp, SERVER_URLS.create_account)
-        .subscribe((response: any) => {
+      this.auth.addUpUsr(this.signUp, SERVER_URLS.create_account).subscribe(
+        (response: any) => {
           if (response.status === RESPONSE_STATUS.SUCCESS) {
-            alert("Staff registered successfully");
+            alert(
+              this.signUp.controls["role"].value + " registered successfully",
+            );
             self.router.navigate(["admin"]);
-          } else {
-            self.dup_entry = 2;
-            signUp.get("username")?.updateValueAndValidity();
-            signUp.get("email")?.updateValueAndValidity();
           }
-        });
+        },
+        (error) => {
+          // alert(error.error.message);
+        },
+      );
+      self.dup_entry = 2;
+      signUp.get("username")?.updateValueAndValidity();
+      signUp.get("email")?.updateValueAndValidity();
     }
   }
 }

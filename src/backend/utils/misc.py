@@ -1,27 +1,7 @@
-from hashlib import sha512
-from typing import Tuple
-from flask_jwt_extended import get_jwt_identity
-from .constants import (STATUS, STATUS_RESPONSE, MESSAGE, INSUF_PERM)
-
-def get_hash(data):
-    final_pass = data + "including a random salt";
-    return sha512(final_pass.encode('utf-8')).hexdigest()
-
-
-def validate_user(role) -> Tuple[dict, bool]:
-    identity = get_jwt_identity()
-    output = {}
-    if not identity or identity["role"] not in role:
-        output[STATUS] = STATUS_RESPONSE.INSUF_PERM.value
-        output[MESSAGE] = INSUF_PERM
-        return (output, False)
-
-    return (output, True)
-
 from flask import jsonify
 from . import constants
 
-def gen_resp_msg(code, status=None, msg=None):
+def gen_resp_msg(code, status=None, msg=None, data=None):
 
     output = {}
 
@@ -30,6 +10,7 @@ def gen_resp_msg(code, status=None, msg=None):
         200: (constants.STATUS_RESPONSE.SUCCESS.value, constants.SUCCESS_MSG),
         400: (constants.STATUS_RESPONSE.FAILURE.value, constants.INVALID_REQ),
         404: (constants.STATUS_RESPONSE.FAILURE.value, constants.NOT_FOUND),
+        403: (constants.STATUS_RESPONSE.INSUF_PERM.value, constants.INSUF_PERM)
     }
 
     # Fallback for unhandled status codes
@@ -41,6 +22,12 @@ def gen_resp_msg(code, status=None, msg=None):
     # Allow overrides if provided
     output[constants.STATUS] = status if not status else status
     output[constants.MESSAGE] = msg if msg else message
+    if data:
+        output[constants.DATA] = data
 
     return jsonify(output), code
 
+
+
+def gen_success_response(data):
+    return gen_resp_msg(200, constants.STATUS_RESPONSE.SUCCESS.value, constants.SUCCESS_MSG, data)

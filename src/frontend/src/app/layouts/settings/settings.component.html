@@ -2,7 +2,7 @@
   <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
     <a
       class="btn btn-group-vertical shadow-none"
-      href="../admin/dashboard"
+      href="/dashboard"
       style="--bs-btn-padding-x: 0px"
     >
       <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i>
@@ -16,7 +16,7 @@
           <path d="M0 0h24v24H0V0z" fill="none" />
           <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
         </svg>
-        Back to Admin Dashboard</span
+        Back to Dashboard</span
       >
     </a>
 
@@ -132,30 +132,22 @@
             >
           </div>
         </div>
-        <div class="mb-3">
-          <label for="role">User Role</label>
-          <select class="form-select" formControlName="role">
-            <option *ngFor="let c of roles" [ngValue]="c">{{ c }}</option>
-          </select>
+        <div class="text-center">
+          <input
+            type="submit"
+            class="btn bg-gradient-dark w-100 my-4 mb-2"
+            value="Sign up"
+          />
         </div>
-        @if (initParams == undefined) {
-          <div class="text-center">
-            <input
-              type="submit"
-              class="btn bg-gradient-dark w-100 my-4 mb-2"
-              value="Sign up"
-            />
-          </div>
-        } @else {
-          <div class="text-center">
-            <input
-              type="submit"
-              class="btn bg-gradient-dark w-100 my-4 mb-2"
-              value="Update"
-            />
-          </div>
-        }
       </form>
+      <div class="text-center">
+        <input
+          type="button"
+          class="btn bg-gradient-danger w-100 my-4 mb-2"
+          value="Delete"
+          (click)="isdelete()"
+        />
+      </div>
     </div>
   </div>
 </div>
