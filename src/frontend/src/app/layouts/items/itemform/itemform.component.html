@@ -1,1 +1,66 @@
-<p>newitem works!</p>
+<div class="container">
+  <div class="item form col-xl-4 col-lg-5 col-md-7 mx-auto">
+    <div class="card-body">
+      <form
+        [formGroup]="itemForm"
+        (ngSubmit)="onSubmit()"
+        role="form text-left"
+      >
+        <div class="mb-3">
+          <label for="name">Name</label>
+          <input
+            class="form-control"
+            type="text"
+            id="name"
+            formControlName="name"
+          />
+
+          <div
+            class="text-danger text-xxs"
+            *ngIf="itemForm.controls?.['name']?.touched"
+          >
+            <span *ngIf="itemForm.controls?.['name']?.errors?.['required']">{{
+              IS_REQUIRED
+            }}</span>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="description">Description:</label>
+          <textarea
+            class="form-control"
+            id="description"
+            formControlName="description"
+          ></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label for="price">Price:</label>
+          <input
+            class="form-control"
+            type="number"
+            id="price"
+            formControlName="price"
+          />
+
+          <div
+            class="text-danger text-xxs"
+            *ngIf="itemForm.controls?.['price']?.touched"
+          >
+            <span *ngIf="itemForm.get('price')?.errors?.['min']">{{
+              MIN_VALUE
+            }}</span>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <input
+            type="submit"
+            class="btn bg-gradient-dark w-100 my-4 mb-2"
+            value="Submit"
+          />
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
