@@ -4,7 +4,6 @@ from ..models.auction import Auctions, Bids
 from ..models.item import Item, ItemAttribute
 from ..models.item_meta import create_new_item, add_item_categ, add_item_attr, MetaItemCategory, MetaItemSubCategory, MetaItemAttribute
 from ..models.user import User
-from ..routes.users import populate_users
 from ..utils import constants
 from ..utils.hash import get_hash
 from sqlalchemy import text
@@ -104,7 +103,6 @@ def populate_data():
         db.session.add_all([tshirt_bid, jeans_bid])
         db.session.commit()
         print("Bids added successfully.")
-        print(populate_users()["message"])
         print("Dummy data populated successfully.")
     except Exception as e:
         print(f"Error populating data: {e}")

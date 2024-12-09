@@ -2,7 +2,6 @@ from flask import current_app as app, request
 from flask.json import jsonify
 from flask_jwt_extended import create_access_token, jwt_required
 from flask_jwt_extended.utils import get_jwt_identity
-
 from ..utils import constants
 from ..utils.hash import get_hash
 from ..utils.misc import gen_resp_msg, gen_success_response
@@ -11,8 +10,6 @@ from ..models.user import User
 from ..models.auction import Auctions, Bids
 from ..utils.common import db_create_one, db_commit, db_delete_one, db_delete_all, db_session
 from .. import jwt
-
-
 
 @jwt.user_identity_loader
 def user_identity_lookup(user: User):

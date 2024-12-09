@@ -1,9 +1,16 @@
-import { NgModule } from "@angular/core";
-import { RouterModule } from "@angular/router";
-import { routes } from "./app.routes";
+import { Routes } from "@angular/router";
+import { DashboardComponent } from "./layouts/dashboard/dashboard.component";
+import { CanDeactivateGuard } from "./guards/can-deactivate.guard";
 
-@NgModule({
-  imports: [RouterModule.forRoot(routes, { onSameUrlNavigation: "reload" })],
-  exports: [RouterModule],
-})
-export class AppRoutingModule {}
+export const routes: Routes = [
+  {
+    path: "dashboard",
+    component: DashboardComponent,
+    canDeactivate: [CanDeactivateGuard], // Attach the guard here
+  },
+  {
+    path: "",
+    redirectTo: "dashboard",
+    pathMatch: "full",
+  },
+];

@@ -39,7 +39,6 @@ def create_app():
 
         # Populate database with dummy data if enabled in configuration
         if conf.POPULATE_VALUES:
-            from .routes.users import populate_users, remove_users
             try:
                 from .utils.data import populate_data
                 populate_data()
