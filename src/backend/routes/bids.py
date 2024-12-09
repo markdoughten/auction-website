@@ -3,7 +3,7 @@ from flask import current_app as app
 from flask_jwt_extended import jwt_required
 from ..utils.misc import gen_resp_msg
 from ..models.auction import Bids, Auctions
-from ..utils.common import db_create_one, db_commit, db_delete_one, db_delete_all
+from ..db_ops.common import db_create_one, db_commit, db_delete_one, db_delete_all
 
 @app.route('/bids/<id>', methods=["GET"])
 # @jwt_required()
@@ -11,11 +11,11 @@ def get_bid(id):
     bid = Bids.query.filter(Bids.id==id).first()
     if not bid:
         return gen_resp_msg(404)
-    
+
     return jsonify(bid.to_dict())
 
 @app.route('/bids/<id>', methods=["DELETE"])
-# @jwt_required() 
+# @jwt_required()
 def delete_bid(id):
     bid = Bids.query.filter(Bids.id==id).first()
     if not bid:
@@ -61,9 +61,9 @@ def get_bids():
 def post_bid():
     if not request.json:
        return gen_resp_msg(400)
-    
+
     reqJson = request.json
-    
+
     bid = Bids(
         auction_id = reqJson["auctionId"],
         bidder_id = reqJson["bidderId"],

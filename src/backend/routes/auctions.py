@@ -6,7 +6,7 @@ from ..utils import constants
 from ..utils.misc import gen_resp_msg, gen_success_response
 from ..utils.auction import auction_model_to_api_resp, filter_auctions_by_attr
 from ..models.auction import Auctions
-from ..utils.common import db_create_one, db_delete_one, db_delete_all, db_commit
+from ..db_ops.common import db_create_one, db_delete_one, db_delete_all, db_commit
 import os
 import json
 
@@ -149,7 +149,7 @@ def add_items():
 
 
 
-@app.route('/auctions_all', methods=["GET"])
+@app.route('/all_auctions', methods=["GET"])
 def get_all():
     auctions = Auctions.query.filter(Auctions.status == 'Open').all()
     if not auctions:

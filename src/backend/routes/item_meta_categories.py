@@ -3,7 +3,7 @@ from flask import current_app as app
 from flask_jwt_extended import jwt_required
 from ..utils.misc import gen_resp_msg
 from ..models.item_meta import MetaItemCategory
-from ..utils.common import db_delete_one, db_delete_all, db_commit
+from ..db_ops.common import db_delete_one, db_delete_all, db_commit
 
 @app.route('/item_meta/categories/<id>', methods=["GET"])
 # @jwt_required()
@@ -11,20 +11,20 @@ def get_category(id):
     item_category = MetaItemCategory.query.filter(MetaItemCategory.id==id).first()
     if not item_category:
         return gen_resp_msg(404)
-    
+
     return jsonify(item_category.to_dict(True,True))
 
 
 @app.route('/item_meta/categories/<id>', methods=["PUT"])
-# @jwt_required() 
+# @jwt_required()
 def put_category(id):
     item_category = MetaItemCategory.query.filter(MetaItemCategory.id==id).first()
     if not item_category:
         return gen_resp_msg(404)
-    
+
     if not request.json:
        return gen_resp_msg(400)
-    
+
     reqJson = request.json
     item_category.category_name = reqJson["categoryName"]
     db_commit()
@@ -33,7 +33,7 @@ def put_category(id):
 
 
 @app.route('/item_meta/categories/<id>', methods=["DELETE"])
-# @jwt_required() 
+# @jwt_required()
 def delete_category(id):
     item_category = MetaItemCategory.query.filter(MetaItemCategory.id==id).first()
     if not item_category:
@@ -65,9 +65,9 @@ def get_categories():
 def post_category():
     if not request.json:
        return gen_resp_msg(400)
-    
+
     reqJson = request.json
-    
+
     category = MetaItemCategory(
         category_name = reqJson["categoryName"]
     )
@@ -89,5 +89,3 @@ def delete_categories():
         return gen_resp_msg(500)
 
     return gen_resp_msg(200)
-
-

@@ -3,7 +3,7 @@ from flask import current_app as app
 from flask_jwt_extended import jwt_required
 from ..utils.misc import gen_resp_msg
 from ..models.item_meta import MetaItemAttribute
-from ..utils.common import db_create_one, db_commit, db_delete_one, db_delete_all
+from ..db_ops.common import db_create_one, db_commit, db_delete_one, db_delete_all
 
 
 
@@ -14,22 +14,22 @@ def get_attr(id):
     item_attr = MetaItemAttribute.query.filter(MetaItemAttribute.id==id).first()
     if not item_attr:
         return gen_resp_msg(404)
-    
+
     return jsonify(item_attr.to_dict(True, True))
 
 
 @app.route('/item_meta/attributes/<id>', methods=["PUT"])
-# @jwt_required() 
+# @jwt_required()
 def put_attr(id):
     item_attr = MetaItemAttribute.query.filter(MetaItemAttribute.id==id).first()
     if not item_attr:
         return gen_resp_msg(404)
-    
+
     if not request.json:
         return gen_resp_msg(400)
-    
+
     reqJson = request.json
-    
+
     item_attr.attribute_name = reqJson["attributeName"]
     db_commit()
 
@@ -37,7 +37,7 @@ def put_attr(id):
 
 
 @app.route('/item_meta/attributes/<id>', methods=["DELETE"])
-# @jwt_required() 
+# @jwt_required()
 def delete_attr(id):
     item_attr = MetaItemAttribute.query.filter(MetaItemAttribute.id==id).first()
     if not item_attr:
@@ -69,9 +69,9 @@ def get_attributes():
 def post_attr():
     if not request.json:
         return gen_resp_msg(400)
-    
+
     reqJson = request.json
-    
+
     attribute = MetaItemAttribute(
         attribute_name = reqJson["attributeName"],
         subcategory_id = reqJson["subcategoryId"]
@@ -94,5 +94,3 @@ def delete_attributes():
         return gen_resp_msg(500)
 
     return gen_resp_msg(200)
-
-

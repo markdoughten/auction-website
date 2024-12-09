@@ -9,7 +9,7 @@ from ..utils.misc import gen_resp_msg, gen_success_response
 from ..utils.user import user_model_to_api_resp, is_opr_allowed
 from ..models.user import User
 from ..models.auction import Auctions, Bids
-from ..utils.common import db_create_one, db_commit, db_delete_one, db_delete_all, db_session
+from ..db_ops.common import db_create_one, db_commit, db_delete_one, db_delete_all, db_session
 from .. import jwt
 
 

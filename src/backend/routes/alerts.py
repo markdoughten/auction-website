@@ -2,7 +2,7 @@ from flask import request, jsonify
 from flask import current_app as app
 from flask_jwt_extended import jwt_required
 from ..utils.misc import gen_resp_msg
-from ..models.alert import Alert, Notification
+from ..models.notification import Alert, Notification
 from ..db_ops.common import db_create_one, db_delete_one, db_delete_all
 from ..utils.alert import alert_model_to_api_resp, notification_model_to_api_resp
 
@@ -20,7 +20,7 @@ def get_alert(id):
 
 
 @app.route('/alerts/<id>', methods=["DELETE"])
-# @jwt_required() 
+# @jwt_required()
 def delete_alert(id):
     alert = Alert.query.filter(Alert.id==id).first()
     if not alert:
@@ -62,9 +62,9 @@ def get_alerts():
 def post_alert():
     if not request.json:
        return gen_resp_msg(400)
-    
+
     reqJson = request.json
-    
+
     alert = Alert(
         user_id = reqJson["userId"],
         category_id = reqJson["categoryId"],
@@ -99,7 +99,7 @@ def get_notification(id):
     notification = Notification.query.filter(Notification.id==id).first()
     if not notification:
         return gen_resp_msg(404)
-    
+
     resp = notification_model_to_api_resp(notification)
     return jsonify(resp)
 
@@ -142,4 +142,3 @@ def get_notifications():
     notifs = notifQuery.paginate(page=page).items
     notifsDict = list(map(lambda x:notification_model_to_api_resp(x),notifs))
     return jsonify(notifsDict)
-

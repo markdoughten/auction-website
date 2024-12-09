@@ -2,7 +2,7 @@ from flask import request, jsonify
 from flask import current_app as app
 from flask_jwt_extended import jwt_required
 from ..utils.misc import gen_resp_msg
-from ..utils.common import db_create_one, db_commit, db_delete_one, db_delete_all
+from ..db_ops.common import db_create_one, db_commit, db_delete_one, db_delete_all
 
 @app.route('/questions/<id>', methods=["GET"])
 # @jwt_required()
@@ -10,19 +10,19 @@ def get_question(id):
     question = UserQuestion.query.filter(UserQuestion.id==id).first()
     if not question:
         return gen_resp_msg(404)
-    
+
     return jsonify(question.to_dict(True,True))
 
 @app.route('/questions/<id>', methods=["PUT"])
-# @jwt_required() 
+# @jwt_required()
 def put_question(id):
     question = UserQuestion.query.filter(UserQuestion.id==id).first()
     if not question:
         return gen_resp_msg(404)
-    
+
     if not request.json:
        return gen_resp_msg(400)
-    
+
     reqJson = request.json
     question.question_text = reqJson["questionText"]
     db_commit()
@@ -31,7 +31,7 @@ def put_question(id):
 
 
 @app.route('/questions/<id>', methods=["DELETE"])
-# @jwt_required() 
+# @jwt_required()
 def delete_question(id):
     question = UserQuestion.query.filter(UserQuestion.id==id).first()
     if not question:
@@ -61,7 +61,7 @@ def get_questions():
     if(auction_id):
         auction_id=int(auction_id)
         questionQuery=questionQuery.filter(UserQuestion.auction_id == auction_id)
-    
+
     if(asker_id):
         asker_id=int(asker_id)
         questionQuery=questionQuery.filter(UserQuestion.asker_id == asker_id)
@@ -76,9 +76,9 @@ def get_questions():
 def post_question():
     if not request.json:
        return gen_resp_msg(400)
-    
+
     reqJson = request.json
-    
+
     question = UserQuestion(
         auction_id = reqJson["auctionId"],
         asker_id = reqJson["askerId"],
@@ -112,20 +112,20 @@ def get_answer(id):
     answer = UserAnswer.query.filter(UserAnswer.id==id).first()
     if not answer:
         return gen_resp_msg(404)
-    
+
     return jsonify(answer.to_dict(True,True))
 
 
 @app.route('/answers/<id>', methods=["PUT"])
-# @jwt_required() 
+# @jwt_required()
 def put_answer(id):
     answer = UserAnswer.query.filter(UserAnswer.id==id).first()
     if not answer:
         return gen_resp_msg(404)
-    
+
     if not request.json:
        return gen_resp_msg(400)
-    
+
     reqJson = request.json
     answer.reply_text = reqJson["replyText"]
     db_commit()
@@ -134,7 +134,7 @@ def put_answer(id):
 
 
 @app.route('/answers/<id>', methods=["DELETE"])
-# @jwt_required() 
+# @jwt_required()
 def delete_answer(id):
     answer = UserAnswer.query.filter(UserAnswer.id==id).first()
     if not answer:
@@ -153,9 +153,9 @@ def delete_answer(id):
 def post_answer():
     if not request.json:
        return gen_resp_msg(400)
-    
+
     reqJson = request.json
-    
+
     answer = UserAnswer(
         question_id = reqJson["questionId"],
         replier_id = reqJson["replierId"],
