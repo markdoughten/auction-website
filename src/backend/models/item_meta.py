@@ -1,6 +1,5 @@
 from sqlalchemy.orm import relationship
 from sqlalchemy import ForeignKey, UniqueConstraint
-from dataclasses import dataclass
 from .. import db
 from sqlalchemy.orm import Mapped
 from typing import List
@@ -35,7 +34,7 @@ class MetaItemSubCategory(db.Model):
     category_id:int = db.Column(db.Integer, ForeignKey("meta_item_categories.id",ondelete="CASCADE"), nullable=False)
     subcategory_name:str = db.Column(db.String(128), nullable=False)
     __table_args__ = (UniqueConstraint('category_id', 'subcategory_name', name='_cat_subcat_uc'),)
-    
+
     #Relationships
     category:Mapped[MetaItemCategory] = relationship(back_populates="subcategories")
     attributes:Mapped[List["MetaItemAttribute"]] = relationship(back_populates="subcategory",cascade="all, delete")
@@ -65,6 +64,22 @@ class MetaItemAttribute(db.Model):
 
     #Relationships
     subcategory:Mapped[MetaItemSubCategory] = relationship(back_populates="attributes")
+
+    #methods
+    def to_dict(self,with_child_rels=False, with_parent_rels=False):
+        d={}
+        d["id"] = self.id
+        d["attributeName"] = self.attribute_name
+        d["subcategoryId"] = self.subcategory_id
+
+        if (with_child_rels):
+            pass
+
+        if (with_parent_rels):
+            d["subcategory"] = self.subcategory.to_dict(with_parent_rels=True)
+
+        return d
+
 
 def create_new_item(item_name):
     item = MetaItemCategory.query.filter(MetaItemCategory.category_name==item_name).first()
@@ -118,8 +133,8 @@ def add_item_attr(item_name, categ_name, attr_name):
 
         if (with_child_rels):
             pass
-        
+
         if (with_parent_rels):
             d["subcategory"] = self.subcategory.to_dict(with_parent_rels=True)
-        
+
         return d

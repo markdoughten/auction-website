@@ -161,22 +161,22 @@ def login():
 
 @app.route('/users/items/<id>', methods=["GET"])
 def get_user_items(id):
-    items = db_session().query(Auctions).filter(Auctions.seller_id==id).all()
+    items = Auctions.query.filter(Auctions.seller_id==id).all()
     if not items:
         return gen_resp_msg(404)
 
-    items_dict = [item.to_dict(True) for item in items]
+    items_dict = [item.to_dict(with_parent_rels=True) for item in items]
     print(items_dict)
     return gen_success_response(items_dict)
 
 
 @app.route('/users/bids/<id>', methods=["GET"])
 def get_user_bids(id):
-    bids = db_session().query(Bids).filter(Bids.user_id==id).all()
+    bids = Bids.query.filter(Bids.users_id==id).all()
     if not bids:
         return gen_resp_msg(404)
 
-    bid_dict = [bid.to_dict(True) for bid in bids]
+    bid_dict = [bid.to_dict(False, True) for bid in bids]
     print(bid_dict)
     return gen_success_response(bid_dict)
 
