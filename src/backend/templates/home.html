@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<h1>Active Auctions</h1>
+<ul>
+    {% for auction in auctions %}
+        {% include "auction.html" %}
+    {% endfor %}
+</ul>
+{% endblock %}

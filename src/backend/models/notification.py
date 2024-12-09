@@ -21,3 +21,15 @@ class Alert(db.Model):
 
     def __repr__(self):
         return f"<Alert {self.id}, Item {self.item_id}, User {self.user_id}>"
+
+def create_notification(uid, title, description=None):
+    notification = Notification(uid=uid, title=title, description=description)
+    db.session.add(notification)
+    db.session.commit()
+    return notification
+
+def create_alert(item_id, user_id):
+    alert = Alert(item_id=item_id, user_id=user_id)
+    db.session.add(alert)
+    db.session.commit()
+    return alert
