@@ -1,9 +1,7 @@
-import string
-import random
 from ...models.user import User
 from .. import constants
 from ..hash import get_hash
-from ..common import db_create_one
+from ...db_ops.common import db_create_one
 
 def seed_users():
     usr_rng = [(100, constants.USER_ROLE.USER), (20, constants.USER_ROLE.STAFF), (1, constants.USER_ROLE.ADMIN)]

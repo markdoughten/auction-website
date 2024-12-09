@@ -1,5 +1,5 @@
-from ..models.alert import Alert
-from ..db_ops.common import db_create_one
+from ...models.notification import Alert
+from ...db_ops.common import db_create_one
 
 
 alerts = [
@@ -60,4 +60,3 @@ def seed_alerts():
             attribute_value = a["attributeValue"]
         )
         db_create_one(alert)
-

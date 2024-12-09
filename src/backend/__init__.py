@@ -39,7 +39,6 @@ def create_app():
         except Exception as e:
             print("Error creating tables: ",e)
 
-
         try:
             db.session.execute(text(constants.CREATE_NOTIFS_PROCEDURE))
             db.session.execute(text(constants.CREATE_NOTIFS_TRIGGER))

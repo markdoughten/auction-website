@@ -1,5 +1,5 @@
 from ...models.auction import Auctions
-from ..common import db_create_one
+from ...db_ops.common import db_create_one
 from datetime import datetime
 
 def generate_auction(itemid, sellerId):

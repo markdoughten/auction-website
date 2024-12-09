@@ -1,5 +1,5 @@
 from ...models.auction import Bids
-from ..common import db_create_one
+from ...db_ops.common import db_create_one
 
 
 def gen_bid(userid, auctionid, value):

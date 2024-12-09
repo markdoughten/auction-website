@@ -1,5 +1,5 @@
 from ...models.item_meta import MetaItemCategory, MetaItemSubCategory, MetaItemAttribute
-from ..common import db_create_one
+from ...db_ops.common import db_create_one
 
 item_meta = {
     "clothing": {

@@ -1,5 +1,5 @@
 from ...models.q_and_a import UserQuestion, UserAnswer
-from ..common import db_create_one
+from ...db_ops.common import db_create_one
 
 def seed_qa():
     for auction_id in range(1,7):

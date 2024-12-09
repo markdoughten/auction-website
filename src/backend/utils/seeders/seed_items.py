@@ -1,5 +1,5 @@
 from ...models.item import Item,ItemAttribute
-from ..common import db_create_one
+from ...db_ops.common import db_create_one
 
 items = [
     {
@@ -161,10 +161,8 @@ def seed_items():
         db_create_one(item)
 
         for a in i["attributes"]:
-            attr = ItemAttribute(
-                item_id = item.id,
-                attribute_id = a["attributeId"],
-                attribute_value = a["attributeValue"]
-            )
+            attr = ItemAttribute()
+            attr.item_id = item.id
+            attr.attribute_id = a["attributeId"]
+            attr.attribute_value = a["attributeValue"]
             db_create_one(attr)
-    

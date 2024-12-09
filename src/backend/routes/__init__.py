@@ -8,3 +8,6 @@ from .auctions import *
 from .bids import *
 from .q_and_a import *
 from .alerts import *
+
+if app.config["POPULATE_VALUES"]:
+    from .seeder import *
