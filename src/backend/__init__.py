@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from . import config
+from sqlalchemy import text
+from .utils import constants
 
 db = SQLAlchemy()
 jwt = JWTManager()
@@ -35,16 +37,13 @@ def create_app():
             db.create_all()  # Create SQL tables for our data models
             print("Database tables created successfully.")
         except Exception as e:
-            print("Error creating tables:", e)
+            print("Error creating tables: ",e)
+        
 
-        # Populate database with dummy data if enabled in configuration
-        if conf.POPULATE_VALUES:
-            from .routes.users import populate_users, remove_users
-            try:
-                from .utils.data import populate_data
-                populate_data()
-                print("Dummy data populated successfully.")
-            except Exception as e:
-                print("Error populating dummy data:", e)
+        try:
+            db.session.execute(text(constants.CREATE_NOTIFS_PROCEDURE))
+            db.session.execute(text(constants.CREATE_NOTIFS_TRIGGER))
+        except Exception as e:
+            print("Error executing raw SQL: ",e)
 
         return app
