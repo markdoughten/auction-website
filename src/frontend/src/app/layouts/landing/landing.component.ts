@@ -1,7 +1,6 @@
 import { ReactiveFormsModule, Validators } from "@angular/forms";
 import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { Router } from "@angular/router";
 import {
   AbstractControl,
   FormControl,
@@ -44,10 +43,7 @@ export class LandingComponent implements OnInit {
   INCORRECT_TRY_AGAIN = "Incorrect email/password";
   dup_entry = 0;
 
-  constructor(
-    private auth: AuthService,
-    private router: Router,
-  ) {}
+  constructor(private auth: AuthService) {}
 
   signUp = new FormGroup(
     {

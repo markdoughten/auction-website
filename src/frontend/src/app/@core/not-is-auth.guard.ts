@@ -1,27 +1,19 @@
 import { Injectable } from "@angular/core";
-import {
-  ActivatedRouteSnapshot,
-  CanActivate,
-  GuardResult,
-  MaybeAsync,
-  Router,
-  RouterStateSnapshot,
-} from "@angular/router";
+import { CanLoad, Route, UrlSegment, Router } from "@angular/router";
+import { Observable, of } from "rxjs";
 import { AuthService } from "./auth.service";
 
-@Injectable({
-  providedIn: "root",
-})
-export class NotIsAuthGuard implements CanActivate {
+@Injectable()
+export class NotIsAuthGuard implements CanLoad {
   constructor(
-    private authService: AuthService,
     private router: Router,
+    private authService: AuthService,
   ) {}
 
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot,
-  ): MaybeAsync<GuardResult> {
+  canLoad(
+    route: Route,
+    segments: UrlSegment[],
+  ): Observable<boolean> | Promise<boolean> | boolean {
     let result = false;
     this.authService.isLoggedIn.subscribe((isLoggedIn) => {
       if (isLoggedIn) {

@@ -92,12 +92,12 @@ export const routes: Routes = [
   {
     path: "login",
     component: LandingComponent,
-    canActivate: [NotIsAuthGuard],
+    canLoad: [NotIsAuthGuard],
   },
   {
     path: "signup",
     component: LandingComponent,
-    canActivate: [NotIsAuthGuard],
+    canLoad: [NotIsAuthGuard],
   },
   { path: "**", redirectTo: "/", pathMatch: "full" },
 ];
