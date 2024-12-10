@@ -1,94 +1,139 @@
-Table users {
-  id int [primary key]
-  email varchar
-  password varchar
-  role enum('admin','staff','user')
+
+Enum "users_role_enum" {
+  "Admin"
+  "Staff"
+  "User"
 }
 
-Table meta_item_categories {
-  id int [primary key]
-  category_name varchar
+Enum "auctions_status_enum" {
+  "Open"
+  "Sold"
+  "Expired"
 }
 
-Table meta_item_subcategories {
-  id int [primary key]
-  category_id int
-  subcategory_name varchar
-}
-Ref: meta_item_subcategories.category_id > meta_item_categories.id
+Table "users" {
+  "id" int [pk, increment]
+  "username" varchar(128) [not null]
+  "email" varchar(255) [not null]
+  "password" varchar(128) [not null]
+  "role" users_role_enum [not null]
+  "is_disabled" tinyint(1) [not null, default: 1]
 
-Table meta_item_attributes {
-  id int [primary key]
-  attribute_name varchar
-  subcategory_id int
+  Indexes {
+    email [unique, name: "email"]
+    username [unique, name: "username"]
+  }
 }
-Ref: meta_item_attributes.subcategory_id > meta_item_subcategories.id
 
-Table items {
-  id int [primary key]
-  name varchar
-  category_id int
-  subcategory_id int
+Table "meta_item_categories" {
+  "id" int [pk, increment]
+  "category_name" varchar(255) [not null]
 }
-Ref: items.category_id > meta_item_categories.id
-Ref: items.subcategory_id > meta_item_subcategories.id
 
-Table item_attributes {
-  item_id int
-  attribute_id int
-  attribute_value varchar
+Table "meta_item_subcategories" {
+  "id" int [pk, increment]
+  "category_id" int [not null]
+  "subcategory_name" varchar(255) [not null]
 }
-Ref: item_attributes.item_id > items.id
-Ref: item_attributes.attribute_id > meta_item_attributes.id
 
-Table auctions {
-  id int [primary key]
-  item_id int
-  seller_id int
-  initial_price real
-  min_increment real
-  min_price real
-  opening_time timestamp
-  closing_time timestamp
-  status enum('Open', 'Sold', 'Expired')
+Table "meta_item_attributes" {
+  "id" int [pk, increment]
+  "attribute_name" varchar(255) [not null]
+  "subcategory_id" int [not null]
 }
-Ref: auctions.item_id > items.id
-Ref: auctions.seller_id > users.id
 
-Table bids {
-  id int [primary key]
-  auction_id int
-  users_id int  // References users.id directly
-  bid_value real
-  bid_active bool
+Table "items" {
+  "id" int [pk, increment]
+  "name" varchar(255) [not null]
+  "category_id" int [not null]
+  "subcategory_id" int [not null]
 }
-Ref: bids.auction_id > auctions.id
-Ref: bids.users_id > users.id
 
-Table user_questions {
-  id int [primary key]
-  auction_id int  // References auctions.id
-  asker_id int
-  replier_id int
-  question_text varchar
-  is_open bool
+Table "item_attributes" {
+  "item_id" int [not null]
+  "attribute_id" int [not null]
+  "attribute_value" varchar(255)
 }
-Ref: user_questions.auction_id > auctions.id
-Ref: user_questions.asker_id > users.id
 
-Table user_answers {
-  id int [primary key]
-  question_id int
-  replier_id int
-  reply_text varchar
+Table "auctions" {
+  "id" int [pk, increment]
+  "item_id" int [not null]
+  "seller_id" int [not null]
+  "initial_price" double [not null]
+  "min_increment" double [not null]
+  "min_price" double [not null]
+  "opening_time" timestamp [not null]
+  "closing_time" timestamp [not null]
+  "status" auctions_status_enum [not null, default: 'Open']
 }
-Ref: user_answers.question_id > user_questions.id
-Ref: user_answers.replier_id > users.id
 
-Table alerts {
-  id int [primary key]
-  item_id int  // References items.id
-  user_id int
+Table "bids" {
+  "id" int [pk, increment]
+  "auction_id" int [not null]
+  "users_id" int [not null]
+  "bid_value" double [not null]
+  "bid_active" tinyint(1) [not null, default: 1]
 }
-Ref: alerts.user_id > users.id
-Ref: alerts.item_id > items.id
+
+Table "user_questions" {
+  "id" int [pk, increment]
+  "auction_id" int [not null]
+  "asker_id" int [not null]
+  "question_text" varchar(255) [not null]
+  "is_open" tinyint(1) [not null, default: 1]
+}
+
+Table "user_answers" {
+  "id" int [pk, increment]
+  "question_id" int [not null]
+  "replier_id" int [not null]
+  "reply_text" varchar(255) [not null]
+}
+
+Table "alerts" {
+  "id" int [pk, increment]
+  "item_id" int [not null]
+  "user_id" int [not null]
+}
+
+Table "notifications" {
+  "id" int [pk, increment]
+  "user_id" int [not null]
+  "item_id" int [not null]
+}
+
+Ref "meta_item_subcategories_fk1":"meta_item_categories"."id" < "meta_item_subcategories"."category_id"
+
+Ref "meta_item_attributes_fk1":"meta_item_subcategories"."id" < "meta_item_attributes"."subcategory_id"
+
+Ref "items_fk1":"meta_item_categories"."id" < "items"."category_id"
+
+Ref "items_fk2":"meta_item_subcategories"."id" < "items"."subcategory_id"
+
+Ref "item_attributes_fk1":"items"."id" < "item_attributes"."item_id" [delete: cascade]
+
+Ref "item_attributes_fk2":"meta_item_attributes"."id" < "item_attributes"."attribute_id" [delete: cascade]
+
+Ref "auctions_fk1":"items"."id" < "auctions"."item_id"
+
+Ref "auctions_fk2":"users"."id" < "auctions"."seller_id"
+
+Ref "bids_fk1":"auctions"."id" < "bids"."auction_id"
+
+Ref "bids_fk2":"users"."id" < "bids"."users_id"
+
+Ref "user_questions_fk1":"auctions"."id" < "user_questions"."auction_id"
+
+Ref "user_questions_fk2":"users"."id" < "user_questions"."asker_id"
+
+Ref "user_answers_fk1":"user_questions"."id" < "user_answers"."question_id"
+
+Ref "user_answers_fk2":"users"."id" < "user_answers"."replier_id"
+
+Ref "alerts_fk1":"users"."id" < "alerts"."user_id"
+
+Ref "alerts_fk2":"items"."id" < "alerts"."item_id"
+
+Ref "notifications_fk1":"users"."id" < "notifications"."user_id" [delete: cascade]
+
+Ref "notifications_fk2":"items"."id" < "notifications"."item_id" [delete: cascade]
