@@ -1,4 +1,4 @@
-from .auth import signup, login
+from .seeder import *
 from .users import *
 from .items import *
 from .item_meta_categories import *
@@ -8,6 +8,3 @@ from .auctions import *
 from .bids import *
 from .q_and_a import *
 from .alerts import *
-
-if app.config["POPULATE_VALUES"]:
-    from .seeder import *

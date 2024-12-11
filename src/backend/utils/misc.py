@@ -1,33 +1,32 @@
+from hashlib import sha512
 from flask import jsonify
 from . import constants
 
-def gen_resp_msg(code, status=None, msg=None, data=None):
 
-    output = {}
+def get_hash(data):
+    final_pass = data + "including a random salt";
+    return sha512(final_pass.encode('utf-8')).hexdigest()
 
-    # Map of HTTP status codes to default responses
-    default_responses = {
-        200: (constants.STATUS_RESPONSE.SUCCESS.value, constants.SUCCESS_MSG),
-        400: (constants.STATUS_RESPONSE.FAILURE.value, constants.INVALID_REQ),
-        404: (constants.STATUS_RESPONSE.FAILURE.value, constants.NOT_FOUND),
-        403: (constants.STATUS_RESPONSE.INSUF_PERM.value, constants.INSUF_PERM)
-    }
 
-    # Fallback for unhandled status codes
-    default_status, default_msg = constants.STATUS_RESPONSE.FAILURE.value, constants.FAILURE_MSG
 
-    # Get status and message for the given code
-    status, message = default_responses.get(code, (default_status, default_msg))
+def gen_resp_msg(code, status=None, msg=None):
+    output={}
+    
+    match code:
+        case 200:
+            output[constants.STATUS] = constants.STATUS_RESPONSE.SUCCESS.value
+            output[constants.MESSAGE] = constants.SUCCESS_MSG
+        
+        case 400:
+            output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
+            output[constants.MESSAGE] = constants.INVALID_REQ
 
-    # Allow overrides if provided
-    output[constants.STATUS] = status if not status else status
-    output[constants.MESSAGE] = msg if msg else message
-    if data:
-        output[constants.DATA] = data
+        case 404:
+            output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
+            output[constants.MESSAGE] = constants.NOT_FOUND
+
+        case _:
+            output[constants.STATUS] = constants.STATUS_RESPONSE.FAILURE.value
+            output[constants.MESSAGE] = constants.FAILURE_MSG
 
     return jsonify(output), code
-
-
-
-def gen_success_response(data):
-    return gen_resp_msg(200, constants.STATUS_RESPONSE.SUCCESS.value, constants.SUCCESS_MSG, data)

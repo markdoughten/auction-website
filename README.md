@@ -27,5 +27,7 @@ deactivate
 
 run `serve.sh` when developing
 
+Run `curl "http://localhost:5000/seed/all" -X "POST"` to seed dummy data in the DB.
+
 Here is the database schema:
 ![1](/docs/images/schema.png)

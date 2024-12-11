@@ -16,14 +16,12 @@ class STATUS_RESPONSE(Enum):
     MISSING_TOKEN = 2
     INSUF_PERM = 3
 
+
 class USER_ROLE(Enum):
     ADMIN = 'Admin'
     STAFF = 'Staff'
     USER = 'User'
 
-ADMIN_ACCESS: list[str] = [USER_ROLE.ADMIN.value]
-STAFF_ACCESS: list[str] = ADMIN_ACCESS+[USER_ROLE.STAFF.value]
-USER_ACCESS: list[str] = STAFF_ACCESS+[USER_ROLE.USER.value]
 
 CREATE_NOTIFS_PROCEDURE = '''
 CREATE PROCEDURE IF NOT EXISTS create_notifications (

@@ -54,7 +54,7 @@ class Bids(db.Model):
     __tablename__ = 'bids'
     id = db.Column(db.Integer, primary_key=True)
     auction_id = db.Column(db.Integer, ForeignKey("auctions.id", ondelete="CASCADE"), nullable=False)
-    users_id = db.Column(db.Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    bidder_id = db.Column(db.Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     bid_value = db.Column(db.Float, nullable=False)
     bid_active = db.Column(db.Boolean, nullable=False)
 
@@ -67,15 +67,15 @@ class Bids(db.Model):
         d={}
         d["id"] = self.id
         d["auctionId"] = self.auction_id
-        d["usersId"] = self.users_id
+        d["bidderId"] = self.bidder_id
         d["bidValue"] = self.bid_value
         d["bidActive"] = self.bid_active
 
         if with_child_rels:
             pass
-
+        
         if with_parent_rels:
-            d["usersId"] = self.bidder.to_dict()
+            d["bidder"] = self.bidder.to_dict()
             d["auction"] = self.auction.to_dict(with_parent_rels=True)
-
+        
         return d

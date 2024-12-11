@@ -1,5 +1,5 @@
 db-up:
-	sudo docker run --rm --name mysql -e MYSQL_ROOT_PASSWORD=password@123 -e MYSQL_DATABASE=auction -d -p 3306:3306 mysql:latest
+	sudo docker run --rm --name mysql -e MYSQL_ROOT_PASSWORD=password@123 -d -p 3306:3306 mysql:latest
 
 
 db-down:
@@ -13,15 +13,7 @@ db-reset:
 
 
 db-seed:
-	curl "http://localhost:5000/seed/users" -X "POST" && \
-	curl "http://localhost:5000/seed/item_meta" -X "POST" && \
-	curl "http://localhost:5000/seed/items" -X "POST" && \
-	curl "http://localhost:5000/seed/auctions" -X "POST" && \
-	curl "http://localhost:5000/seed/bids" -X "POST" && \
-	curl "http://localhost:5000/seed/qa" -X "POST" && \
-	curl "http://localhost:5000/seed/alerts" -X "POST"
-
-
+	curl "http://localhost:5000/seed/all" -X "POST"
 
 
 run:

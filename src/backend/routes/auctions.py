@@ -1,52 +1,137 @@
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash
+from flask import request, jsonify
 from flask import current_app as app
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from datetime import datetime
-from ..utils import constants
-from ..utils.misc import gen_resp_msg, gen_success_response
+from flask_jwt_extended import jwt_required
+from ..utils.misc import gen_resp_msg
 from ..utils.auction import auction_model_to_api_resp, filter_auctions_by_attr
 from ..models.auction import Auctions
-from ..db_ops.common import db_create_one, db_delete_one, db_delete_all, db_commit
-import os
-import json
+from ..utils.db import db_create_one, db_delete_one, db_delete_all, db_commit
+from datetime import datetime
 
-auctions_bp = Blueprint('auctions_bp', __name__)
+from sqlalchemy.dialects import mysql
 
-@auctions_bp.route("/auction", methods=["GET", "POST"])
-@jwt_required()
-def auction():
-    if request.method == "GET":
-        return render_template("post.html")
+@app.route('/auctions/<id>', methods=["GET"])
+# @jwt_required()
+def get_auction(id):
+    auction = Auctions.query.filter(Auctions.id==id).first()
+    if not auction:
+        return gen_resp_msg(404)
+    
+    resp = auction_model_to_api_resp(auction)
+    return jsonify(resp)
 
-    if request.method == "POST":
-        # Extract and validate input
-        item_name = request.form.get("item_name")
-        initial_price = request.form.get("initial_price", type=float)
-        min_increment = request.form.get("min_increment", type=float)
-        min_price = request.form.get("min_price", type=float)
-        opening_time = request.form.get("opening_time")
-        closing_time = request.form.get("closing_time")
 
-        if not all([item_name, initial_price, min_increment, min_price, opening_time, closing_time]):
-            flash("All fields are required.", "error")
-            return redirect(url_for("auctions_bp.auction"))
+@app.route('/auctions/<id>', methods=["PUT"])
+# @jwt_required() 
+def put_auction(id):
+    auction = Auctions.query.filter(Auctions.id==id).first()
+    if not auction:
+        return gen_resp_msg(404)
+    
+    if not request.json:
+        return gen_resp_msg(400)
+    
+    reqJson = request.json
+    
+    auction.min_price = reqJson["minPrice"]
+    auction.closing_time = datetime.strptime(reqJson["closingTime"], '%m/%d/%Y %H:%M:%S')
+    db_commit()
 
-        # Create and save new auction
-        seller_id = get_jwt_identity()
-        new_auction = Auctions(
-            item_name=item_name,
-            seller_id=seller_id,
-            initial_price=initial_price,
-            min_increment=min_increment,
-            min_price=min_price,
-            opening_time=datetime.fromisoformat(opening_time),
-            closing_time=datetime.fromisoformat(closing_time),
-            status="Open"
-        )
+    resp = auction_model_to_api_resp(auction)
+    return jsonify(resp)
 
-        db_create_one(new_auction)
-        flash("Auction created successfully!", "success")
-        return redirect(url_for("home_bp.home"))
+
+@app.route('/auctions/<id>', methods=["DELETE"])
+# @jwt_required() 
+def delete_auction(id):
+    auction = Auctions.query.filter(Auctions.id==id).first()
+    if not auction:
+        return gen_resp_msg(404)
+
+    try:
+        db_delete_one(auction)
+    except:
+        return gen_resp_msg(500)
+
+    return jsonify(auction.to_dict()), 200
+
+
+@app.route('/auctions', methods=["GET"])
+# @jwt_required()
+def get_auctions():
+    if not request.args:
+        return gen_resp_msg(400)
+
+
+    categoryId = request.args.get("categoryId")
+    subcategoryId = request.args.get("subcategoryId")
+    initialPrice = request.args.get("initialPrice")
+    sellerId = request.args.get("sellerId")
+
+
+    attr_id = request.args.get("attributeId")
+    attr_value = request.args.get("attributeValue")
+
+    auctionsQuery = Auctions.query
+
+    if categoryId:
+        auctionsQuery = auctionsQuery.filter(Auctions.item.has(category_id=categoryId))
+
+    if subcategoryId:
+        auctionsQuery = auctionsQuery.filter(Auctions.item.has(subcategory_id=subcategoryId))
+
+    if initialPrice:
+        auctionsQuery = auctionsQuery.filter(Auctions.initial_price==initialPrice)
+
+    if sellerId:
+        auctionsQuery = auctionsQuery.filter(Auctions.seller_id == sellerId)
+
+    page = request.args.get("page")
+    page = int(page)
+    auctions = auctionsQuery.paginate(page=page).items
+    auctionsDict = list(map(lambda x:auction_model_to_api_resp(x),auctions))
+    
+    if attr_id!=None and attr_value!=None:
+        itemsDict = filter_auctions_by_attr(itemsDict, int(attr_id), attr_value)
+
+    return jsonify(auctionsDict)
+
+
+@app.route('/auctions', methods=["POST"])
+# @jwt_required()
+def post_auction():
+    if not request.json:
+        return gen_resp_msg(400)
+    
+    reqJson = request.json
+    
+    auction = Auctions(
+        item_id = reqJson["itemId"],
+        seller_id = reqJson["sellerId"],
+        initial_price = reqJson["initialPrice"],
+        min_increment = reqJson["minIncrement"],
+        min_price = reqJson["minPrice"],
+        closing_time = datetime.strptime(reqJson["closingTime"], '%m/%d/%Y %H:%M:%S'),
+        status="Open"
+    )
+
+    try:
+        db_create_one(auction)
+    except:
+        return gen_resp_msg(500)
+
+    return jsonify(auction.to_dict())
+
+
+@app.route('/auctions', methods=["DELETE"])
+# @jwt_required()
+def delete_auctions():
+    try:
+        db_delete_all(Auctions)
+    except Exception as e:
+        return gen_resp_msg(500)
+
+    return gen_resp_msg(200)
+
 
 
 @auctions_bp.route("/auctions/<int:auction_id>", methods=["GET", "POST", "PUT", "DELETE"])

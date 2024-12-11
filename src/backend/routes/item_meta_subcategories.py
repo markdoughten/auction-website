@@ -3,7 +3,7 @@ from flask import current_app as app
 from flask_jwt_extended import jwt_required
 from ..utils.misc import gen_resp_msg
 from ..models.item_meta import MetaItemSubCategory
-from ..db_ops.common import db_delete_one, db_delete_all, db_commit
+from ..utils.db import db_create_one, db_delete_one, db_delete_all, db_commit
 
 
 @app.route('/item_meta/subcategories/<id>', methods=["GET"])
@@ -12,21 +12,22 @@ def get_subcategory(id):
     item_subcategory = MetaItemSubCategory.query.filter(MetaItemSubCategory.id==id).first()
     if not item_subcategory:
         return gen_resp_msg(404)
-
+    
     return jsonify(item_subcategory.to_dict(True, True))
 
+
 @app.route('/item_meta/subcategories/<id>', methods=["PUT"])
-# @jwt_required()
+# @jwt_required() 
 def put_subcategory(id):
     item_subcategory = MetaItemSubCategory.query.filter(MetaItemSubCategory.id==id).first()
     if not item_subcategory:
         return gen_resp_msg(404)
-
+    
     if not request.json:
         return gen_resp_msg(400)
-
+    
     reqJson = request.json
-
+    
     item_subcategory.subcategory_name = reqJson["subcategoryName"]
     db_commit()
 
@@ -34,7 +35,7 @@ def put_subcategory(id):
 
 
 @app.route('/item_meta/subcategories/<id>', methods=["DELETE"])
-# @jwt_required()
+# @jwt_required() 
 def delete_subcategory(id):
     item_subcategory = MetaItemSubCategory.query.filter(MetaItemSubCategory.id==id).first()
     if not item_subcategory:
@@ -66,9 +67,9 @@ def get_subcategories():
 def post_subcategory():
     if not request.json:
         return gen_resp_msg(400)
-
+    
     reqJson = request.json
-
+    
     subcategory = MetaItemSubCategory(
         subcategory_name = reqJson["subcategoryName"],
         category_id = reqJson["categoryId"]
@@ -91,3 +92,5 @@ def delete_subcategories():
         return gen_resp_msg(500)
 
     return gen_resp_msg(200)
+
+
