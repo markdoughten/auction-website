@@ -66,11 +66,11 @@ create table auctions (
 create table bids (
     id int auto_increment primary key,
     auction_id int not null,
-    users_id int not null,
+    bidder_id int not null,
     bid_value double not null,
     bid_active tinyint (1) default 1 not null,
     constraint bids_fk1 foreign key (auction_id) references auctions (id),
-    constraint bids_fk2 foreign key (users_id) references users (id)
+    constraint bids_fk2 foreign key (bidder_id) references users (id)
 );
 
 create table user_questions (

@@ -1,98 +1,53 @@
-<div class="col-12">
-  <div class="card mb-4">
-    <div class="card-header pb-0">
-      <h6>Admin Actions</h6>
-    </div>
-    <div class="card-body px-0 pt-0 pb-2">
-      <div class="table-responsive p-0">
-        <table class="table align-items-center mb-0">
-          <thead>
-            <tr>
-              <th
-                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
-              >
-                Users
-              </th>
-              <th
-                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
-              >
-                Operation
-              </th>
-            </tr>
-          </thead>
-          @if (users == undefined) {
-            <tr>
-              <td>
-                <div class="d-flex px-2 py-1">
-                  <div class="d-flex flex-column justify-content-center">
-                    <h6 class="mb-0 text-sm">No user data found!!</h6>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          } @else {
-            <tbody>
-              <tr *ngFor="let userData of users">
-                <td>
-                  <div class="d-flex px-2 py-1">
-                    <div class="d-flex flex-column justify-content-center">
-                      <h6 class="mb-0 text-sm"></h6>
-                      {{ userData.username }}
-                      <!-- <p class="text-xs text-secondary mb-0">Create New Staff</p> -->
-                    </div>
-                  </div>
-                </td>
-                <td class="align-middle">
-                  <span
-                    class="badge border me-2 w-sm-auto bg-gradient-success col-2"
-                  >
-                    <a
-                      type="button"
-                      class="text-white font-weight-bold text-xs"
-                      data-toggle="tooltip"
-                      data-original-title="Edit user"
-                      (click)="modifyUser(userData)"
-                    >
-                      <svg
-                        class="bi"
-                        width="20"
-                        height="20"
-                        fill="currentColor"
-                      >
-                        <use xlink:href="bootstrap-icons.svg#pencil-square" />
-                      </svg>
-                      Modify
-                    </a>
-                  </span>
-                </td>
-                <td class="align-middle">
-                  <span
-                    class="badge border me-2 w-sm-auto bg-gradient-danger col-2"
-                  >
-                    <a
-                      type="button"
-                      class="text-white font-weight-bold text-xs"
-                      data-toggle="tooltip"
-                      data-original-title="Delete user"
-                      (click)="deleteUser(userData)"
-                    >
-                      <svg
-                        class="bi"
-                        width="20"
-                        height="20"
-                        fill="currentColor"
-                      >
-                        <use xlink:href="bootstrap-icons.svg#person-x" />
-                      </svg>
-                      Delete
-                    </a>
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          }
-        </table>
-      </div>
+@if (this.showUsers$ | async) {
+  <a
+    class="btn btn-outline-primary d-flex align-items-center shadow-none"
+    href="/admin"
+    role="button"
+    aria-label="Back to Admin Dashboard"
+  >
+    <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i>
+    <span class="ms-2">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        height="24"
+        viewBox="0 0 24 24"
+        width="24"
+      >
+        <path d="M0 0h24v24H0V0z" fill="none" />
+        <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
+      </svg>
+      Back to Admin Dashboard
+    </span>
+  </a>
+  <app-user-comp class="mt-5" (modifyUser)="updateUser($event)"></app-user-comp>
+} @else {
+  <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
+    <a
+      class="btn btn-outline-primary d-flex align-items-center shadow-none"
+      href="/admin/modify"
+      role="button"
+      aria-label="Back to Actions"
+    >
+      <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i>
+      <span class="ms-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24"
+          viewBox="0 0 24 24"
+          width="24"
+        >
+          <path d="M0 0h24v24H0V0z" fill="none" />
+          <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
+        </svg>
+        Back to Actions
+      </span>
+    </a>
+    <div class="card-body">
+      <app-register
+        [userDetails]="userData"
+        [isAdmin]="isAdmin"
+        (success)="userMod()"
+      ></app-register>
     </div>
   </div>
-</div>
+}

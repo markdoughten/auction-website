@@ -1,74 +1,40 @@
-<div class="container-fluid">
-  <div class="row align-items-center py-3 px-xl-5">
-    <div class="col-lg-1 me-3">
-      <a href="" class="text-decoration-none">
-        <h2 class="fs-3">BuyMe</h2>
-      </a>
-    </div>
-    <div class="col-lg-4 col-4 text-left mb-3" *ngIf="showSearch()">
-      <form action="submit">
-        <div class="input-group">
-          <input
-            type="text"
-            class="form-control border-end w-sm-auto shadow-none me-2 m-xl-1"
-            placeholder="Search for products"
-            [(ngModel)]="product"
-            name="product"
-          />
-          <div class="input-group-append ms-lg-2">
-            <span
-              class="input-group-text bg-transparent w-sm-auto shadow-none text-primary border-end m-xl-1"
-            >
-              <svg class="bi" width="20" height="20" fill="currentColor">
-                <use xlink:href="bootstrap-icons.svg#search" />
-              </svg>
-              <i
-                class="font-normal pl-2 ms-lg-2"
-                type="button"
-                (click)="searchevent()"
-                >submit</i
-              >
-            </span>
-          </div>
-        </div>
-      </form>
-    </div>
-    <div class="col-lg-auto col-auto text-right">
-      <a href="/settings" class="btn border me-2 w-sm-auto shadow-none">
-        <svg class="bi" width="20" height="20" fill="currentColor">
-          <use xlink:href="bootstrap-icons.svg#gear-fill" />
-        </svg>
-        <span class="text ms-lg-1">Settings</span>
-      </a>
-      <a
-        href="/profile/{{ this.id }}"
-        class="btn border me-2 w-sm-auto shadow-none"
-      >
-        <svg class="bi" width="20" height="20" fill="currentColor">
-          <use xlink:href="bootstrap-icons.svg#person" />
-        </svg>
-        <span class="text ms-lg-1">Profile</span>
-      </a>
-      <a
-        type="button"
-        class="btn border me-2 w-sm-auto shadow-none"
-        (click)="logout()"
-      >
-        <svg class="bi" width="20" height="20" fill="currentColor">
-          <use xlink:href="bootstrap-icons.svg#x-circle" />
-        </svg>
-        <span class="text ms-lg-1">Logout</span>
-      </a>
-      <a
-        href="/admin"
-        class="btn border me-2 w-sm-auto shadow-none"
-        *ngIf="this.authService.isAdmin | async"
-      >
-        <svg class="bi" width="20" height="20" fill="currentColor">
-          <use xlink:href="bootstrap-icons.svg#person-lock" />
-        </svg>
-        <span class="text ms-lg-1">Admin</span>
-      </a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">BuyMe</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="true"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/settings">Settings</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/profile/{{ this.id }}">Profile</a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            *ngIf="this.authService.isAdmin | async"
+            href="/admin"
+            >Admin</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/search">Search</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" (click)="logout()">Logout</a>
+        </li>
+      </ul>
     </div>
   </div>
-</div>
+</nav>

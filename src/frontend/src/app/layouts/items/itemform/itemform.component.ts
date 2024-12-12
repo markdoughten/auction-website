@@ -13,7 +13,6 @@ import { IS_REQUIRED } from "@core/constants";
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: "./itemform.component.html",
-  styleUrl: "./itemform.component.css",
 })
 export class ItemFormComponent {
   itemForm: FormGroup;
@@ -24,7 +23,9 @@ export class ItemFormComponent {
     this.itemForm = this.fb.group({
       name: ["", Validators.required],
       description: [""],
-      price: [0, Validators.min(0)],
+      initial_price: [0, Validators.min(0)],
+      min_price: [0, Validators.min(0)],
+      min_increment: [0, Validators.min(0)],
     });
   }
 

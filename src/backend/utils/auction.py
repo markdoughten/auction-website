@@ -1,4 +1,3 @@
-from .user import user_model_to_api_resp
 from .item import item_match_by_attr, zip_item_attrs
 
 def auction_model_to_api_resp(auction):

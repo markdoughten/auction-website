@@ -7,7 +7,6 @@ import { NavbarComponent } from "@components/navbar/navbar.component";
   standalone: true,
   imports: [RouterOutlet, NavbarComponent],
   templateUrl: "./admin.component.html",
-  styleUrl: "./admin.component.css",
 })
 export class AdminComponent implements OnInit {
   constructor() {}

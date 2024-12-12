@@ -13,6 +13,7 @@ def seed_users():
             email = usr+"@gmail.com"
             password = "password"+str(i)
             user = User(
+                username = usr,
                 email = email,
                 password = get_hash(password),
                 role = usr_data[1].value

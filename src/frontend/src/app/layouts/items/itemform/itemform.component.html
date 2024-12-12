@@ -35,23 +35,99 @@
         </div>
 
         <div class="mb-3">
-          <label for="price">Price:</label>
+          <label for="initial_price">Initial Price:</label>
           <input
             class="form-control"
             type="number"
-            id="price"
-            formControlName="price"
+            id="initial_price"
+            formControlName="initial_price"
           />
 
           <div
             class="text-danger text-xxs"
-            *ngIf="itemForm.controls?.['price']?.touched"
+            *ngIf="itemForm.controls?.['initial_price']?.touched"
           >
-            <span *ngIf="itemForm.get('price')?.errors?.['min']">{{
+            <span *ngIf="itemForm.get('initial_price')?.errors?.['min']">{{
               MIN_VALUE
             }}</span>
           </div>
         </div>
+
+        <div class="mb-3">
+          <label for="min_price">Minimum Price:</label>
+          <input
+            class="form-control"
+            type="number"
+            id="min_price"
+            formControlName="min_price"
+          />
+
+          <div
+            class="text-danger text-xxs"
+            *ngIf="itemForm.controls?.['min_price']?.touched"
+          >
+            <span *ngIf="itemForm.get('min_price')?.errors?.['min']">{{
+              MIN_VALUE
+            }}</span>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="min_increment">Minimum Increment Price:</label>
+          <input
+            class="form-control"
+            type="number"
+            id="min_increment"
+            formControlName="min_increment"
+          />
+
+          <div
+            class="text-danger text-xxs"
+            *ngIf="itemForm.controls?.['min_increment']?.touched"
+          >
+            <span *ngIf="itemForm.get('min_increment')?.errors?.['min']">{{
+              MIN_VALUE
+            }}</span>
+          </div>
+        </div>
+
+        <!-- <div class="mb-3">
+          <label for="opening_time">Opening Time:</label>
+          <input
+            class="form-control"
+            type="date"
+            id="opening_time"
+            formControlName="opening_time"
+          />
+
+          <div
+            class="text-danger text-xxs"
+            *ngIf="itemForm.controls?.['opening_time']?.touched"
+          >
+            <span *ngIf="itemForm.get('opening_time')?.errors?.['min']">{{
+              MIN_VALUE
+            }}</span>
+          </div>
+        </div> -->
+
+        <!-- <div class="mb-3">
+          <label for="closing_time">Closing Time:</label>
+          <input
+            class="form-control"
+            type="date"
+            id="closing_time"
+            formControlName="closing_time"
+          />
+
+          <div
+            class="text-danger text-xxs"
+            *ngIf="itemForm.controls?.['closing_time']?.touched"
+          >
+            <span *ngIf="itemForm.get('closing_time')?.errors?.['min']">{{
+              MIN_VALUE
+            }}</span>
+          </div>
+        </div> -->
 
         <div class="text-center">
           <input

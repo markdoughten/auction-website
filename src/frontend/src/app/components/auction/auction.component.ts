@@ -1,4 +1,4 @@
-import { Component, input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 
 @Component({
@@ -6,9 +6,13 @@ import { CommonModule } from "@angular/common";
   standalone: true,
   imports: [CommonModule],
   templateUrl: "./auction.component.html",
-  styleUrl: "./auction.component.css",
 })
-export class AuctionComponent {
-  message = input<string>("");
-  auctionItems = input<any[]>([]);
+export class AuctionComponent implements OnInit {
+  @Input() message: string = "";
+  @Input() auctionItems: any = [];
+  @Input() showBid: boolean = false;
+
+  constructor() {}
+
+  ngOnInit(): void {}
 }

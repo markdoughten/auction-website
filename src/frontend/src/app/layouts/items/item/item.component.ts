@@ -9,7 +9,6 @@ import { RESPONSE_STATUS, SERVER_URLS } from "@core/constants";
   standalone: true,
   imports: [CommonModule],
   templateUrl: "./item.component.html",
-  styleUrl: "./item.component.css",
 })
 export class ItemComponent {
   itemId: number = -1;

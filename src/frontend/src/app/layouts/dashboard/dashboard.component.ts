@@ -1,53 +1,50 @@
+import { catchError, interval, Subscription, throwError } from "rxjs";
+import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
+import { CommonModule } from "@angular/common";
 import { NavbarComponent } from "@components/navbar/navbar.component";
 import { AuctionComponent } from "@components/auction/auction.component";
-import { HttpClient } from "@angular/common/http";
-import { catchError, interval, Subscription, throwError } from "rxjs";
 import { RESPONSE_STATUS, SERVER_URLS } from "@core/constants";
+import { LoadingService } from "@core/loading.service";
 
 @Component({
   selector: "app-dashboard",
   standalone: true,
-  imports: [NavbarComponent, AuctionComponent],
+  imports: [NavbarComponent, AuctionComponent, CommonModule],
   templateUrl: "./dashboard.component.html",
-  styleUrl: "./dashboard.component.css",
 })
 export class DashboardComponent implements OnInit {
   private subscription?: Subscription;
   message: string = "Items currently being sold";
   auctionItems: any = undefined;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private loading: LoadingService,
+  ) {}
 
   ngOnInit(): void {
     const timer$ = interval(15000);
     this.subscription = timer$.subscribe(() => {
       this.get_items_data();
     });
+    this.loading.show();
     this.get_items_data();
+    this.loading.hide();
   }
 
   get_items_data() {
     const self = this;
     this.http
-      .get(SERVER_URLS.get_auction_items, { responseType: "json" })
-      .pipe(
-        catchError((error) => {
-          return throwError(error);
-        }),
-      )
-      .subscribe(
-        (response: any) => {
-          if (response.status == RESPONSE_STATUS.SUCCESS) {
-            self.auctionItems = response.data;
-          } else {
-            alert(response.message);
-          }
+      .get(SERVER_URLS.get_auction_item, { params: { page: 1 } })
+      .subscribe({
+        next: (response: any) => {
+          self.auctionItems = response;
         },
-        (err) => {
-          alert(err.error.message);
+        error: (err) => {
+          // alert(err.error.message);
         },
-      );
+      });
   }
 
   ngOnDestroy() {

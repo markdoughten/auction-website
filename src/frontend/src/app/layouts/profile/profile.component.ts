@@ -11,14 +11,13 @@ import { RESPONSE_STATUS, SERVER_URLS } from "@core/constants";
   standalone: true,
   imports: [CommonModule, NavbarComponent, AuctionComponent],
   templateUrl: "./profile.component.html",
-  styleUrl: "./profile.component.css",
 })
 export class ProfileComponent implements OnInit {
   profileId: number = -1;
+  readonly showBid: boolean = true;
   profileDetails: any = undefined;
   auctionItems: any = undefined;
   bidItems: any = undefined;
-  showBid: boolean = false;
   message: string = "";
 
   constructor(
@@ -46,7 +45,7 @@ export class ProfileComponent implements OnInit {
       this.message = "Items auctioned by " + this.profileDetails.username;
     }
     this.auctionItems = await this.get_items(SERVER_URLS.get_user_items);
-    // this.bidItems = await this.get_items(SERVER_URLS.get_user_bids);
+    this.bidItems = await this.get_items(SERVER_URLS.get_user_bids);
   }
 
   async get_items(server_url: string) {

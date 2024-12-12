@@ -1,7 +1,7 @@
 import { Injectable, Inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { AbstractControl } from "@angular/forms";
-import { BehaviorSubject, catchError, tap, throwError } from "rxjs";
+import { BehaviorSubject, tap } from "rxjs";
 import { DOCUMENT } from "@angular/common";
 import { UserModel } from "@model/usermodel";
 import { SERVER_URLS, RESPONSE_STATUS, JWT_TOKEN } from "./constants";
@@ -56,13 +56,10 @@ export class AuthService {
             this.user = this.getUser(response.JWT_TOKEN);
           }
         }),
-        catchError((error) => {
-          return throwError(error);
-        }),
       );
   }
 
-  addUpUsr(
+  add_modify(
     data: AbstractControl,
     url: { url: string; request: string; id: number },
   ) {
@@ -72,9 +69,6 @@ export class AuthService {
       .pipe(
         tap((response: any) => {
           // perform opers if any
-        }),
-        catchError((error) => {
-          return throwError(error);
         }),
       );
   }
@@ -90,9 +84,6 @@ export class AuthService {
           location.reload();
         }
       }),
-      catchError((error) => {
-        return throwError(error);
-      }),
     );
   }
 
@@ -100,7 +91,7 @@ export class AuthService {
     if (token !== "") {
       return JSON.parse(atob(token.split(".")[1])).sub as UserModel;
     } else {
-      return { id: -1, username: "", role: "", email: "" };
+      return { id: -1, username: "", role: "" };
     }
   }
 }

@@ -2,11 +2,10 @@ from datetime import datetime, timedelta
 from .. import db
 from ..models.auction import Auctions, Bids
 from ..models.item import Item, ItemAttribute
-from ..models.item_meta import create_new_item, add_item_categ, add_item_attr, MetaItemCategory, MetaItemSubCategory, MetaItemAttribute
+from ..models.item_meta import MetaItemCategory, MetaItemSubCategory, MetaItemAttribute
 from ..models.user import User
-from ..routes.users import populate_users
 from ..utils import constants
-from ..utils.hash import get_hash
+from ..utils.misc import get_hash
 from sqlalchemy import text
 
 def populate_data():
@@ -91,21 +90,64 @@ def populate_data():
         print("Adding Bids...")
         tshirt_bid = Bids(
             auction_id=tshirt_auction.id,
-            users_id=buyer.id,
+            bidder_id=buyer.id,
             bid_value=22.0,
             bid_active=True
         )
         jeans_bid = Bids(
             auction_id=jeans_auction.id,
-            users_id=buyer.id,
+            bidder_id=buyer.id,
             bid_value=55.0,
             bid_active=True
         )
         db.session.add_all([tshirt_bid, jeans_bid])
         db.session.commit()
         print("Bids added successfully.")
-        print(populate_users()["message"])
         print("Dummy data populated successfully.")
     except Exception as e:
         print(f"Error populating data: {e}")
         db.session.rollback()
+
+
+def create_new_item(item_name):
+    item = MetaItemCategory.query.filter(MetaItemCategory.category_name==item_name).first()
+    if item is None:
+        item = MetaItemCategory()
+        item.category_name = item_name
+        db.session.add(item)
+        db.session.commit()
+        return (item, True)
+
+    return (item, False)
+
+def add_item_categ(item_name, categ_name):
+    item, retval = create_new_item(item_name)
+    if item is None:
+        return (None, False)
+
+    sub_item = MetaItemSubCategory.query.filter((MetaItemSubCategory.category_id==item.id) & (MetaItemSubCategory.subcategory_name==categ_name)).first()
+    if sub_item is None:
+        sub_item = MetaItemSubCategory()
+        sub_item.category_id = item.id
+        sub_item.subcategory_name = categ_name
+        db.session.add(sub_item)
+        db.session.commit()
+        return (sub_item, True)
+
+    return (sub_item, False)
+
+def add_item_attr(item_name, categ_name, attr_name):
+    sub_item, retval = add_item_categ(item_name, categ_name)
+    if sub_item is None:
+        return (None, False)
+
+    item_attr = MetaItemAttribute.query.filter((MetaItemAttribute.subcategory_id==sub_item.id) & (MetaItemAttribute.attribute_name==attr_name)).first()
+    if item_attr is None:
+        item_attr = MetaItemAttribute()
+        item_attr.subcategory_id = sub_item.id
+        item_attr.attribute_name = attr_name
+        db.session.add(item_attr)
+        db.session.commit()
+        return (item_attr, True)
+
+    return (item_attr, False)

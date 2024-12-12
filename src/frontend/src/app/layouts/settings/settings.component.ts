@@ -33,7 +33,6 @@ function dup_entry_found(self: SettingsComponent): ValidatorFn {
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: "./settings.component.html",
-  styleUrl: "./settings.component.css",
 })
 export class SettingsComponent implements OnInit {
   dup_entry = 0;
@@ -79,9 +78,6 @@ export class SettingsComponent implements OnInit {
     this.signUp.controls["username"].setValue(this.authService.user.username, {
       onlySelf: true,
     });
-    this.signUp.controls["email"].setValue(this.authService.user.email, {
-      onlySelf: true,
-    });
     this.signUp.controls["username"].disable();
   }
 
@@ -121,7 +117,7 @@ export class SettingsComponent implements OnInit {
     signUp.enable({ emitEvent: true });
     const self = this;
     SERVER_URLS.update_user.id = this.authService.user.id;
-    this.authService.addUpUsr(signUp, SERVER_URLS.update_user).subscribe(
+    this.authService.add_modify(signUp, SERVER_URLS.update_user).subscribe(
       (response: any) => {
         if (response.status === RESPONSE_STATUS.SUCCESS) {
           alert("User updated successfully");

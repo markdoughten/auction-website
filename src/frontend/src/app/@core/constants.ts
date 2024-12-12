@@ -10,8 +10,7 @@ export const SERVER_URLS = {
   delete_user: API_URL + "/users/",
   get_user_items: API_URL + "/users/items/",
   get_user_bids: API_URL + "/users/bids/",
-  get_auction_items: API_URL + "/auctions_all",
-  get_auction_item: API_URL + "/auctions/",
+  get_auction_item: API_URL + "/auctions",
 };
 
 export const RESPONSE_STATUS = {

@@ -2,9 +2,6 @@ from flask import current_app as app
 from ..utils.misc import gen_resp_msg
 from ..seeders import seed_item_meta, seed_items, seed_users, seed_auctions, seed_bids, seed_qa, seed_alerts, seed_all, delete_all_data
 
-
-
-
 @app.route('/seed/all', methods=["POST"])
 def api_seed_all():
     delete_all_data()

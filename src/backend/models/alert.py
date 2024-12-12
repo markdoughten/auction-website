@@ -31,10 +31,10 @@ class Alert(db.Model):
 
         if with_child_rels:
             d["meta"] = self.subcategory.to_dict(with_child_rels=True, with_parent_rels=True)
-        
+
         if with_parent_rels:
             pass
-        
+
         return d
 
 
@@ -56,8 +56,8 @@ class Notification(db.Model):
 
         if with_child_rels:
             d["item"] = self.item.to_dict(with_child_rels=True)
-        
+
         if with_parent_rels:
             pass
-        
+
         return d

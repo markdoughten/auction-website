@@ -3,10 +3,9 @@ import { RouterOutlet } from "@angular/router";
 import { NavbarComponent } from "@components/navbar/navbar.component";
 
 @Component({
-  selector: "app-landing",
+  selector: "app-items",
   standalone: true,
   imports: [RouterOutlet, NavbarComponent],
   templateUrl: "./itemlanding.component.html",
-  styleUrl: "./itemlanding.component.css",
 })
 export class ItemLandingComponent {}

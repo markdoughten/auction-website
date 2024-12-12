@@ -8,7 +8,6 @@ import { LandingComponent } from "@layouts/landing/landing.component";
 import { DashboardComponent } from "@layouts/dashboard/dashboard.component";
 import { AdminComponent } from "@layouts/admin/admin.component";
 import { AdminDashboardComponent } from "@layouts/admin/dashboard/dashboard.component";
-import { RegisterComponent } from "@layouts/admin/register/register.component";
 import { ModifyComponent } from "@layouts/admin/modify/modify.component";
 import { ProfileComponent } from "@layouts/profile/profile.component";
 import { ItemComponent } from "@layouts/items/item/item.component";
@@ -16,6 +15,7 @@ import { ItemLandingComponent } from "@layouts/items/itemlanding.component";
 import { ItemFormComponent } from "@layouts/items/itemform/itemform.component";
 import { SettingsComponent } from "@layouts/settings/settings.component";
 import { admin_access, staff_access, all_access } from "@model/usermodel";
+import { RegisterUserComponent } from "@layouts/admin/register/register.component";
 
 export const routes: Routes = [
   {
@@ -49,16 +49,8 @@ export const routes: Routes = [
     },
     children: [
       { path: "dashboard", component: AdminDashboardComponent },
-      {
-        path: "register",
-        component: RegisterComponent,
-        canActivate: [HasRoleGuard],
-        data: { role: admin_access },
-      },
-      {
-        path: "modify",
-        component: ModifyComponent,
-      },
+      { path: "modify", component: ModifyComponent },
+      { path: "register", component: RegisterUserComponent },
       { path: "**", redirectTo: "dashboard", pathMatch: "full" },
     ],
   },

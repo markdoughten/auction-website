@@ -1,134 +1,32 @@
-<div class="container">
+<div class="container py-5">
   <input type="checkbox" id="check" />
-  <div class="login form">
-    <header>Login</header>
-    <form [formGroup]="login" (submit)="loginUsr()">
-      <label for="email">Email</label>
-      <input
-        formControlName="email"
-        type="text"
-        name="email"
-        placeholder="Enter your email"
-      />
-      <div class="text-danger" *ngIf="login.controls?.['email']?.touched">
-        <span *ngIf="login.controls?.['email']?.errors?.['required']">{{
-          IS_REQUIRED
-        }}</span>
-        <span *ngIf="login.controls?.['email']?.errors?.['email']">{{
-          NOT_EMAIL
-        }}</span>
-        <span *ngIf="login.controls?.['email']?.errors?.['incorrect']">{{
-          INCORRECT_TRY_AGAIN
-        }}</span>
-      </div>
-      <label for="password">Password</label>
-      <input
-        formControlName="password"
-        type="password"
-        name="password"
-        placeholder="Enter your password"
-      />
-      <div class="text-danger" *ngIf="login.controls?.['password']?.touched">
-        <span *ngIf="login.controls?.['password']?.errors?.['required']">{{
-          IS_REQUIRED
-        }}</span>
-        <span *ngIf="login.controls?.['password']?.errors?.['incorrect']">{{
-          INCORRECT_TRY_AGAIN
-        }}</span>
-      </div>
-      <input type="submit" class="button" value="Login" />
-    </form>
-    <div class="signup">
-      <span class="signup"
-        >Don't have an account?
-        <label id="create_now" for="check">Signup</label>
+  <div class="login form p-4 rounded">
+    <header class="text-center mb-4 fs-3 fw-bold">Login</header>
+    <app-login></app-login>
+    <div class="signup text-center mt-3">
+      <span class="text-muted">
+        Don't have an account?
+        <label
+          id="create_now"
+          for="check"
+          class="text-primary fw-semibold cursor-pointer"
+          >Signup</label
+        >
       </span>
     </div>
   </div>
-  <div class="registration form">
-    <header>Signup</header>
-    <form [formGroup]="signUp" (submit)="signupUsr()">
-      <label for="user">User Name</label>
-      <input
-        formControlName="username"
-        type="text"
-        name="username"
-        placeholder="Enter your username"
-      />
-      <div class="text-danger" *ngIf="signUp.controls?.['username']?.touched">
-        <span *ngIf="signUp.controls?.['username']?.errors?.['required']">{{
-          IS_REQUIRED
-        }}</span>
-        <span *ngIf="signUp.controls?.['username']?.errors?.['minlength']">{{
-          MIN_LEN
-        }}</span>
-        <span *ngIf="signUp.controls?.['username']?.errors?.['incorrect']">{{
-          DUP_TRY_AGAIN
-        }}</span>
-      </div>
-      <label for="email">Email</label>
-      <input
-        formControlName="email"
-        type="email"
-        name="email"
-        placeholder="Enter your email"
-      />
-      <div class="text-danger" *ngIf="signUp.controls?.['email']?.touched">
-        <span *ngIf="signUp.controls?.['email']?.errors?.['required']">{{
-          IS_REQUIRED
-        }}</span>
-        <span *ngIf="signUp.controls?.['email']?.errors?.['email']">{{
-          NOT_EMAIL
-        }}</span>
-        <span *ngIf="signUp.controls?.['email']?.errors?.['incorrect']">{{
-          DUP_TRY_AGAIN
-        }}</span>
-      </div>
-      <label for="password">Password</label>
-      <input
-        formControlName="password"
-        type="password"
-        name="password"
-        placeholder="Create a password"
-      />
-      <div class="text-danger" *ngIf="signUp.controls?.['password']?.touched">
-        <span *ngIf="signUp.controls?.['password']?.errors?.['required']">{{
-          IS_REQUIRED
-        }}</span>
-        <span *ngIf="signUp.controls?.['password']?.errors?.['minlength']">{{
-          MIN_LEN
-        }}</span>
-      </div>
-      <label for="passwordConfirm">Confirm Password</label>
-      <input
-        formControlName="passwordConfirm"
-        type="password"
-        name="passwordConfirm"
-        placeholder="Confirm your password"
-      />
-      <div
-        class="text-danger"
-        *ngIf="signUp.controls?.['passwordConfirm']?.touched"
-      >
-        <span
-          *ngIf="signUp.controls?.['passwordConfirm']?.errors?.['required']"
-          >{{ IS_REQUIRED }}</span
+  <div class="registration form p-5 rounded mt-5">
+    <header class="text-center mb-4 fs-3 fw-bold">Signup</header>
+    <app-register (success)="on_signup()"></app-register>
+    <div class="signup text-center mt-4">
+      <span class="text-muted">
+        Already have an account?
+        <label
+          id="login_now"
+          for="check"
+          class="text-primary fw-semibold cursor-pointer"
+          >Login</label
         >
-        <span
-          *ngIf="signUp.controls?.['passwordConfirm']?.errors?.['minlength']"
-          >{{ MIN_LEN }}</span
-        >
-        <span
-          *ngIf="signUp.controls?.['passwordConfirm']?.errors?.['notSame']"
-          >{{ NOT_MATCHING }}</span
-        >
-      </div>
-      <input type="submit" class="button" value="Signup" />
-    </form>
-    <div class="signup">
-      <span class="signup"
-        >Already have an account?
-        <label id="login_now" for="check">Login</label>
       </span>
     </div>
   </div>

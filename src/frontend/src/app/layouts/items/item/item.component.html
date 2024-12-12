@@ -5,7 +5,8 @@
         {{ item.status }}
       </p>
       <a>
-        <h5 class="font-weight-bolder">{{ item.id }}</h5>
+        <h5 class="font-weight-bolder">{{ item.item.name }}</h5>
+        {{ item.item.subcategoryName }}
       </a>
       <p class="text-sm" style="margin-bottom: -1px">
         Sold by {{ item.sellerId }}
