@@ -22,6 +22,7 @@ import { Router } from "@angular/router";
 })
 export class AuctionFormComponent implements OnInit {
   readonly IS_REQUIRED: string = IS_REQUIRED;
+  readonly INVALID_PRICE: string = "Minimum value should be above 0";
   readonly today = new Date();
   readonly tzoffset = new Date().getTimezoneOffset() * 60000;
   protected minDate: any = { date: new Date(), str: "" };

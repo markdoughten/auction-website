@@ -41,6 +41,10 @@
             *ngIf="itemForm.controls?.['openingTime']?.touched"
           >
             <span
+              *ngIf="itemForm.controls?.['openingTime']?.errors?.['required']"
+              >{{ IS_REQUIRED }}</span
+            >
+            <span
               *ngIf="
                 itemForm.controls?.['openingTime']?.errors?.['invalidDate']
               "
@@ -64,6 +68,10 @@
             *ngIf="itemForm.controls?.['closingTime']?.touched"
           >
             <span
+              *ngIf="itemForm.controls?.['closingTime']?.errors?.['required']"
+              >{{ IS_REQUIRED }}</span
+            >
+            <span
               *ngIf="
                 itemForm.controls?.['closingTime']?.errors?.['invalidDate']
               "
@@ -80,6 +88,19 @@
             id="initialPrice"
             formControlName="initialPrice"
           />
+          <div
+            class="text-danger text-xxs"
+            *ngIf="itemForm.controls?.['initialPrice']?.touched"
+          >
+            <span
+              *ngIf="itemForm.controls?.['initialPrice']?.errors?.['required']"
+              >{{ IS_REQUIRED }}</span
+            >
+            <span
+              *ngIf="itemForm.controls?.['initialPrice']?.errors?.['min']"
+              >{{ INVALID_PRICE }}</span
+            >
+          </div>
         </div>
 
         <div class="mb-3">
@@ -90,6 +111,18 @@
             id="minPrice"
             formControlName="minPrice"
           />
+          <div
+            class="text-danger text-xxs"
+            *ngIf="itemForm.controls?.['minPrice']?.touched"
+          >
+            <span
+              *ngIf="itemForm.controls?.['minPrice']?.errors?.['required']"
+              >{{ IS_REQUIRED }}</span
+            >
+            <span *ngIf="itemForm.controls?.['minPrice']?.errors?.['min']">{{
+              INVALID_PRICE
+            }}</span>
+          </div>
         </div>
 
         <div class="mb-3">
@@ -100,6 +133,18 @@
             id="minIncrement"
             formControlName="minIncrement"
           />
+          <div
+            class="text-danger text-xxs"
+            *ngIf="itemForm.controls?.['minIncrement']?.touched"
+          >
+            <span
+              *ngIf="itemForm.controls?.['minIncrement']?.errors?.['required']"
+              >{{ IS_REQUIRED }}</span
+            >
+            <span *ngIf="itemForm.controls?.['minPrice']?.errors?.['min']">{{
+              INVALID_PRICE
+            }}</span>
+          </div>
         </div>
 
         <div class="text-center">

@@ -12,6 +12,14 @@ import { IS_REQUIRED, SERVER_URLS } from "@core/constants";
 import { HttpClient } from "@angular/common/http";
 import { LoadingService } from "@core/loading.service";
 import { check_duplicate } from "@core/form_validator";
+import {
+  _ATTR,
+  _ID,
+  MetaAttributes,
+  MetaCategory,
+  MetaItems,
+  MetaSubCategory,
+} from "@model/items";
 
 @Component({
   selector: "app-item-form",
@@ -24,7 +32,7 @@ export class ItemFormComponent implements OnInit {
   readonly DUPLICATE: string = "Name already found, try again.";
   itemForm: FormGroup;
   response: any = {};
-  meta_items: any = undefined;
+  meta_items: MetaItems = {};
   categories: string[] = [];
   subcategories: string[] = [];
   attributes: string[] = [];
@@ -51,25 +59,33 @@ export class ItemFormComponent implements OnInit {
     this.http.get(SERVER_URLS.get_meta_items).subscribe({
       next: (response: any) => {
         this.response = response;
-        this.meta_items = {};
-        for (let categIndex in response) {
-          const categName = response[categIndex].categoryName;
-          this.categories = [...this.categories, categName];
-          let categories: { [key: string]: any } = {};
-          const subCategs = response[categIndex].subcategories;
+        for (let cIdx in response) {
+          let category: MetaCategory = {};
           let subcategories = [];
-          for (let subIndex in subCategs) {
-            const subCateg = subCategs[subIndex].subcategoryName;
-            subcategories.push(subCateg);
-            const attrs = subCategs[subIndex].attributes;
+          const categ = response[cIdx];
+          const subCategs = categ.subcategories;
+          this.categories.push(categ.categoryName);
+          category[_ID] = categ.id;
+          for (let sIdx in subCategs) {
+            let subCategory: MetaSubCategory = {};
             let attributes = [];
-            for (let attrIndex in attrs) {
-              attributes.push(attrs[attrIndex].attributeName);
+            const subCateg = subCategs[sIdx];
+            subCategory[_ID] = subCateg.id;
+            subcategories.push(subCateg.subcategoryName);
+            const attrs = subCateg.attributes;
+            for (let aIdx in attrs) {
+              let attrName = attrs[aIdx].attributeName;
+              let attrId = attrs[aIdx].id;
+              attributes.push(attrName);
+              let metaAttr: MetaAttributes = {};
+              metaAttr[_ID] = attrId;
+              subCategory[attrName] = metaAttr;
             }
-            categories[subCateg] = attributes;
+            subCategory[_ATTR] = attributes;
+            category[subCateg.subcategoryName] = subCategory;
           }
-          categories["subcategories"] = subcategories;
-          this.meta_items[categName] = categories;
+          category[_ATTR] = subcategories;
+          this.meta_items[categ.categoryName] = category;
         }
         this.itemForm.get("category")?.setValue(this.categories[0]);
         this.onCategoryChange();
@@ -82,17 +98,34 @@ export class ItemFormComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  getCateg(): any {
+    const categ = this.itemForm.get("category")?.value;
+    if (categ === null) {
+      return null;
+    }
+
+    return this.meta_items[categ] || null;
+  }
+
+  getSubCateg(metaCateg: any): any {
+    const sub = this.itemForm.get("subcategory")?.value;
+    if (sub === null) {
+      return null;
+    }
+
+    return metaCateg[sub] || null;
+  }
+
   onCategoryChange(): void {
-    const category = this.itemForm.get("category")?.value;
-    this.subcategories = this.meta_items[category]["subcategories"] || [];
+    const metaCateg: any = this.getCateg();
+    this.subcategories = metaCateg[_ATTR] || [];
     this.itemForm.get("subcategory")?.setValue(this.subcategories[0]);
     this.onSubcategoryChange();
   }
 
   onSubcategoryChange(): void {
-    const category = this.itemForm.get("category")?.value;
-    const subcategory = this.itemForm.get("subcategory")?.value;
-    this.attributes = subcategory ? this.meta_items[category][subcategory] : [];
+    const metaSub: any = this.getSubCateg(this.getCateg());
+    this.attributes = metaSub[_ATTR] || [];
     const attributesGroup: any = {};
     this.attributes.forEach((attr, index) => {
       attributesGroup[attr] = new FormControl("", Validators.required);
@@ -100,41 +133,23 @@ export class ItemFormComponent implements OnInit {
     this.itemForm.setControl("attributes", this.fb.group(attributesGroup));
   }
 
-  processForm() {
-    const category = this.itemForm.get("category")?.value;
-    const subcategory = this.itemForm.get("subcategory")?.value;
-    let output: { [key: string]: any } = {};
-    for (let ci in this.response) {
-      if (this.response[ci].categoryName !== category) {
-        continue;
+  processForm(metaCateg: any, metaSub: any): any {
+    let out_attrs = [];
+    for (let attr of metaSub[_ATTR]) {
+      const value = this.itemForm.get("attributes")?.get(attr)?.value;
+      if (value) {
+        out_attrs.push({
+          attributeId: metaSub[attr][_ID],
+          attributeValue: this.itemForm.get("attributes")?.get(attr)?.value,
+        });
       }
-      output["categoryId"] = this.response[ci].id;
-      const subcategs = this.response[ci].subcategories;
-      for (let sci in subcategs) {
-        if (subcategs[sci].subcategoryName !== subcategory) {
-          continue;
-        }
-        output["subcategoryId"] = subcategs[sci].id;
-        const attrs = subcategs[sci].attributes;
-        let out_attrs = [];
-        for (let ai in attrs) {
-          let id = attrs[ai].id;
-          let value = this.itemForm
-            .get("attributes")
-            ?.get(attrs[ai].attributeName)?.value;
-          let curr_attr = {
-            attributeId: id,
-            attributeValue: value,
-          };
-          out_attrs.push(curr_attr);
-        }
-        output["attributes"] = out_attrs;
-        output["name"] = this.itemForm.get("name")?.value;
-        break;
-      }
-      break;
     }
-    return output;
+    return {
+      categoryId: metaCateg[_ID],
+      subcategoryId: metaSub[_ID],
+      attributes: out_attrs,
+      name: this.itemForm.get("name")?.value,
+    };
   }
 
   onSubmit(): void {
@@ -152,8 +167,13 @@ export class ItemFormComponent implements OnInit {
       return;
     }
 
-    const data = this.processForm();
-    if (Object.keys(data).length < 4) {
+    const metaCateg: any = this.getCateg();
+    const metaSub: any = this.getSubCateg(metaCateg);
+    const data = this.processForm(metaCateg, metaSub);
+    if (
+      Object.keys(data).length < 4 ||
+      data.attributes.length < metaSub[_ATTR].length
+    ) {
       iFrm.markAllAsTouched();
       return;
     }
