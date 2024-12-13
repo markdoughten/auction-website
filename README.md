@@ -1,6 +1,6 @@
 Auction website
 
-A user can buy and sell planes.
+A user can buy and sell clothes.
 
 ## Frontend
 

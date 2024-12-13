@@ -1,0 +1,33 @@
+<div class="container py-5">
+  <input type="checkbox" id="check" />
+  <div class="login form p-4 rounded">
+    <header class="text-center mb-4 fs-3 fw-bold">Login</header>
+    <app-login></app-login>
+    <div class="signup text-center mt-3">
+      <span class="text-muted">
+        Don't have an account?
+        <label
+          id="create_now"
+          for="check"
+          class="text-primary fw-semibold cursor-pointer"
+          >Signup</label
+        >
+      </span>
+    </div>
+  </div>
+  <div class="registration form p-5 rounded mt-5">
+    <header class="text-center mb-4 fs-3 fw-bold">Signup</header>
+    <app-register (success)="on_signup()"></app-register>
+    <div class="signup text-center mt-4">
+      <span class="text-muted">
+        Already have an account?
+        <label
+          id="login_now"
+          for="check"
+          class="text-primary fw-semibold cursor-pointer"
+          >Login</label
+        >
+      </span>
+    </div>
+  </div>
+</div>

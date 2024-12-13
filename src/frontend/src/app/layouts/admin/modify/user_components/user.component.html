@@ -1,0 +1,100 @@
+<div class="col-12 mt-3">
+  <div class="card mb-4">
+    <div class="card-header d-flex align-items-center justify-content-between">
+      <h6 class="mb-0">Admin Actions</h6>
+      <form (ngSubmit)="get_users(1)" class="d-flex align-items-center w-50">
+        <input
+          type="text"
+          class="form-control me-3"
+          placeholder="Search Username"
+          [(ngModel)]="searchQuery"
+          name="search"
+        />
+        <button type="submit" class="btn btn-primary">Search</button>
+      </form>
+    </div>
+    <div class="card-body px-0 pt-0 pb-2">
+      <div class="table-responsive p-0">
+        <table class="table table-striped table-bordered table-hover mb-0">
+          <thead>
+            <tr>
+              <th
+                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+              >
+                Users
+              </th>
+              <th
+                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"
+              >
+                Operation
+              </th>
+            </tr>
+          </thead>
+          <tbody *ngIf="users === undefined">
+            <tr>
+              <td colspan="2">
+                <div class="d-flex px-2 py-1">
+                  <div class="d-flex flex-column justify-content-center">
+                    <h6 class="mb-0 text-sm">No user data found!!</h6>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="users !== undefined">
+            <tr *ngFor="let userData of users">
+              <td>
+                <div class="d-flex px-2 py-1">
+                  <div class="d-flex flex-column justify-content-center">
+                    <h6 class="mb-0 text-sm">
+                      {{ userData.username }}
+                    </h6>
+                    <a
+                      [routerLink]="['/profile', userData.id]"
+                      class="text-xs text-secondary"
+                      >View Profile</a
+                    >
+                  </div>
+                </div>
+              </td>
+              <td class="align-middle">
+                <a
+                  type="button"
+                  class="btn btn-outline-success btn-sm font-weight-bold text-xs"
+                  data-toggle="tooltip"
+                  data-original-title="Edit user"
+                  (click)="updateUser(userData)"
+                >
+                  <svg class="bi" width="20" height="20" fill="currentColor">
+                    <use xlink:href="bootstrap-icons.svg#pencil-square" />
+                  </svg>
+                  Modify
+                </a>
+              </td>
+              <td class="align-middle">
+                <a
+                  type="button"
+                  class="btn btn-outline-danger btn-sm font-weight-bold text-xs"
+                  data-toggle="tooltip"
+                  data-original-title="Delete user"
+                  (click)="deleteUser(userData)"
+                >
+                  <svg class="bi" width="20" height="20" fill="currentColor">
+                    <use xlink:href="bootstrap-icons.svg#person-x" />
+                  </svg>
+                  Delete
+                </a>
+              </td>
+            </tr>
+          </tbody>
+          <app-page
+            *ngIf="users !== undefined"
+            [currentPage]="currentPage"
+            [hasMorePages]="hasMorePages"
+            (updatePage)="get_users($event)"
+          ></app-page>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

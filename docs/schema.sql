@@ -1,106 +1,109 @@
-CREATE TABLE `users` (
-    `id` int PRIMARY KEY auto_increment,
-    `username` varchar(128),
-    `email` varchar(255),
-    `password` varchar(128),
-    `role` enum ('Admin', 'Staff', 'User'),
-    UNIQUE (`username`),
-    UNIQUE (`email`)
+create database auction;
+
+use auction;
+
+create table users (
+    id int auto_increment primary key,
+    username varchar(128) not null,
+    email varchar(255) not null,
+    password varchar(128) not null,
+    role enum ('Admin', 'Staff', 'User') not null,
+    is_disabled tinyint (1) default 1 not null,
+    constraint email unique (email),
+    constraint username unique (username)
 );
 
-CREATE TABLE `notification` (
-    `id` int PRIMARY KEY auto_increment,
-    `uid` int,
-    `title` varchar(255),
-    `description` varchar(255)
+create table meta_item_categories (
+    id int auto_increment primary key,
+    category_name varchar(255) not null
 );
 
-CREATE TABLE `meta_item_categories` (
-    `id` int PRIMARY KEY auto_increment,
-    `category_name` varchar(255)
+create table meta_item_subcategories (
+    id int auto_increment primary key,
+    category_id int not null,
+    subcategory_name varchar(255) not null,
+    constraint meta_item_subcategories_fk1 foreign key (category_id) references meta_item_categories (id)
 );
 
-CREATE TABLE `meta_item_subcategories` (
-    `id` int PRIMARY KEY auto_increment,
-    `category_id` int,
-    `subcategory_name` varchar(255)
+create table meta_item_attributes (
+    id int auto_increment primary key,
+    attribute_name varchar(255) not null,
+    subcategory_id int not null,
+    constraint meta_item_attributes_fk1 foreign key (subcategory_id) references meta_item_subcategories (id)
 );
 
-CREATE TABLE `meta_item_attributes` (
-    `id` int PRIMARY KEY auto_increment,
-    `attribute_name` varchar(255),
-    `subcategory_id` int
+create table items (
+    id int auto_increment primary key,
+    name varchar(255) not null,
+    category_id int not null,
+    subcategory_id int not null,
+    constraint items_fk1 foreign key (category_id) references meta_item_categories (id),
+    constraint items_fk2 foreign key (subcategory_id) references meta_item_subcategories (id)
 );
 
-CREATE TABLE `items` (
-    `id` int PRIMARY KEY auto_increment,
-    `name` varchar(255),
-    `category_id` int,
-    `subcategory_id` int
+create table item_attributes (
+    item_id int not null,
+    attribute_id int not null,
+    attribute_value varchar(255) null,
+    constraint item_attributes_fk1 foreign key (item_id) references items (id) on delete cascade,
+    constraint item_attributes_fk2 foreign key (attribute_id) references meta_item_attributes (id) on delete cascade
 );
 
-CREATE TABLE `item_attributes` (
-    `item_id` int,
-    `attribute_id` int,
-    `attribute_value` varchar(255)
+create table auctions (
+    id int auto_increment primary key,
+    item_id int not null,
+    seller_id int not null,
+    initial_price double not null,
+    min_increment double not null,
+    min_price double not null,
+    opening_time timestamp not null,
+    closing_time timestamp not null,
+    status enum ('Open', 'Sold', 'Expired') default 'Open' not null,
+    constraint auctions_fk1 foreign key (item_id) references items (id),
+    constraint auctions_fk2 foreign key (seller_id) references users (id)
 );
 
-CREATE TABLE `auctions` (
-    `id` int PRIMARY KEY auto_increment,
-    `item_id` int,
-    `seller_id` int,
-    `initial_price` real,
-    `min_increment` real,
-    `min_price` real,
-    `opening_time` timestamp,
-    `closing_time` timestamp,
-    `status` enum ('Open', 'Sold', 'Expired')
+create table bids (
+    id int auto_increment primary key,
+    auction_id int not null,
+    bidder_id int not null,
+    bid_value double not null,
+    bid_active tinyint (1) default 1 not null,
+    constraint bids_fk1 foreign key (auction_id) references auctions (id),
+    constraint bids_fk2 foreign key (bidder_id) references users (id)
 );
 
-CREATE TABLE `bids` (
-    `id` int PRIMARY KEY auto_increment,
-    `auction_id` int,
-    `users_id` int,
-    `bid_value` real,
-    `bid_active` bool DEFAULT true
+create table user_questions (
+    id int auto_increment primary key,
+    auction_id int not null,
+    asker_id int not null,
+    question_text varchar(255) not null,
+    is_open tinyint (1) default 1 not null,
+    constraint user_questions_fk1 foreign key (auction_id) references auctions (id),
+    constraint user_questions_fk2 foreign key (asker_id) references users (id)
 );
 
-CREATE TABLE `user_questions` (
-    `id` int PRIMARY KEY auto_increment,
-    `auction_id` int,
-    `asker_id` int,
-    `replier_id` int,
-    `question_text` varchar(255),
-    `is_open` bool
+create table user_answers (
+    id int auto_increment primary key,
+    question_id int not null,
+    replier_id int not null,
+    reply_text varchar(255) not null,
+    constraint user_answers_fk1 foreign key (question_id) references user_questions (id),
+    constraint user_answers_fk2 foreign key (replier_id) references users (id)
 );
 
-CREATE TABLE `user_answers` (
-    `id` int PRIMARY KEY auto_increment,
-    `question_id` int,
-    `replier_id` int,
-    `reply_text` varchar(255)
+create table alerts (
+    id int auto_increment primary key,
+    item_id int not null,
+    user_id int not null,
+    constraint alerts_fk1 foreign key (user_id) references users (id),
+    constraint alerts_fk2 foreign key (item_id) references items (id)
 );
 
-CREATE TABLE `alerts` (
-    `id` int PRIMARY KEY auto_increment,
-    `item_id` int,
-    `user_id` int
+create table notifications (
+    id int auto_increment primary key,
+    user_id int not null,
+    item_id int not null,
+    constraint notifications_fk1 foreign key (user_id) references users (id) on delete cascade,
+    constraint notifications_fk2 foreign key (item_id) references items (id) on delete cascade
 );
-
-ALTER TABLE `notification` ADD FOREIGN KEY (`uid`) REFERENCES `users` (`id`);
-ALTER TABLE `meta_item_subcategories` ADD FOREIGN KEY (`category_id`) REFERENCES `meta_item_categories` (`id`);
-ALTER TABLE `meta_item_attributes` ADD FOREIGN KEY (`subcategory_id`) REFERENCES `meta_item_subcategories` (`id`);
-ALTER TABLE `items` ADD FOREIGN KEY (`category_id`) REFERENCES `meta_item_categories` (`id`);
-ALTER TABLE `items` ADD FOREIGN KEY (`subcategory_id`) REFERENCES `meta_item_subcategories` (`id`);
-ALTER TABLE `item_attributes` ADD FOREIGN KEY (`item_id`) REFERENCES `items` (`id`);
-ALTER TABLE `item_attributes` ADD FOREIGN KEY (`attribute_id`) REFERENCES `meta_item_attributes` (`id`);
-ALTER TABLE `auctions` ADD FOREIGN KEY (`item_id`) REFERENCES `items` (`id`);
-ALTER TABLE `auctions` ADD FOREIGN KEY (`seller_id`) REFERENCES `users` (`id`);
-ALTER TABLE `bids` ADD FOREIGN KEY (`auction_id`) REFERENCES `auctions` (`id`);
-ALTER TABLE `bids` ADD FOREIGN KEY (`users_id`) REFERENCES `users` (`id`);
-ALTER TABLE `user_questions` ADD FOREIGN KEY (`auction_id`) REFERENCES `auctions` (`id`);
-ALTER TABLE `user_questions` ADD FOREIGN KEY (`asker_id`) REFERENCES `users` (`id`);
-ALTER TABLE `user_answers` ADD FOREIGN KEY (`question_id`) REFERENCES `user_questions` (`id`);
-ALTER TABLE `user_answers` ADD FOREIGN KEY (`replier_id`) REFERENCES `users` (`id`);
-ALTER TABLE `alerts` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
-ALTER TABLE `alerts` ADD FOREIGN KEY (`item_id`) REFERENCES `items` (`id`);

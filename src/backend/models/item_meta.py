@@ -35,7 +35,7 @@ class MetaItemSubCategory(db.Model):
     category_id:int = db.Column(db.Integer, ForeignKey("meta_item_categories.id",ondelete="CASCADE"), nullable=False)
     subcategory_name:str = db.Column(db.String(128), nullable=False)
     __table_args__ = (UniqueConstraint('category_id', 'subcategory_name', name='_cat_subcat_uc'),)
-    
+
     #Relationships
     category:Mapped[MetaItemCategory] = relationship(back_populates="subcategories")
     attributes:Mapped[List["MetaItemAttribute"]] = relationship(back_populates="subcategory",cascade="all, delete")
@@ -75,8 +75,8 @@ class MetaItemAttribute(db.Model):
 
         if (with_child_rels):
             pass
-        
+
         if (with_parent_rels):
             d["subcategory"] = self.subcategory.to_dict(with_parent_rels=True)
-        
+
         return d

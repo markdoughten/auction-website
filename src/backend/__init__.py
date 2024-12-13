@@ -5,7 +5,6 @@ from flask_cors import CORS
 from . import config
 from sqlalchemy import text, create_engine
 from .utils import constants
-import os
 
 db = SQLAlchemy()
 jwt = JWTManager()
@@ -14,9 +13,9 @@ seed_done=0
 
 def create_db(conf):
     engine = create_engine(conf.SQLALCHEMY_CONN_URI)
-    create_str = f"CREATE DATABASE IF NOT EXISTS {conf.SQLALCHEMY_DATABASE};" 
+    create_str = f"CREATE DATABASE IF NOT EXISTS {conf.SQLALCHEMY_DATABASE};"
     use_str = f"USE {conf.SQLALCHEMY_DATABASE};"
-    
+
     with engine.connect() as connection:
         try:
             connection.execute(text(create_str))
@@ -38,30 +37,19 @@ def create_app():
     create_db(conf)
     with app.app_context():
         from . import routes
-        from .seeders import seed_all, delete_all_data
+        if conf.POPULATE_VALUES:
+            from .seeders import seed_all, delete_all_data
 
-        
         try:
             db.create_all()  # Create sql tables for our data models
         except Exception as e:
             print("Error creating tables: ",e)
-        
+
 
         try:
             db.session.execute(text(constants.CREATE_NOTIFS_PROCEDURE))
             db.session.execute(text(constants.CREATE_NOTIFS_TRIGGER))
         except Exception as e:
             print("Error executing raw SQL: ",e)
-
-
-        # Populate database with dummy data if enabled in configuration
-        if conf.POPULATE_VALUES:
-            try:
-                from .utils.data import populate_data
-                populate_data()
-                print("Dummy data populated successfully.")
-            except Exception as e:
-                print("Error populating dummy data:", e)
-
 
         return app

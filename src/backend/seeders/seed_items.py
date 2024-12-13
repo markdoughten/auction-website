@@ -1,4 +1,3 @@
-from .. import db
 from ..models.item import Item,ItemAttribute
 from ..utils.db import db_create_one
 
@@ -169,4 +168,3 @@ def seed_items():
                 attribute_value = a["attributeValue"]
             )
             db_create_one(attr)
-    

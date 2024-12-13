@@ -1,0 +1,131 @@
+<form [formGroup]="signUp" (submit)="signupUsr()">
+  <div class="mb-3">
+    <label for="user" class="form-label">User Name</label>
+    <input
+      formControlName="username"
+      type="text"
+      name="username"
+      placeholder="Enter your username"
+      class="form-control form-control-lg"
+      [class.is-invalid]="
+        signUp.controls['username'].touched &&
+        signUp.controls['username'].invalid
+      "
+    />
+    <div class="text-danger" *ngIf="signUp.controls['username'].touched">
+      <span *ngIf="signUp.controls['username'].errors?.['required']">{{
+        IS_REQUIRED
+      }}</span>
+      <span *ngIf="signUp.controls['username'].errors?.['minlength']">{{
+        MIN_LEN
+      }}</span>
+      <span *ngIf="signUp.controls['username'].errors?.['duplicate']">{{
+        DUP_TRY_AGAIN
+      }}</span>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="email" class="form-label">Email</label>
+    <input
+      formControlName="email"
+      type="email"
+      name="email"
+      placeholder="Enter your email"
+      class="form-control form-control-lg"
+      [class.is-invalid]="
+        signUp.controls['email'].touched && signUp.controls['email'].invalid
+      "
+    />
+    <div class="text-danger" *ngIf="signUp.controls['email'].touched">
+      <span *ngIf="signUp.controls['email'].errors?.['required']">{{
+        IS_REQUIRED
+      }}</span>
+      <span *ngIf="signUp.controls['email'].errors?.['email']">{{
+        NOT_EMAIL
+      }}</span>
+      <span *ngIf="signUp.controls['email'].errors?.['duplicate']">{{
+        DUP_TRY_AGAIN
+      }}</span>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="password" class="form-label">Password</label>
+    <input
+      formControlName="password"
+      type="password"
+      name="password"
+      placeholder="Create a password"
+      class="form-control form-control-lg"
+      [class.is-invalid]="
+        signUp.controls['password'].touched &&
+        signUp.controls['password'].invalid
+      "
+    />
+    <div class="text-danger" *ngIf="signUp.controls['password'].touched">
+      <span *ngIf="signUp.controls['password'].errors?.['required']">{{
+        IS_REQUIRED
+      }}</span>
+      <span *ngIf="signUp.controls['password'].errors?.['minlength']">{{
+        MIN_LEN
+      }}</span>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <label for="passwordConfirm" class="form-label">Confirm Password</label>
+    <input
+      formControlName="passwordConfirm"
+      type="password"
+      name="passwordConfirm"
+      placeholder="Confirm your password"
+      class="form-control form-control-lg"
+      [class.is-invalid]="
+        signUp.controls['passwordConfirm'].touched &&
+        signUp.controls['passwordConfirm'].invalid
+      "
+    />
+    <div class="text-danger" *ngIf="signUp.controls['passwordConfirm'].touched">
+      <span *ngIf="signUp.controls['passwordConfirm'].errors?.['required']">{{
+        IS_REQUIRED
+      }}</span>
+      <span *ngIf="signUp.controls['passwordConfirm'].errors?.['minlength']">{{
+        MIN_LEN
+      }}</span>
+      <span
+        *ngIf="signUp.controls['passwordConfirm'].errors?.['notMatching']"
+        >{{ NOT_MATCHING }}</span
+      >
+    </div>
+  </div>
+
+  <div class="mb-3" *ngIf="isAdmin">
+    <label for="role">User Role</label>
+    <select class="form-select form-select-lg" formControlName="role">
+      <option *ngFor="let c of roles" [ngValue]="c">{{ c }}</option>
+    </select>
+  </div>
+
+  <div class="d-grid">
+    <input
+      type="submit"
+      class="btn btn-primary btn-lg mt-3"
+      value="Update"
+      *ngIf="userDetails !== undefined"
+    />
+    <input
+      type="submit"
+      class="btn btn-primary btn-lg mt-3"
+      value="Signup"
+      *ngIf="userDetails === undefined"
+    />
+    <input
+      type="button"
+      class="btn btn-outline-danger btn-lg mt-3"
+      value="Delete"
+      (click)="deleteUser()"
+      *ngIf="showDelete"
+    />
+  </div>
+</form>

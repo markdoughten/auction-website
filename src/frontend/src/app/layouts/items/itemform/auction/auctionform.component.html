@@ -1,0 +1,122 @@
+<h2 class="card-title mt-4 mb-4 text-center">Add your Item for Auction</h2>
+<div class="container">
+  <div class="item form col-xl-4 col-lg-5 col-md-7 mx-auto">
+    <div class="card-body">
+      <form
+        [formGroup]="itemForm"
+        (ngSubmit)="onSubmit()"
+        role="form text-left"
+      >
+        <div class="mb-3">
+          <label for="name">Item Name:</label>
+          <input
+            class="form-control"
+            type="text"
+            id="itemName"
+            formControlName="itemName"
+          />
+          <div
+            class="text-danger text-xxs"
+            *ngIf="itemForm.controls?.['itemName']?.touched"
+          >
+            <span
+              *ngIf="itemForm.controls?.['itemName']?.errors?.['required']"
+              >{{ IS_REQUIRED }}</span
+            >
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="openingTime">Opening Date:</label>
+          <input
+            class="form-control"
+            type="date"
+            id="openingTime"
+            formControlName="openingTime"
+            [min]="minDate.str"
+            [max]="maxDate.str"
+          />
+          <div
+            class="text-danger text-xxs"
+            *ngIf="itemForm.controls?.['openingTime']?.touched"
+          >
+            <span
+              *ngIf="
+                itemForm.controls?.['openingTime']?.errors?.['invalidDate']
+              "
+              >Date cannot be before today.</span
+            >
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="closingTime">Closing Date:</label>
+          <input
+            class="form-control"
+            type="date"
+            id="closingTime"
+            formControlName="closingTime"
+            [min]="minDate.str"
+            [max]="maxDate.str"
+          />
+          <div
+            class="text-danger text-xxs"
+            *ngIf="itemForm.controls?.['closingTime']?.touched"
+          >
+            <span
+              *ngIf="
+                itemForm.controls?.['closingTime']?.errors?.['invalidDate']
+              "
+              >Closing date cannot be before opening date.</span
+            >
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="initialPrice">Initial Price:</label>
+          <input
+            class="form-control"
+            type="number"
+            id="initialPrice"
+            formControlName="initialPrice"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="minPrice">Minimum Price:</label>
+          <input
+            class="form-control"
+            type="number"
+            id="minPrice"
+            formControlName="minPrice"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="minIncrement">Minimum Increment Price:</label>
+          <input
+            class="form-control"
+            type="number"
+            id="minIncrement"
+            formControlName="minIncrement"
+          />
+        </div>
+
+        <div class="text-center">
+          <input
+            type="submit"
+            class="btn btn-outline-success w-100 my-4 mb-2"
+            value="Submit"
+            *ngIf="itemDetails !== undefined"
+          />
+          <input
+            type="submit"
+            class="btn btn-outline-success w-100 my-4 mb-2"
+            value="Update"
+            *ngIf="itemDetails === undefined"
+          />
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

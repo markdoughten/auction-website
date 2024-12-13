@@ -6,10 +6,6 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.sql import func
 
 
-"""
-Add auction and bid here?
-"""
-
 class Auctions(db.Model):
     __tablename__ = 'auctions'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -74,9 +70,9 @@ class Bids(db.Model):
 
         if with_child_rels:
             pass
-        
+
         if with_parent_rels:
             d["bidder"] = self.bidder.to_dict()
             d["auction"] = self.auction.to_dict(with_parent_rels=True)
-        
+
         return d

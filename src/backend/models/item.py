@@ -4,10 +4,6 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.orm import Mapped
 from typing import List
 from ..models.item_meta import MetaItemCategory, MetaItemSubCategory
-"""
-    Add all item related classes here?
-"""
-
 
 class Item(db.Model):
     __tablename__ = 'items'

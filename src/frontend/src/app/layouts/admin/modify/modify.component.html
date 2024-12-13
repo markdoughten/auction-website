@@ -1,0 +1,21 @@
+@if (this.showUsers$ | async) {
+  <app-back [href]="'/admin'" [message]="message"></app-back>
+  <app-user-comp class="mt-5" (modifyUser)="updateUser($event)"></app-user-comp>
+} @else {
+  <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
+    <div class="mt-2 mb-4">
+      <app-back
+        [href]="'/admin/modify'"
+        (trigger)="goBack()"
+        [message]="'Back to Actions'"
+      ></app-back>
+    </div>
+    <div class="card-body">
+      <app-register
+        [userDetails]="userData"
+        [isAdmin]="isAdmin"
+        (success)="userMod()"
+      ></app-register>
+    </div>
+  </div>
+}

@@ -1,0 +1,37 @@
+<div class="card-body d-flex flex-column p-3">
+  <div class="w-100 position-relative p-3" *ngIf="profileDetails">
+    <div class="d-flex justify-content-center align-items-end">
+      <div class="d-flex align-items-center">
+        <div>
+          <h5 class="mb-1 font-weight-bolder">
+            {{ profileDetails.username }}
+          </h5>
+          <p class="mb-0 text-sm">User Details</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body d-flex flex-column p-3">
+    <app-auction
+      [auctionItems]="auctionDetails.data"
+      [currentPage]="auctionDetails.page"
+      [hasMorePages]="auctionDetails.morePages"
+      (updatePage)="update_auction($event)"
+      [succMsg]="auctionMessage.success"
+      [errMsg]="auctionMessage.error"
+      [showAdd]="showAdd"
+    ></app-auction>
+  </div>
+
+  <div class="card-body d-flex flex-column p-3">
+    <app-bids
+      [bidItems]="bidDetails.data"
+      [currentPage]="bidDetails.page"
+      [hasMorePages]="bidDetails.morePages"
+      (updatePage)="update_bid($event)"
+      [succMsg]="bidMessage.success"
+      [errMsg]="bidMessage.error"
+    ></app-bids>
+  </div>
+</div>

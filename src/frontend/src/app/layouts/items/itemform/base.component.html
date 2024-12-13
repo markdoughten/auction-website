@@ -1,0 +1,35 @@
+<div class="card shadow-sm h-100">
+  <h4 class="card-title mt-4 mb-4 ps-sm-3">Add item to auction</h4>
+  <div class="col-xl-6 col-lg-6 col-md-7 mx-auto">
+    <div class="row mt-2 mb-4 justify-content-center">
+      <div class="col-6 col-sm-8 d-flex justify-content-center mb-2">
+        <app-back class="w-100"></app-back>
+      </div>
+      <div class="col-6 col-sm-8 d-flex justify-content-center mb-2">
+        <app-back
+          (trigger)="switchMode()"
+          [message]="message"
+          [linkDisabled]="useReload"
+          *ngIf="itemDetails === undefined && auctionDetails === undefined"
+          class="w-100"
+        ></app-back>
+      </div>
+    </div>
+  </div>
+
+  @if (itemDetails === undefined && auctionDetails === undefined) {
+    <app-item-search
+      (success)="itemAdd($event)"
+      *ngIf="searchItem"
+    ></app-item-search>
+    <app-item-form
+      (success)="itemAdd($event)"
+      *ngIf="!searchItem"
+    ></app-item-form>
+  } @else {
+    <app-auction-form
+      [auctionDetails]="auctionDetails"
+      [itemDetails]="itemDetails"
+    ></app-auction-form>
+  }
+</div>

@@ -3,24 +3,39 @@ from flask import current_app as app
 from flask_jwt_extended import jwt_required
 from ..utils.misc import gen_resp_msg
 from ..models.auction import Bids, Auctions
-from ..utils.db import db_create_one, db_delete_one, db_delete_all, db_commit
-
-
+from ..utils.db import db_create_one, db_delete_one, db_delete_all
 
 
 @app.route('/bids/<id>', methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def get_bid(id):
     bid = Bids.query.filter(Bids.id==id).first()
     if not bid:
         return gen_resp_msg(404)
-    
+
     return jsonify(bid.to_dict())
 
 
 
+@app.route('/users/bids/<id>', methods=["GET"])
+@jwt_required()
+def get_user_bids(id):
+    if not request.args or not request.args.get("page"):
+        return gen_resp_msg(400)
+
+    page = request.args.get("page")
+    page = int(page)
+    bids = Bids.query.filter(Bids.id==id).filter(Auctions.id==Bids.auction_id).paginate(page=page).items
+    if not bids:
+        return gen_resp_msg(404)
+
+    bidsDict = list(map(lambda x:x.to_dict(False, True),bids))
+    return jsonify(bidsDict)
+
+
+
 @app.route('/bids/<id>', methods=["DELETE"])
-# @jwt_required() 
+# @jwt_required()
 def delete_bid(id):
     bid = Bids.query.filter(Bids.id==id).first()
     if not bid:
@@ -32,7 +47,6 @@ def delete_bid(id):
         return gen_resp_msg(500)
 
     return jsonify(bid.to_dict()), 200
-
 
 @app.route('/bids', methods=["GET"])
 # @jwt_required()
@@ -46,7 +60,6 @@ def get_bids():
     auctionId = request.args.get("auctionId")
     sellerId = request.args.get("sellerId")
     bidderId = request.args.get("bidderId")
-
 
     bidsQuery = Bids.query
 
@@ -63,15 +76,14 @@ def get_bids():
     bidsDict = list(map(lambda x:x.to_dict(),bids))
     return jsonify(bidsDict)
 
-
 @app.route('/bids', methods=["POST"])
 # @jwt_required()
 def post_bid():
     if not request.json:
        return gen_resp_msg(400)
-    
+
     reqJson = request.json
-    
+
     bid = Bids(
         auction_id = reqJson["auctionId"],
         bidder_id = reqJson["bidderId"],
@@ -96,5 +108,3 @@ def delete_bids():
         return gen_resp_msg(500)
 
     return gen_resp_msg(200)
-
-

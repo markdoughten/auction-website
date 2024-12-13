@@ -142,4 +142,3 @@ def get_notifications():
     notifs = notifQuery.paginate(page=page).items
     notifsDict = list(map(lambda x:notification_model_to_api_resp(x),notifs))
     return jsonify(notifsDict)
-

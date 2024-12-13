@@ -7,32 +7,30 @@ from ..models.item import Item, ItemAttribute
 from ..utils.db import db_create_one, db_delete_one, db_delete_all, db_commit
 
 
-
-
 @app.route('/items/<id>', methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def get_item(id):
     item = Item.query.filter(Item.id==id).first()
     if not item:
         return gen_resp_msg(404)
-    
+
     resp = item_model_to_api_resp(item)
 
     return jsonify(resp)
 
 
 @app.route('/items/<id>', methods=["PUT"])
-# @jwt_required() 
+@jwt_required()
 def put_item(id):
     item:Item = Item.query.filter(Item.id==id).first()
     if not item:
         return gen_resp_msg(404)
-    
+
     if not request.json:
         return gen_resp_msg(400)
-    
+
     reqJson = request.json
-    
+
 
     item.name = reqJson["name"]
     db_commit()
@@ -51,7 +49,7 @@ def put_item(id):
 
 
 @app.route('/items/<id>', methods=["DELETE"])
-# @jwt_required() 
+@jwt_required()
 def delete_item(id):
     item = Item.query.filter(Item.id==id).first()
     if not item:
@@ -66,11 +64,12 @@ def delete_item(id):
 
 
 @app.route('/items', methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def get_items():
     if not request.args:
         return gen_resp_msg(400)
 
+    name = request.args.get("name")
     categoryId = request.args.get("categoryId")
     subcategoryId = request.args.get("subcategoryId")
     attr_id = request.args.get("attributeId")
@@ -82,11 +81,13 @@ def get_items():
     if(categoryId):
         categoryId=int(categoryId)
         itemQuery=itemQuery.filter(Item.category_id == categoryId)
-    
+
     if(subcategoryId):
         subcategoryId=int(subcategoryId)
         itemQuery=itemQuery.filter(Item.subcategory_id == subcategoryId)
 
+    if (name):
+        itemQuery=itemQuery.filter(Item.name.like("%"+name+"%"))
 
     items = itemQuery.paginate(page=page).items
     itemsDict = list(map(lambda x:item_model_to_api_resp(x),items))
@@ -98,13 +99,13 @@ def get_items():
 
 
 @app.route('/items', methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def post_item():
     if not request.json:
         return gen_resp_msg(400)
-    
+
     reqJson = request.json
-    
+
     item = Item(
         category_id = reqJson["categoryId"],
         subcategory_id = reqJson["subcategoryId"],
@@ -118,18 +119,18 @@ def post_item():
 
     for attr in reqJson["attributes"]:
         attribute = ItemAttribute(
-            item_id = item.id, 
-            attribute_id = attr["attributeId"], 
+            item_id = item.id,
+            attribute_id = attr["attributeId"],
             attribute_value = attr["attributeValue"]
             )
         db_create_one(attribute)
-    
+
     resp = item_model_to_api_resp(item)
     return jsonify(resp)
 
 
 @app.route('/items', methods=["DELETE"])
-# @jwt_required()
+@jwt_required()
 def delete_items():
     try:
         db_delete_all(Item)
@@ -137,5 +138,3 @@ def delete_items():
         return gen_resp_msg(500)
 
     return gen_resp_msg(200)
-
-

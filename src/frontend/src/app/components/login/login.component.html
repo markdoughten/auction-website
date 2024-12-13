@@ -1,0 +1,63 @@
+<form
+  [formGroup]="login"
+  (submit)="loginUser()"
+  class="needs-validation"
+  novalidate
+>
+  <div class="mb-3 mt-3">
+    <label for="email" class="form-label">Email</label>
+    <input
+      formControlName="email"
+      type="text"
+      name="email"
+      id="email"
+      placeholder="Enter your email"
+      class="form-control form-control-lg"
+      [class.is-invalid]="
+        login.controls['email'].touched && login.controls['email'].invalid
+      "
+    />
+    <div *ngIf="login.controls['email'].touched" class="invalid-feedback">
+      <span *ngIf="login.controls['email'].errors?.['required']">{{
+        IS_REQUIRED
+      }}</span>
+      <span *ngIf="login.controls['email'].errors?.['email']">{{
+        NOT_EMAIL
+      }}</span>
+      <span *ngIf="login.controls['email'].errors?.['duplicate']">{{
+        INCORRECT_TRY_AGAIN
+      }}</span>
+    </div>
+  </div>
+
+  <div class="mb-3 mt-3">
+    <label for="password" class="form-label">Password</label>
+    <input
+      formControlName="password"
+      type="password"
+      name="password"
+      id="password"
+      placeholder="Enter your password"
+      class="form-control form-control-lg"
+      [class.is-invalid]="
+        login.controls['password'].touched && login.controls['password'].invalid
+      "
+    />
+    <div *ngIf="login.controls['password'].touched" class="invalid-feedback">
+      <span *ngIf="login.controls['password'].errors?.['required']">{{
+        IS_REQUIRED
+      }}</span>
+      <span *ngIf="login.controls['password'].errors?.['duplicate']">{{
+        INCORRECT_TRY_AGAIN
+      }}</span>
+    </div>
+  </div>
+
+  <div class="d-grid">
+    <input
+      type="submit"
+      class="btn btn-outline-success btn-lg mt-3"
+      value="Login"
+    />
+  </div>
+</form>
