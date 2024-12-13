@@ -66,17 +66,8 @@ export class UserComponent implements OnInit {
     if (confirm("Are you sure??")) {
       this.authService.delUser(userData.id).subscribe({
         next: (response) => {
-          if (response.status == RESPONSE_STATUS.SUCCESS) {
-            this.get_users(this.currentPage);
-            alert(
-              response.message +
-                "\n" +
-                userData.username +
-                " deleted successfully",
-            );
-          } else {
-            alert(response.message);
-          }
+          this.get_users(this.currentPage);
+          alert(userData.username + " deleted successfully");
         },
         error: (error) => {
           alert(error.error.message);

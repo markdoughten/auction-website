@@ -40,7 +40,8 @@ def put_user(id):
 
     identity = get_jwt_identity()
     if (((identity['role'] == constants.USER_ROLE.ADMIN.value or identity['role'] == constants.USER_ROLE.USER.value) \
-        and identity['id'] != user.id) or (identity['role'] == constants.USER_ROLE.STAFF.value and \
+            and identity['id'] != user.id and user.role == constants.USER_ROLE.ADMIN.value) \
+            or (identity['role'] == constants.USER_ROLE.STAFF.value and \
             (user.role == constants.USER_ROLE.ADMIN or \
             (user.role == constants.USER_ROLE.STAFF and user.id != identity['id'])))):
         return gen_resp_msg(403)
@@ -64,7 +65,8 @@ def delete_user(id):
 
     identity = get_jwt_identity()
     if (((identity['role'] == constants.USER_ROLE.ADMIN.value or identity['role'] == constants.USER_ROLE.USER.value) \
-        and identity['id'] != user.id) or (identity['role'] == constants.USER_ROLE.STAFF.value and \
+            and identity['id'] != user.id and user.role == constants.USER_ROLE.ADMIN.value) \
+            or (identity['role'] == constants.USER_ROLE.STAFF.value and \
             (user.role == constants.USER_ROLE.ADMIN or \
             (user.role == constants.USER_ROLE.STAFF and user.id != identity['id'])))):
         return gen_resp_msg(403)
