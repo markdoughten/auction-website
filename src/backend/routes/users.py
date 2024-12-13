@@ -90,7 +90,7 @@ def post_user():
         username = reqJson["username"],
         email = reqJson["email"],
         password = get_hash(reqJson["password"]),
-        role = reqJson["role"]
+        role = constants.USER_ROLE.USER
     )
 
     try:
