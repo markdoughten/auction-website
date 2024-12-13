@@ -1,0 +1,17 @@
+<a
+  class="btn btn-outline-dark d-flex align-items-center justify-content-start shadow-none"
+  [routerLink]="linkDisabled ? null : href"
+  (click)="triggerEvent()"
+  role="button"
+  attr.aria-label="{{ message }}"
+>
+  <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i>
+
+  <span class="ms-2 d-flex align-items-center">
+    <svg class="bi" width="20" height="20" fill="currentColor">
+      <use xlink:href="bootstrap-icons.svg#arrow-left" *ngIf="!linkDisabled" />
+      <use xlink:href="bootstrap-icons.svg#arrow-repeat" *ngIf="linkDisabled" />
+    </svg>
+    <span class="ms-2">{{ message }}</span>
+  </span>
+</a>

@@ -1,0 +1,19 @@
+<nav>
+  <ul class="pagination">
+    <li class="page-item" [class.disabled]="currentPage === 1">
+      <button class="page-link" (click)="changePage(currentPage - 1)">
+        Previous
+      </button>
+    </li>
+
+    <li class="page-item active">
+      <button class="page-link">{{ currentPage }}</button>
+    </li>
+
+    <li class="page-item" [class.disabled]="!hasMorePages">
+      <button class="page-link" (click)="changePage(currentPage + 1)">
+        Next
+      </button>
+    </li>
+  </ul>
+</nav>

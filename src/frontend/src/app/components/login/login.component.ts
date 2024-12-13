@@ -11,6 +11,7 @@ import { AuthService } from "@core/auth.service";
 import { IS_REQUIRED, NOT_EMAIL, RESPONSE_STATUS } from "@core/constants";
 import { check_duplicate } from "@core/form_validator";
 import { LoadingService } from "@core/loading.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-login",
@@ -30,6 +31,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private authSerice: AuthService,
     private loading: LoadingService,
+    private router: Router,
   ) {
     this.login = new FormGroup({
       email: new FormControl("", [
@@ -70,13 +72,13 @@ export class LoginComponent implements OnInit {
       next: (response) => {
         if (response.status === RESPONSE_STATUS.SUCCESS) {
           timer(100).subscribe(() => {
-            console.log(".1 seconds have passed!");
+            this.loading.hide();
             window.location.href = "/dashboard";
           });
         } else {
           this.handle_duplicate(login);
+          this.loading.hide();
         }
-        this.loading.hide();
       },
       error: (error) => {
         this.loading.hide();

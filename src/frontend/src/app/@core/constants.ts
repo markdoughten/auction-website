@@ -1,16 +1,18 @@
 import { API_URL } from "../env";
 
 export const SERVER_URLS = {
-  signup: { url: API_URL + "/users", request: "post", id: -1 },
   login: API_URL + "/user/login",
-  create_account: { url: API_URL + "/c_account", request: "post", id: -1 },
   get_accounts: API_URL + "/users",
+  signup: { url: API_URL + "/users", request: "post", id: -1 },
+  create_account: { url: API_URL + "/staff", request: "post", id: -1 },
   get_account: { url: API_URL + "/users/", request: "post", id: -1 },
   update_user: { url: API_URL + "/users/", request: "put", id: -1 },
   delete_user: API_URL + "/users/",
-  get_user_items: API_URL + "/users/items/",
-  get_user_bids: API_URL + "/users/bids/",
-  get_auction_item: API_URL + "/auctions",
+  user_items: API_URL + "/users/auctions/",
+  user_bids: API_URL + "/users/bids/",
+  auctions: API_URL + "/auctions",
+  get_meta_items: API_URL + "/item_meta/categories",
+  items: API_URL + "/items",
 };
 
 export const RESPONSE_STATUS = {

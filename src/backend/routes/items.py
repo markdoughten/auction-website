@@ -69,6 +69,7 @@ def get_items():
     if not request.args:
         return gen_resp_msg(400)
 
+    name = request.args.get("name")
     categoryId = request.args.get("categoryId")
     subcategoryId = request.args.get("subcategoryId")
     attr_id = request.args.get("attributeId")
@@ -85,6 +86,8 @@ def get_items():
         subcategoryId=int(subcategoryId)
         itemQuery=itemQuery.filter(Item.subcategory_id == subcategoryId)
 
+    if (name):
+        itemQuery=itemQuery.filter(Item.name.like("%"+name+"%"))
 
     items = itemQuery.paginate(page=page).items
     itemsDict = list(map(lambda x:item_model_to_api_resp(x),items))

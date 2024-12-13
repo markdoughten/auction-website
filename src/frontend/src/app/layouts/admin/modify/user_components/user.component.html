@@ -1,7 +1,17 @@
 <div class="col-12 mt-3">
   <div class="card mb-4">
-    <div class="card-header pb-0">
-      <h6>Admin Actions</h6>
+    <div class="card-header d-flex align-items-center justify-content-between">
+      <h6 class="mb-0">Admin Actions</h6>
+      <form (ngSubmit)="get_users(1)" class="d-flex align-items-center w-50">
+        <input
+          type="text"
+          class="form-control me-3"
+          placeholder="Search Username"
+          [(ngModel)]="searchQuery"
+          name="search"
+        />
+        <button type="submit" class="btn btn-primary">Search</button>
+      </form>
     </div>
     <div class="card-body px-0 pt-0 pb-2">
       <div class="table-responsive p-0">
@@ -40,7 +50,7 @@
                       {{ userData.username }}
                     </h6>
                     <a
-                      href="/profile/{{ userData.id }}"
+                      [routerLink]="['/profile', userData.id]"
                       class="text-xs text-secondary"
                       >View Profile</a
                     >
@@ -77,6 +87,12 @@
               </td>
             </tr>
           </tbody>
+          <app-page
+            *ngIf="users !== undefined"
+            [currentPage]="currentPage"
+            [hasMorePages]="hasMorePages"
+            (updatePage)="get_users($event)"
+          ></app-page>
         </table>
       </div>
     </div>

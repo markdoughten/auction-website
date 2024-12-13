@@ -1,6 +1,7 @@
 <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
   <div class="card card-blog card-plain">
     <div class="card-body px-1 pb-0">
+      <!-- update impl comes here - i will implement later - this will also include handling to remove auction -->
       <p class="text-secondary mb-0 text-sm" *ngIf="item.status">
         {{ item.status }}
       </p>
@@ -13,5 +14,8 @@
       </p>
       <p class="text-sm">Price = ${{ item.initialPrice }}</p>
     </div>
+    <!-- show attributes and other details - refer the items search page -->
+    <!-- add bid option here | i will disable it for a non-user -->
+    <!-- add q & a here, the staff can respond here. they should be able to view open questions on questions component -->
   </div>
 </div>

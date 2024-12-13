@@ -35,6 +35,7 @@ export class RegisterComponent implements OnInit {
   roles = staff_access;
   @Input() userDetails: any = undefined;
   @Input() isAdmin: boolean = false;
+  @Input() showDelete: boolean = false;
   @Output() success = new EventEmitter<any>();
   constructor(
     private auth: AuthService,
@@ -150,5 +151,28 @@ export class RegisterComponent implements OnInit {
         this.loading.hide();
       },
     });
+  }
+
+  deleteUser() {
+    if (confirm("Are you sure??")) {
+      const self = this;
+      this.auth.delUser(this.auth.user.id).subscribe(
+        (response) => {
+          if (response.status == RESPONSE_STATUS.SUCCESS) {
+            alert(
+              response.message +
+                "\n" +
+                self.auth.user.username +
+                " deleted successfully",
+            );
+          } else {
+            alert(response.message);
+          }
+        },
+        (error) => {
+          alert(error.error.message);
+        },
+      );
+    }
   }
 }

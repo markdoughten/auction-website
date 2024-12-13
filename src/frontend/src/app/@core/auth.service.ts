@@ -91,7 +91,7 @@ export class AuthService {
     if (token !== "") {
       return JSON.parse(atob(token.split(".")[1])).sub as UserModel;
     } else {
-      return { id: -1, username: "", role: "" };
+      return { id: -1, username: "", email: "", role: "" };
     }
   }
 }

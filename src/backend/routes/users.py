@@ -3,7 +3,6 @@ from flask import current_app as app
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from ..utils import constants
 from ..utils.misc import get_hash, gen_resp_msg
-from ..utils.user import user_model_to_api_resp
 from ..models.user import User
 from ..utils.db import db_create_one, db_commit, db_delete_one, db_delete_all
 from .. import jwt
@@ -11,16 +10,21 @@ from .. import jwt
 
 @jwt.user_identity_loader
 def user_identity_lookup(user):
-    return {"id": user.id, "username": user.email, "role": user.role.value}
+    return {"id": user.id, "username": user.username, "email": user.email, "role": user.role.value}
 
 @app.route('/users/<id>', methods=["GET"])
 @jwt_required()
 def get_user(id):
+    identity = get_jwt_identity()
     user = User.query.filter(User.id==id).first()
     if not user:
         return gen_resp_msg(404)
 
-    resp = user_model_to_api_resp(user)
+    resp = user.to_dict(with_email=True)
+    # don't show cx email to other cx - requirement
+    if (identity['role'] == constants.USER_ROLE.USER.value and identity['id'] != user.id):
+        resp.drop("email")
+
     return jsonify(resp)
 
 
@@ -70,7 +74,7 @@ def delete_user(id):
     except:
         return gen_resp_msg(500)
 
-    resp = user_model_to_api_resp(user)
+    resp = user.to_dict(with_email=True)
     return jsonify(resp)
 
 
@@ -113,8 +117,17 @@ def get_users():
     page = int(page)
     userQuery = User.query
     userQuery=userQuery.filter(User.role.in_(roles))
+
+    var = request.args.get("username")
+    if var:
+        userQuery=userQuery.filter(User.username.like("%"+var+"%"))
+
+    var = request.args.get("email")
+    if var:
+        userQuery=userQuery.filter(User.email.like("%"+var+"%"))
+
     users = userQuery.paginate(page=page).items
-    usersDict = list(map(lambda x:user_model_to_api_resp(x),users))
+    usersDict = list(map(lambda x:x.to_dict(with_email=True),users))
     return jsonify(usersDict)
 
 
@@ -155,9 +168,9 @@ def login():
     return jsonify(output)
 
 
-@app.route('/c_account', methods=["POST"])
+@app.route('/staff', methods=["POST"])
 @jwt_required()
-def create_account():
+def create_staff():
     identity = get_jwt_identity()
     if identity['role'] != constants.USER_ROLE.ADMIN.value:
         return gen_resp_msg(403)

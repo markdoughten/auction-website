@@ -1,0 +1,20 @@
+<div class="col-12 mt-3">
+  <div class="card mb-4">
+    <div class="card-header d-flex align-items-center justify-content-between">
+      <h6 class="mb-0">Admin Actions</h6>
+      <form (ngSubmit)="search()" class="d-flex align-items-center w-50">
+        <input
+          type="text"
+          class="form-control me-3"
+          placeholder="Search Username"
+          [(ngModel)]="searchQuery"
+          name="search"
+        />
+        <button type="submit" class="btn btn-primary">Search</button>
+      </form>
+    </div>
+    <div class="card-body d-flex flex-column p-3 mt-2">
+      <app-auction></app-auction>
+    </div>
+  </div>
+</div>

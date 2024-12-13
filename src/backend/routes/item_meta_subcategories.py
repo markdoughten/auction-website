@@ -12,22 +12,22 @@ def get_subcategory(id):
     item_subcategory = MetaItemSubCategory.query.filter(MetaItemSubCategory.id==id).first()
     if not item_subcategory:
         return gen_resp_msg(404)
-    
+
     return jsonify(item_subcategory.to_dict(True, True))
 
 
 @app.route('/item_meta/subcategories/<id>', methods=["PUT"])
-# @jwt_required() 
+# @jwt_required()
 def put_subcategory(id):
     item_subcategory = MetaItemSubCategory.query.filter(MetaItemSubCategory.id==id).first()
     if not item_subcategory:
         return gen_resp_msg(404)
-    
+
     if not request.json:
         return gen_resp_msg(400)
-    
+
     reqJson = request.json
-    
+
     item_subcategory.subcategory_name = reqJson["subcategoryName"]
     db_commit()
 
@@ -35,7 +35,7 @@ def put_subcategory(id):
 
 
 @app.route('/item_meta/subcategories/<id>', methods=["DELETE"])
-# @jwt_required() 
+# @jwt_required()
 def delete_subcategory(id):
     item_subcategory = MetaItemSubCategory.query.filter(MetaItemSubCategory.id==id).first()
     if not item_subcategory:
@@ -50,14 +50,9 @@ def delete_subcategory(id):
 
 
 @app.route('/item_meta/subcategories', methods=["GET"])
-# @jwt_required()
+@jwt_required()
 def get_subcategories():
-    if not request.args:
-        return gen_resp_msg(400)
-
-    page = request.args.get("page")
-    page = int(page)
-    subcategories = MetaItemSubCategory.query.paginate(page=page).items
+    subcategories = MetaItemSubCategory.query.paginate().items
     subcategoriesDict = list(map(lambda x:x.to_dict(True, True), subcategories))
     return jsonify(subcategoriesDict)
 
@@ -67,9 +62,9 @@ def get_subcategories():
 def post_subcategory():
     if not request.json:
         return gen_resp_msg(400)
-    
+
     reqJson = request.json
-    
+
     subcategory = MetaItemSubCategory(
         subcategory_name = reqJson["subcategoryName"],
         category_id = reqJson["categoryId"]
@@ -92,5 +87,3 @@ def delete_subcategories():
         return gen_resp_msg(500)
 
     return gen_resp_msg(200)
-
-

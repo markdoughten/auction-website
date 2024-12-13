@@ -1,3 +1,6 @@
+<h4 class="card-title mt-4 mb-4 ps-sm-3">
+  Hello, {{ authService.user.username }}!!
+</h4>
 <div class="col-12">
   <div class="card mb-4">
     <div class="card-header pb-0">
@@ -17,7 +20,6 @@
             </tr>
           </thead>
           <tbody>
-            <!-- Add User Row, visible only to admin -->
             <tr *ngIf="this.authService.isAdmin | async">
               <td>
                 <div class="d-flex px-2 py-1">
@@ -28,24 +30,21 @@
                 </div>
               </td>
               <td class="align-middle text-center">
-                <span class="badge bg-gradient-success">
-                  <a
-                    href="../admin/register"
-                    class="text-dark font-weight-bold text-xs"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    title="Add new user"
-                  >
-                    <svg class="bi" width="20" height="20" fill="currentColor">
-                      <use xlink:href="bootstrap-icons.svg#person-plus" />
-                    </svg>
-                    Add
-                  </a>
-                </span>
+                <svg class="bi" width="20" height="20" fill="currentColor">
+                  <use xlink:href="bootstrap-icons.svg#person-plus" />
+                </svg>
+                <a
+                  [routerLink]="'/admin/register'"
+                  class="text-dark font-weight-bold text-xs p-2"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="Add new user"
+                >
+                  Add
+                </a>
               </td>
             </tr>
 
-            <!-- Edit Users Row -->
             <tr>
               <td>
                 <div class="d-flex px-2 py-1">
@@ -58,20 +57,72 @@
                 </div>
               </td>
               <td class="align-middle text-center">
-                <span class="badge bg-gradient-warning">
-                  <a
-                    href="../admin/modify"
-                    class="text-dark font-weight-bold text-xs"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    title="Modify user"
-                  >
-                    <svg class="bi" width="20" height="20" fill="currentColor">
-                      <use xlink:href="bootstrap-icons.svg#person-gear" />
-                    </svg>
-                    Modify
-                  </a>
-                </span>
+                <svg class="bi" width="20" height="20" fill="currentColor">
+                  <use xlink:href="bootstrap-icons.svg#person-gear" />
+                </svg>
+                <a
+                  [routerLink]="'/admin/modify'"
+                  class="text-dark font-weight-bold text-xs p-2"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="Modify user"
+                >
+                  Modify
+                </a>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <div class="d-flex px-2 py-1">
+                  <div class="d-flex flex-column justify-content-center">
+                    <h6 class="mb-0 text-sm">Answer Questions</h6>
+                    <p class="text-xs text-secondary mb-0">
+                      Answer User Queries
+                    </p>
+                  </div>
+                </div>
+              </td>
+              <td class="align-middle text-center">
+                <svg class="bi" width="20" height="20" fill="black">
+                  <use xlink:href="bootstrap-icons.svg#chat-left-dots" />
+                </svg>
+                <a
+                  [routerLink]="'/admin/questions'"
+                  class="text-dark font-weight-bold text-xs p-2"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="Answer questions"
+                >
+                  Questions
+                </a>
+              </td>
+            </tr>
+
+            <tr *ngIf="this.authService.isAdmin | async">
+              <td>
+                <div class="d-flex px-2 py-1">
+                  <div class="d-flex flex-column justify-content-center">
+                    <h6 class="mb-0 text-sm">Show Report</h6>
+                    <p class="text-xs text-secondary mb-0">
+                      Show sales reports
+                    </p>
+                  </div>
+                </div>
+              </td>
+              <td class="align-middle text-center">
+                <svg class="bi" width="20" height="20" fill="black">
+                  <use xlink:href="bootstrap-icons.svg#graph-up" />
+                </svg>
+                <a
+                  [routerLink]="'/admin/reports'"
+                  class="text-dark font-weight-bold text-xs p-2"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="Show reports"
+                >
+                  Reports
+                </a>
               </td>
             </tr>
           </tbody>

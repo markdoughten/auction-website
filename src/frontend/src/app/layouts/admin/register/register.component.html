@@ -1,24 +1,7 @@
 <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
-  <a
-    class="btn btn-outline-primary d-flex align-items-center shadow-none"
-    href="/admin"
-    role="button"
-    aria-label="Back to Admin Dashboard"
-  >
-    <i class="fas fa-arrow-right text-sm ms-1" aria-hidden="true"></i>
-    <span class="ms-2">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="24"
-        viewBox="0 0 24 24"
-        width="24"
-      >
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
-      </svg>
-      Back to Admin Dashboard
-    </span>
-  </a>
+  <div class="mt-2 mb-4">
+    <app-back [href]="'/admin'" [message]="message"></app-back>
+  </div>
   <div class="card-body">
     <app-register [isAdmin]="isAdmin" (success)="userAdd()"></app-register>
   </div>

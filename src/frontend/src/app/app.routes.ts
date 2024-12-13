@@ -12,10 +12,13 @@ import { ModifyComponent } from "@layouts/admin/modify/modify.component";
 import { ProfileComponent } from "@layouts/profile/profile.component";
 import { ItemComponent } from "@layouts/items/item/item.component";
 import { ItemLandingComponent } from "@layouts/items/itemlanding.component";
-import { ItemFormComponent } from "@layouts/items/itemform/itemform.component";
+import { BaseItemComponent } from "@layouts/items/itemform/base.component";
 import { SettingsComponent } from "@layouts/settings/settings.component";
 import { admin_access, staff_access, all_access } from "@model/usermodel";
 import { RegisterUserComponent } from "@layouts/admin/register/register.component";
+import { QuestionsComponent } from "@layouts/admin/questions/questions.component";
+import { ReportsComponent } from "@layouts/admin/reports/reports.component";
+import { SearchComponent } from "@layouts/search/search.component";
 
 export const routes: Routes = [
   {
@@ -50,9 +53,26 @@ export const routes: Routes = [
     children: [
       { path: "dashboard", component: AdminDashboardComponent },
       { path: "modify", component: ModifyComponent },
-      { path: "register", component: RegisterUserComponent },
+      {
+        path: "register",
+        component: RegisterUserComponent,
+        canActivate: [HasRoleGuard],
+        data: { role: admin_access },
+      },
+      { path: "questions", component: QuestionsComponent },
+      {
+        path: "reports",
+        component: ReportsComponent,
+        canActivate: [HasRoleGuard],
+        data: { role: admin_access },
+      },
       { path: "**", redirectTo: "dashboard", pathMatch: "full" },
     ],
+  },
+  {
+    path: "search",
+    component: SearchComponent,
+    canActivate: [IsAuthGuard],
   },
   {
     path: "profile/:id",
@@ -71,7 +91,7 @@ export const routes: Routes = [
       },
       {
         path: "",
-        component: ItemFormComponent,
+        component: BaseItemComponent,
         canActivate: [IsAuthGuard],
       },
     ],

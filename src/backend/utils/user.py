@@ -1,14 +1,6 @@
 from flask_jwt_extended.utils import get_jwt_identity
-from flask import request
-from backend.models.user import User
 from backend.utils import constants
-
-
-def user_model_to_api_resp(user: User):
-    resp = user.to_dict()
-    del resp["password"]
-    return resp
-
+from flask import request
 
 def is_opr_allowed(roles):
     identity = get_jwt_identity()

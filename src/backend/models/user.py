@@ -11,13 +11,13 @@ class User(db.Model):
     role:constants.USER_ROLE = db.Column(db.Enum(constants.USER_ROLE, values_callable=lambda t: [ str(item.value) for item in t]), nullable=False)
 
     #methods
-    def to_dict(self, with_child_rels=False, with_parent_rels=False):
+    def to_dict(self, with_child_rels=False, with_parent_rels=False, with_email=False):
         d={}
         d["username"] = self.username
         d["id"] = self.id
-        d["email"] = self.email
-        d["password"] = self.password
         d["role"] = self.role.value
+        if with_email:
+            d["email"] = self.email # hidden unless asked for!!
 
         if with_child_rels:
             pass

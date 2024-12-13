@@ -2,7 +2,6 @@ from sqlalchemy.orm import relationship
 from sqlalchemy import ForeignKey, UniqueConstraint
 from .. import db
 from ..models.user import User
-from ..utils.user import user_model_to_api_resp
 from sqlalchemy.orm import Mapped
 from typing import List
 
@@ -27,7 +26,7 @@ class UserQuestion(db.Model):
 
         if (with_child_rels):
             d["answers"] = list(map(lambda x:x.to_dict(with_child_rels=True), self.answers))
-            d["asker"] = user_model_to_api_resp(self.asker)
+            d["asker"] = self.asker.to_dict()
             pass
 
         if (with_parent_rels):
@@ -54,12 +53,10 @@ class UserAnswer(db.Model):
         d["replyText"] = self.reply_text
 
         if (with_child_rels):
-            d["replier"] = user_model_to_api_resp(self.replier)
+            d["replier"] = self.replier.to_dict()
             pass
 
         if (with_parent_rels):
             pass
 
         return d
-
-
