@@ -133,6 +133,7 @@ export class RegisterComponent implements OnInit {
       this.set_default_vals();
       this.signUp.enable({ emitEvent: true });
       SERVER_URLS.update_user.id = this.auth.user.id;
+      url = SERVER_URLS.update_user;
     } else if (this.isAdmin) {
       url = SERVER_URLS.create_account;
     }
